@@ -1,0 +1,22 @@
+// Online C# Editor for free
+// Write, Edit and Run your C# code using C# Online Compiler
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        // conditional statement
+        int n;
+        Console.Write("Input n (int): ");
+        string nString = Console.ReadLine();
+        n = int.Parse(nString);
+        
+        if (n % 2 == 0) {
+            Console.WriteLine("{0} is an even number", n);
+        } else {
+            Console.WriteLine("{0} is an odd number", n);
+        }
+    }
+}
