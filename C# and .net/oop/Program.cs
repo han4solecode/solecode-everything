@@ -65,11 +65,11 @@ public class Car
     private string color;
     private string brand;
 
-    // if the Car has no color or brand, make it a Red Ferrari
+    // if the Car has no color or brand, make it a Red Mazda
     public Car()
     {
         this.color = "Red";
-        this.brand = "Ferrari";
+        this.brand = "Mazda";
     }
 
     // Car should be able to viewed and modified
