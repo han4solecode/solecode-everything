@@ -54,6 +54,17 @@ class Program
         {
             cars[i].Drive();
         }
+
+        var profile = new UserProfile()
+        {
+            FirstName = "Steve",
+            LastName = "Balmer",
+            UserId = 91112
+        };
+
+        profile.UserInfo();
+
+
     }
 }
 
