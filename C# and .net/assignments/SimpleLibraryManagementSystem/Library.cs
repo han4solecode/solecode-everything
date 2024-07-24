@@ -2,7 +2,7 @@ namespace SimpleLibraryManagementSystem
 {
     public class Library()
     {
-        List<Book> bookList = [];
+        private List<Book> bookList = [];
 
         public void AddBook(Book book)
         {
