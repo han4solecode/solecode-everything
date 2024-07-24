@@ -11,7 +11,7 @@ namespace OOPAll
         private List<Item> listItems = [];
         private List<Pengguna> listPengguna = [];
 
-        private Dictionary<string, List<Item>> itemDict = []; 
+        private Dictionary<string, List<Item>> itemTerpinjam = []; 
 
         public void TambahItem(Item item)
         {
