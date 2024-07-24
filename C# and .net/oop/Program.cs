@@ -66,6 +66,10 @@ class Program
 
         Console.WriteLine(Mathmath.SumAll(1, 2, 3, 4, 5));
 
+        var triangle = new Triangle(5, 12);
+
+        Console.WriteLine("Triangle surcafe area: {0}", triangle.CalculateSurface());
+
 
     }
 }
