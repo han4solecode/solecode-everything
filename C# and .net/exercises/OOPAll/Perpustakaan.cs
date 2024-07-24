@@ -36,5 +36,12 @@ namespace OOPAll
         {
             listPengguna.Add(pengguna);
         }
+
+        public Item? CariItemBerdasarkanJudul(string judul)
+        {
+            var itemToDisplay = listItems.SingleOrDefault(i => i.Judul == judul);
+
+            return itemToDisplay;
+        }
     }
 }
