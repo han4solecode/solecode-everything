@@ -16,6 +16,5 @@ namespace oop
         {
             Console.WriteLine("User ID: {0} Fullname: {1} {2}", UserId, FirstName, LastName);
         }
-
     }
 }
