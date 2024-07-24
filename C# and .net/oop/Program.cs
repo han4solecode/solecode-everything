@@ -52,14 +52,14 @@ class Program
         // print all cars and drive them
         for (int i = 0; i < (cars.Count); i++)
         {
-            cars[i].Drive(cars[i].Color, cars[i].Brand);
+            cars[i].Drive();
         }
     }
 }
 
 // class example
 // Car class
-public class Car
+/*public class Car
 {
     // Car has color and brand field
     private string color;
@@ -99,11 +99,4 @@ public class Car
     {
         Console.WriteLine("{0} {1} is driving!", color, brand);
     }
-}
-
-// public class Person
-// {
-//     private string title;
-//     private string author;
-//     private int publicationYear;
-// }
+}*/

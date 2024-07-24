@@ -41,7 +41,7 @@ namespace oop
         }
 
         // Car method, Car should be able to drive
-        public void Drive(string color, string brand)
+        public void Drive()
         {
             Console.WriteLine("{0} {1} is driving!", color, brand);
         }
