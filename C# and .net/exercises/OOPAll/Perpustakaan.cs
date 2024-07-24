@@ -43,5 +43,13 @@ namespace OOPAll
 
             return itemToDisplay;
         }
+
+        public void TampilkanSemuaItem()
+        {
+            foreach(Item i in listItems)
+            {
+                i.DisplayInfo();
+            }
+        }
     }
 }
