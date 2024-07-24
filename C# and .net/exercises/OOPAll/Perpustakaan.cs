@@ -51,5 +51,13 @@ namespace OOPAll
                 i.DisplayInfo();
             }
         }
+
+        public void TampilkanSemuaPengguna()
+        {
+            foreach(Pengguna p in listPengguna)
+            {
+                p.DisplayInfo();
+            }
+        }
     }
 }
