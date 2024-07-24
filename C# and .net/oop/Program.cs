@@ -64,6 +64,8 @@ class Program
 
         profile.UserInfo();
 
+        Console.WriteLine(Mathmath.SumAll(1, 2, 3, 4, 5));
+
 
     }
 }
