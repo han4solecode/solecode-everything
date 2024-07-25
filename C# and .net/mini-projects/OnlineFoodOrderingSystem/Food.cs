@@ -23,7 +23,7 @@ namespace OnlineFoodOrderingSystem
         // overriding MenuInfo method from MenuItem abstract class
         public override string MenuInfo()
         {
-            return "Name: " + name + " Price: " + price + " Description: " + description + " Spiciness: " + Spiciness;
+            return "Name: " + name + "\nPrice: " + price + "\nDescription: " + description + "\nSpiciness: " + Spiciness;
         }
     }
 }

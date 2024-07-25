@@ -6,6 +6,7 @@ namespace OnlineFoodOrderingSystem
     {
         private List<Restaurant> restaurantList = [];
         private Dictionary<string, Order> placedOrderInRestaurant = [];
+        private List<Order> savedOrderList = [];
         private int totalOrderCost;
         private string? orderNumber;
 
@@ -38,6 +39,8 @@ namespace OnlineFoodOrderingSystem
                 // insert new order with ReceiveOrder method
                 restoToPlaceOrder.ReceiveOrders(newOrder);
                 Console.WriteLine("Your order has been placed at {0}", restoToPlaceOrder.Name);
+
+                savedOrderList.Add(newOrder);
                 
                 // create order number with Guid 
                 orderNumber = Guid.NewGuid().ToString();
@@ -62,15 +65,17 @@ namespace OnlineFoodOrderingSystem
             // check if order number exist
             if (placedOrderInRestaurant.ContainsKey(orderNumber))
             {
-                var themOrderInResto = placedOrderInRestaurant[orderNumber];
+                Order themOrderInResto = placedOrderInRestaurant[orderNumber];
                 var orderCost = 0;
 
-                Console.WriteLine("==== Ordered Items ====");
-                // display order details with foreach
+                // var realOrder = savedOrderList.Find(o => o.MenuItemList == themOrderInResto.MenuItemList);
+
+                Console.WriteLine("\n==== Ordered Items ====");
+
                 foreach (MenuItem item in themOrderInResto.MenuItemList)
                 {
                     // use MenuInfo() method
-                    item.MenuInfo();
+                    Console.WriteLine(item.MenuInfo());
                     Console.WriteLine("-----------------------");
 
                     // calculate price using CalculatePrice() method

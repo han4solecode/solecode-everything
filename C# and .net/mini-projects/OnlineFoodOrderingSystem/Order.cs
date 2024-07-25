@@ -16,7 +16,11 @@ namespace OnlineFoodOrderingSystem
             this.totalPrice = totalPrice;
         }
 
-        public List<MenuItem> MenuItemList { get; }
+        public List<MenuItem> MenuItemList
+        {
+            get => menuItemList;
+            set => menuItemList = value;
+        }
         public int TotalPrice { get; }
 
         // method for calculate total price of order
