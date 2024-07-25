@@ -41,10 +41,10 @@ namespace OnlineFoodOrderingSystem
                 Console.WriteLine("Your order has been placed at {0}", restoToPlaceOrder.Name);
 
                 savedOrderList.Add(newOrder);
-                
+
                 // create order number with Guid 
                 orderNumber = Guid.NewGuid().ToString();
-                
+
                 // insert order number and its resto to a dictionary
                 placedOrderInRestaurant.Add(orderNumber, newOrder);
 
@@ -63,12 +63,9 @@ namespace OnlineFoodOrderingSystem
         public void DisplayOrderDetails(string orderNumber)
         {
             // check if order number exist
-            if (placedOrderInRestaurant.ContainsKey(orderNumber))
+            if (placedOrderInRestaurant.TryGetValue(orderNumber, out Order? order))
             {
-                Order themOrderInResto = placedOrderInRestaurant[orderNumber];
-                var orderCost = 0;
-
-                // var realOrder = savedOrderList.Find(o => o.MenuItemList == themOrderInResto.MenuItemList);
+                Order themOrderInResto = order;
 
                 Console.WriteLine("\n==== Ordered Items ====");
 
@@ -77,12 +74,9 @@ namespace OnlineFoodOrderingSystem
                     // use MenuInfo() method
                     Console.WriteLine(item.MenuInfo());
                     Console.WriteLine("-----------------------");
-
-                    // calculate price using CalculatePrice() method
-                    orderCost += item.CalucatePrice();
                 }
 
-                Console.WriteLine("Total cost: {0}", orderCost);
+                Console.WriteLine("Total cost: {0}", themOrderInResto.CalculateTotal().ToString());
             }
             else
             {
@@ -90,8 +84,8 @@ namespace OnlineFoodOrderingSystem
             }
         }
 
-        public void CancelOrder(){}
-        public void GetOrderStatus(){}
+        public void CancelOrder() { }
+        public void GetOrderStatus() { }
 
     }
 }
