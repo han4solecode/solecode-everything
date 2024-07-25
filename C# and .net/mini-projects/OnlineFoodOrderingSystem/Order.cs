@@ -9,6 +9,16 @@ namespace OnlineFoodOrderingSystem
         private List<MenuItem> menuItemList = [];
         private int totalPrice;
 
+        // Order class constructor
+        public Order(List<MenuItem> menuItems, int totalPrice)
+        {
+            this.menuItemList = menuItems;
+            this.totalPrice = totalPrice;
+        }
+
+        public List<MenuItem> MenuItemList { get; }
+        public int TotalPrice { get; }
+
         // method for calculate total price of order
         public int CalculateTotal()
         {
