@@ -2,18 +2,41 @@ namespace OnlineFoodOrderingSystem
 {
     public class Restaurant
     {
+        // Restaurant fields
+        private string? name;
+        private List<MenuItem> menuList = [];
+        private List<Order> orders = []; 
+
         // Restaurant props
-        public string? Name { get; set; }
-        public required List<MenuItem> Menu { get; set; }
-        public required List<Order> Orders { get; set; }
+        public string? Name
+        {
+            get => name;
+            set => name = value;
+        }
+        public List<MenuItem> Menu
+        {
+            get => menuList;
+            set => menuList = value;
+        }
+        public List<Order> Orders
+        {
+            get => orders;
+            set => orders = value;
+        }
 
         private int revenue;
+
+        // Restaurant constructor
+        public Restaurant(string name)
+        {
+            this.name = name;
+        }
 
         // method for adding new item to menu
         public void AddItemToMenu(MenuItem menu)
         {
-            Menu.Add(menu);
-            Console.WriteLine("{0} is added to the menu", menu.Name);
+            menuList.Add(menu);   
+            Console.WriteLine("{0} is added to the {1} menu", menu.Name, name);
         }
 
         // method for receiving orders
