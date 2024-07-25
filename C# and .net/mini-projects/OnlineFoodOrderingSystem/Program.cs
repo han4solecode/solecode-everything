@@ -37,7 +37,7 @@ class Program
 
         restaurant2.AddItemToMenu(food2);
         restaurant2.AddItemToMenu(beverage2);
-        restaurant2.AddItemToMenu(dessert3);
+        restaurant2.AddItemToMenu(dessert2);
 
         restaurant3.AddItemToMenu(food3);
         restaurant3.AddItemToMenu(beverage3);
