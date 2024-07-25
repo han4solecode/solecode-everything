@@ -21,7 +21,7 @@ namespace OnlineFoodOrderingSystem
             get => menuItemList;
             set => menuItemList = value;
         }
-        public int TotalPrice { get; }
+        public int TotalPrice { get => totalPrice; }
 
         // method for calculate total price of order
         public int CalculateTotal()
