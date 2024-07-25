@@ -3,11 +3,11 @@ namespace OnlineFoodOrderingSystem
     public abstract class MenuItem
     {
         // Every class that will inherit MenuItem abstract class will inherit these props.
-        // Encapsulate fields with private member access modifier so it can not be accessed directly outside this class.
+        // Encapsulate fields with protected member access modifier so it can only be accessed by class that inherit MenuItem.
         // Properties is used as an accessor to these private fields 
-        private string? name;
-        private int price;
-        private string? description;
+        protected string? name;
+        protected int price;
+        protected string? description;
 
         public string? Name
         {
@@ -25,11 +25,11 @@ namespace OnlineFoodOrderingSystem
             set => description = value;
         }
 
-        public MenuItem(string name, int price, string desc)
+        protected MenuItem(string? name, int price, string description)
         {
             this.name = name;
             this.price = price;
-            description = desc;
+            this.description = description;
         }
 
         // abstract method to calculate price
