@@ -47,7 +47,7 @@ namespace OnlineFoodOrderingSystem
         }
 
         // method for calculating total revenue
-        public int CalculateRevenue(Order order)
+        public int CalculateRevenue()
         {
             foreach (Order o in Orders)
             {
