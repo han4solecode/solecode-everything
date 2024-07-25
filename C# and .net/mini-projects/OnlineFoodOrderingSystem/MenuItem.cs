@@ -35,5 +35,8 @@ namespace OnlineFoodOrderingSystem
         // abstract method to calculate price
         public abstract int CalucatePrice();
 
+        // abstract method to display menu info
+        public abstract string MenuInfo();
+
     }
 }
