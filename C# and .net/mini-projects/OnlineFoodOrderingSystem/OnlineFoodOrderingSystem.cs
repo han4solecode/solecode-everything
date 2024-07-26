@@ -6,8 +6,8 @@ namespace OnlineFoodOrderingSystem
     {
         private List<Restaurant> restaurantList = [];
         private Dictionary<string, Order> placedOrderInRestaurant = [];
-        private List<Order> savedOrderList = [];
-        private int totalOrderCost;
+        // private List<Order> savedOrderList = [];
+        // private int totalOrderCost;
         private string? orderNumber;
 
         // IOrderingSystem methods implementation
@@ -27,25 +27,22 @@ namespace OnlineFoodOrderingSystem
             // check if restaurant exist
             if (restoToPlaceOrder != null)
             {
-                // calculate total order cost
-                foreach (MenuItem item in orderedItems)
-                {
-                    totalOrderCost += item.CalucatePrice();
-                }
-
                 // create new Order object to be inserted to Restaurant
-                Order newOrder = new(orderedItems, totalOrderCost);
+                Order newOrder = new(orderedItems);
+
+                // calculate total order cost
+                newOrder.CalculateTotal();
 
                 // insert new order with ReceiveOrder method
                 restoToPlaceOrder.ReceiveOrders(newOrder);
                 Console.WriteLine("Your order has been placed at {0}", restoToPlaceOrder.Name);
 
-                savedOrderList.Add(newOrder);
+                // savedOrderList.Add(newOrder);
 
                 // create order number with Guid 
                 orderNumber = Guid.NewGuid().ToString();
 
-                // insert order number and its resto to a dictionary
+                // insert order number and its order to a dictionary
                 placedOrderInRestaurant.Add(orderNumber, newOrder);
 
                 // return the order number

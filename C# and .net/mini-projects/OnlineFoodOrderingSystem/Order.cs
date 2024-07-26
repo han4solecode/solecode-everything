@@ -10,10 +10,9 @@ namespace OnlineFoodOrderingSystem
         private int totalPrice;
 
         // Order class constructor
-        public Order(List<MenuItem> menuItems, int totalPrice)
+        public Order(List<MenuItem> menuItems)
         {
             this.menuItemList = menuItems;
-            this.totalPrice = totalPrice;
         }
 
         public List<MenuItem> MenuItemList
