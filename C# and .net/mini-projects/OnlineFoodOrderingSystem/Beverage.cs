@@ -8,10 +8,7 @@ namespace OnlineFoodOrderingSystem
         // Beverage constructor
         public Beverage(string size, string name, int price, string description): base(name, price, description)
         {
-            this.Size = size;
-            this.name = name;
-            this.price = price;
-            this.description = description;
+            Size = size;
         }
 
         // overriding CalculatePrice method from MenuItem abstract class
