@@ -4,6 +4,9 @@ class Program
 {
     static void Main(string[] args)
     {
+        bool isDone = false;
+        int selection;
+
         // create new OnlineFoodOrderingSystem object
         var system = new OnlineFoodOrderingSystem();
 
@@ -43,42 +46,70 @@ class Program
         restaurant3.AddItemToMenu(beverage3);
         restaurant3.AddItemToMenu(dessert3);
 
-        // order simulation
-        // list of item to be ordered
         List<MenuItem> order1 = [food1, food3, beverage3, beverage1, dessert3];
-        // placing order to system, returning an order number if successfull
-        string orderNumber1 = system.PlaceOrder("Bakmi GM", order1); // <- invalid restaurat name, will return error message
-        Console.WriteLine(orderNumber1);
-
-        string orderNumber2 = system.PlaceOrder("Restaurant 2", order1); // <- order is valid, will return order number
-        Console.WriteLine("Order Number: {0}", orderNumber2);
-
-        // display order through order number
-        system.DisplayOrderDetails("123"); // <- invalid order number
-        system.DisplayOrderDetails(orderNumber2); // <- valid order number
-        
-        // place a new order for restaurant 2
         List<MenuItem> order2 = [food2, food3, beverage2, beverage1, dessert2, dessert1];
-        string orderNumber3 = system.PlaceOrder("Restaurant 2", order2);
-        Console.WriteLine("Order Number: {0}", orderNumber3);
-        system.DisplayOrderDetails(orderNumber3);
-
-        // place a new order for restaurant 1
         List<MenuItem> order3 = [food1, beverage1, dessert2, dessert1, dessert3];
-        string orderNumber4 = system.PlaceOrder("Restaurant 1", order3);
-        Console.WriteLine("Order Number: {0}", orderNumber4);
-        system.DisplayOrderDetails(orderNumber4);
-
-        // place a new order for restaurant 3
         List<MenuItem> order4 = [food1, food2, food3, beverage1, beverage2, beverage3, dessert1, dessert2, dessert3];
-        string orderNumber5 = system.PlaceOrder("Restaurant 3", order4);
-        Console.WriteLine("Order Number: {0}", orderNumber5);
-        system.DisplayOrderDetails(orderNumber5);
 
-        // display restaurant revenue
-        Console.WriteLine("{0} total revenue: {1}", restaurant1.Name, restaurant1.CalculateRevenue().ToString());
-        Console.WriteLine("{0} total revenue: {1}", restaurant2.Name, restaurant2.CalculateRevenue().ToString());
-        Console.WriteLine("{0} total revenue: {1}", restaurant3.Name, restaurant3.CalculateRevenue().ToString());
+        // place orders to restaurants
+        system.PlaceOrder("Restaurant 1", order1);
+        system.PlaceOrder("Restaurant 2", order2);
+        system.PlaceOrder("Restaurant 2", order3);
+        system.PlaceOrder("Restaurant 3", order4);
 
+        while (!isDone)
+        {
+            Console.WriteLine("1: Display all order info");
+            Console.WriteLine("2: Cancel an order");
+            Console.WriteLine("3: Check order status");
+            Console.WriteLine("4: Check restaurant revenue");
+            Console.WriteLine("0: Exit");
+            Console.Write("What you wanna do? ");
+            selection = Convert.ToInt16(Console.ReadLine());
+
+            switch (selection)
+            {
+                case 0:
+                    Console.WriteLine("Okay, good bye!");
+                    isDone = true;
+                    break;
+                case 1:
+                    foreach (string orderNumber in system.PlacedOrderInRestaurant.Keys)
+                    {
+                        system.DisplayOrderDetails(orderNumber);
+                    }
+                    break;
+                case 2:
+                    foreach (string orderNumber in system.PlacedOrderInRestaurant.Keys)
+                    {
+                        Console.WriteLine("Order number: {0}", orderNumber);
+                    }
+                    Console.Write("Input order number you want to cancel: ");
+                    string? orderNumberToCancel = Console.ReadLine();
+                    if (orderNumberToCancel != null)
+                    {
+                        system.CancelOrder(orderNumberToCancel);
+                    }
+                    break;
+                case 3:
+                    foreach (string orderNumber in system.PlacedOrderInRestaurant.Keys)
+                    {
+                        Console.WriteLine("Order number: {0}", orderNumber);
+                    }
+                    Console.Write("Input order number you want to check the status: ");
+                    string? orderNumberToCheckStatus = Console.ReadLine();
+                    if (orderNumberToCheckStatus != null)
+                    {
+                        system.GetOrderStatus(orderNumberToCheckStatus);
+                    }
+                    break;
+                case 4:
+                    foreach (Restaurant resto in system.RestaurantList)
+                    {
+                        Console.WriteLine("{0} revenue: {1}", resto.Name, resto.CalculateRevenue().ToString());
+                    }
+                    break;
+            }
+        }
     }
 }
