@@ -73,7 +73,7 @@ namespace OnlineFoodOrderingSystem
                     Console.WriteLine("-----------------------");
                 }
 
-                Console.WriteLine("Total cost: {0}", themOrderInResto.TotalPrice);
+                Console.WriteLine("Total cost: {0}\n", themOrderInResto.TotalPrice);
             }
             else
             {
