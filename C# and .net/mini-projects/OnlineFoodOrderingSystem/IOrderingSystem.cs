@@ -9,7 +9,7 @@ namespace OnlineFoodOrderingSystem
         void AddRestaurant(Restaurant restaurant);
         string PlaceOrder(string restaurantName, List<MenuItem> orderedItems);
         void DisplayOrderDetails(string orderNumber);
-        void CancelOrder();
-        void GetOrderStatus();
+        void CancelOrder(string orderNumber);
+        void GetOrderStatus(string orderNumber);
     }
 }
