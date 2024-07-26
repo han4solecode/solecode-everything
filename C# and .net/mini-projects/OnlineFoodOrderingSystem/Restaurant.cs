@@ -3,8 +3,8 @@ namespace OnlineFoodOrderingSystem
     public class Restaurant
     {
         // Restaurant fields
-        private string? name;
-        private List<MenuItem> menuList = [];
+        private readonly string? name;
+        private readonly List<MenuItem> menuList = [];
         private List<Order> orders = []; 
         private int revenue;
 
@@ -12,19 +12,13 @@ namespace OnlineFoodOrderingSystem
         public string? Name
         {
             get => name;
-            set => name = value;
-        }
-        public List<MenuItem> Menu
-        {
-            get => menuList;
-            set => menuList = value;
         }
         public List<Order> Orders
         {
             get => orders;
             set => orders = value;
         }
-
+        
         // Restaurant constructor
         public Restaurant(string name)
         {
@@ -48,9 +42,10 @@ namespace OnlineFoodOrderingSystem
         // method for calculating total revenue
         public int CalculateRevenue()
         {
+            revenue = 0;
             foreach (Order o in Orders)
             {
-                revenue += o.TotalPrice;
+                revenue += o.CalculateTotal();
             }
 
             return revenue;
