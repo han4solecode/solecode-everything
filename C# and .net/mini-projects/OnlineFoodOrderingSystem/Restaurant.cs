@@ -6,6 +6,7 @@ namespace OnlineFoodOrderingSystem
         private string? name;
         private List<MenuItem> menuList = [];
         private List<Order> orders = []; 
+        private int revenue;
 
         // Restaurant props
         public string? Name
@@ -23,8 +24,6 @@ namespace OnlineFoodOrderingSystem
             get => orders;
             set => orders = value;
         }
-
-        private int revenue;
 
         // Restaurant constructor
         public Restaurant(string name)
@@ -51,7 +50,7 @@ namespace OnlineFoodOrderingSystem
         {
             foreach (Order o in Orders)
             {
-                revenue += o.CalculateTotal();
+                revenue += o.TotalPrice;
             }
 
             return revenue;
