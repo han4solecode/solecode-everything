@@ -6,25 +6,32 @@ namespace OnlineFoodOrderingSystem
         // it can be stored with a List<MenuItem>
         // use private member access modifier so the list cannot be
         // accessed outside this class
-        private List<MenuItem> menuItemList = [];
+        private readonly List<MenuItem> menuItemList = [];
         private int totalPrice;
+        private string status;
 
         // Order class constructor
-        public Order(List<MenuItem> menuItems)
+        public Order(List<MenuItem> menuItems,  string status)
         {
-            this.menuItemList = menuItems;
+            menuItemList = menuItems;
+            this.status = status;
         }
 
         public List<MenuItem> MenuItemList
         {
             get => menuItemList;
-            set => menuItemList = value;
         }
         public int TotalPrice { get => totalPrice; }
+        public string Status
+        {
+            get => status;
+            set => status = value;
+        }
 
         // method for calculate total price of order
         public int CalculateTotal()
         {
+            totalPrice = 0;
             foreach (MenuItem menu in menuItemList)
             {
                 totalPrice += menu.CalucatePrice();
