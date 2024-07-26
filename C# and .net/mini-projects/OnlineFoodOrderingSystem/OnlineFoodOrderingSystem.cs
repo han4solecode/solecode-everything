@@ -6,8 +6,6 @@ namespace OnlineFoodOrderingSystem
     {
         private List<Restaurant> restaurantList = [];
         private Dictionary<string, Order> placedOrderInRestaurant = [];
-        // private List<Order> savedOrderList = [];
-        // private int totalOrderCost;
         private string? orderNumber;
 
         // IOrderingSystem methods implementation
@@ -36,8 +34,6 @@ namespace OnlineFoodOrderingSystem
                 // insert new order with ReceiveOrder method
                 restoToPlaceOrder.ReceiveOrders(newOrder);
                 Console.WriteLine("Your order has been placed at {0}", restoToPlaceOrder.Name);
-
-                // savedOrderList.Add(newOrder);
 
                 // create order number with Guid 
                 orderNumber = Guid.NewGuid().ToString();
