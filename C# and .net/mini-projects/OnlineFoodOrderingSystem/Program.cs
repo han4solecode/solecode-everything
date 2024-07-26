@@ -57,5 +57,28 @@ class Program
         system.DisplayOrderDetails("123"); // <- invalid order number
         system.DisplayOrderDetails(orderNumber2); // <- valid order number
         
+        // place a new order for restaurant 2
+        List<MenuItem> order2 = [food2, food3, beverage2, beverage1, dessert2, dessert1];
+        string orderNumber3 = system.PlaceOrder("Restaurant 2", order2);
+        Console.WriteLine("Order Number: {0}", orderNumber3);
+        system.DisplayOrderDetails(orderNumber3);
+
+        // place a new order for restaurant 1
+        List<MenuItem> order3 = [food1, beverage1, dessert2, dessert1, dessert3];
+        string orderNumber4 = system.PlaceOrder("Restaurant 1", order3);
+        Console.WriteLine("Order Number: {0}", orderNumber4);
+        system.DisplayOrderDetails(orderNumber4);
+
+        // place a new order for restaurant 3
+        List<MenuItem> order4 = [food1, food2, food3, beverage1, beverage2, beverage3, dessert1, dessert2, dessert3];
+        string orderNumber5 = system.PlaceOrder("Restaurant 3", order4);
+        Console.WriteLine("Order Number: {0}", orderNumber5);
+        system.DisplayOrderDetails(orderNumber5);
+
+        // display restaurant revenue
+        Console.WriteLine("{0} total revenue: {1}", restaurant1.Name, restaurant1.CalculateRevenue().ToString());
+        Console.WriteLine("{0} total revenue: {1}", restaurant2.Name, restaurant2.CalculateRevenue().ToString());
+        Console.WriteLine("{0} total revenue: {1}", restaurant3.Name, restaurant3.CalculateRevenue().ToString());
+
     }
 }
