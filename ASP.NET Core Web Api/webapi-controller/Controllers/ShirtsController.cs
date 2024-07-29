@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using webapi_controller.Models;
 
 namespace webapi_controller.Controllers
 {
@@ -19,9 +20,9 @@ namespace webapi_controller.Controllers
         }
 
         [HttpPost]
-        public string Post()
+        public string Post([FromBody]Shirt shirt)
         {
-            return "Post a new shirt ";
+            return $"New {shirt.Brand} shirt is created with {shirt.Color} color, size {shirt.Size}, for {shirt.Gender}, and a ${shirt.Price} price tag";
         }
 
         [HttpPut("{id}")]
