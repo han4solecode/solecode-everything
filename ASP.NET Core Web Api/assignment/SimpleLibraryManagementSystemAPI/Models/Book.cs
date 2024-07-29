@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SimpleLibraryManagementSystemAPI.Models
 {
-    public class Books
+    public class Book
     {
         public int ID { get; set; }
 
