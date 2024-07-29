@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using webapi_controller.Models;
 
@@ -7,7 +8,7 @@ namespace webapi_controller.Controllers
     [Route("[controller]")]
     public class ShirtsController : ControllerBase
     {
-        private readonly List<Shirt> shirtList =
+        private List<Shirt> shirtList =
         [
             new Shirt {ID = 1, Brand = "Brand 1", Color = "Black", Gender = "male", Price = 20, Size = 8},
             new Shirt {ID = 2, Brand = "Brand 2", Color = "Yellow", Gender = "male", Price = 20, Size = 10},
@@ -16,9 +17,9 @@ namespace webapi_controller.Controllers
         ];
 
         [HttpGet]
-        public string Get()
+        public IActionResult Get()
         {
-            return "Get all shirts";
+            return Ok(shirtList);
         }
 
         [HttpGet("{id}")]
@@ -39,21 +40,57 @@ namespace webapi_controller.Controllers
         }
 
         [HttpPost]
-        public string Post([FromBody] Shirt shirt)
+        public IActionResult Post([FromBody] Shirt shirt)
         {
-            return $"New {shirt.Brand} shirt is created with {shirt.Color} color, size {shirt.Size}, for {shirt.Gender}, and a ${shirt.Price} price tag";
+            var newShirt = new Shirt {ID = shirt.ID, Brand = shirt.Brand, Color = shirt.Color, Gender = shirt.Gender, Price = shirt.Price, Size = shirt.Size};
+
+            shirtList.Add(newShirt);
+
+            return Created($"/shirts/{shirt.ID}", shirt);
         }
 
         [HttpPut("{id}")]
-        public string Put(int id)
+        public IActionResult Put(int id, [FromBody] Shirt inputShirt)
         {
-            return $"Update shirt with ID: {id}";
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var shirt = shirtList.FirstOrDefault(s => s.ID == id);
+
+            if (shirt == null)
+            {
+                return NotFound();
+            }
+
+            shirt.Brand = inputShirt.Brand;
+            shirt.Color = inputShirt.Color;
+            shirt.Gender = inputShirt.Gender;
+            shirt.Price = inputShirt.Price;
+            shirt.Size = inputShirt.Size;
+
+            return Ok(shirt);
         }
 
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public IActionResult Delete(int id)
         {
-            return $"Delete shirt with ID: {id}";
+            if ( id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var shirt = shirtList.FirstOrDefault(s => s.ID == id);
+
+            if (shirt == null)
+            {
+                return NotFound();
+            }
+
+            shirtList.Remove(shirt);
+
+            return Ok($"Shirt with ID {id} has been removed");
         }
     }
 }

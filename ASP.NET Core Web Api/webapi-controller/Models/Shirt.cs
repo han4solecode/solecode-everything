@@ -10,6 +10,7 @@ namespace webapi_controller.Models
         [Required]
         public string? Brand { get; set; }
 
+        [Required]
         public string? Color { get; set; }
 
         [Shirt_EnsureCorrectSizing]
