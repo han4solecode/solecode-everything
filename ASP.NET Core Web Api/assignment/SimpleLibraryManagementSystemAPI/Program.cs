@@ -1,3 +1,5 @@
+using SimpleLibraryManagementSystemAPI.Services;
+
 namespace SimpleLibraryManagementSystemAPI;
 
 public class Program
@@ -9,6 +11,8 @@ public class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
+
+        builder.Services.AddScoped<BooksService>();
 
         var app = builder.Build();
 
