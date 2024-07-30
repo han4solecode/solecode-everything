@@ -31,7 +31,8 @@ namespace SimpleLibraryManagementSystemAPI.Services
 
         public Book? UpdateBook(int id, Book inputBook)
         {
-            var book = books.FirstOrDefault(b => b.ID == id);
+            var book = GetBookById(id);
+
             if (book != null)
             {
                 book.ID = inputBook.ID;
