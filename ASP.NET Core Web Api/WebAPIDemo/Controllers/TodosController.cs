@@ -60,7 +60,7 @@ namespace WebAPIDemo.Controllers
         [HttpPost]
         public string CreateProduct([FromBody] Product product)
         {
-            return $"Product {product.Name} with ${product.Price} tag has been created";
+            return $"Product {product.Name} with ${product.Price} price tag has been created";
         }
     }
 }
