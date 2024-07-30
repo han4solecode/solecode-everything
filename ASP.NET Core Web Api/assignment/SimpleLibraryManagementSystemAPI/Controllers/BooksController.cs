@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SimpleLibraryManagementSystemAPI.Models;
+using SimpleLibraryManagementSystemAPI.Services;
 
 namespace SimpleLibraryManagementSystemAPI.Controllers
 {
@@ -8,10 +9,12 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
     [Route("api/v1/[controller]")]
     public class BooksController : ControllerBase
     {
+        private readonly BooksService _bookService = new();
+
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok("Get all books");
+            return Ok(_bookService.GetAllBooks());
         }
 
         [HttpGet("{id}")]
@@ -22,24 +25,40 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            return Ok($"Get a book with ID: {id}");
+            var book = _bookService.GetBookById(id);
+            
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(book);
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] Book book)
         {
+            _bookService.CreateBook(book);
+
             return Created($"books/{book.ID}", book);
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromBody] Book inputBook)
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Book inputBook)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            return Ok($"Book by ID {id} has been updated");
+            var book = _bookService.UpdateBook(id, inputBook);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(book);
         }
 
         [HttpDelete("{id}")]
@@ -50,7 +69,14 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            return Ok($"Book by ID {id} has been deleted");
+            var isDeleted = _bookService.DeleteBook(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
 
     }
