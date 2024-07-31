@@ -1,3 +1,6 @@
+using VehiclesSystemAPI.Interfaces;
+using VehiclesSystemAPI.Services;
+
 namespace VehiclesSystemAPI;
 
 public class Program
@@ -9,6 +12,8 @@ public class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
+
+        builder.Services.AddSingleton<IKendaraanService, KendaraanService>();
 
         var app = builder.Build();
 
