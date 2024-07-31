@@ -11,8 +11,9 @@ namespace StudentSystemAPI.Controllers
         private static List<Student> students = [];
 
         [HttpGet]
-        public IActionResult Get()
-        {
+        public async Task<IActionResult> Get()
+        {   
+            await Task.Delay(1500);
             return Ok(students);
         }
 
@@ -35,8 +36,10 @@ namespace StudentSystemAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Student student)
+        public async Task<IActionResult> Post([FromBody] Student student)
         {
+            await Task.Delay(1000);
+
             students.Add(student);
             return Created($"students/{student.StudentId}", student);
         }
