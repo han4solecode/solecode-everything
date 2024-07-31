@@ -1,9 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace VehiclesSystemAPI.Models
 {
     public class Kendaraan
     {
+        [Required]
         public int Id { get; set; }
+        [Required]
         public string? Merk { get; set; }
+        [Required]
         public int Tahun {  get; set; }
 
         /*public Kendaraan(int id, string merk, int tahun)

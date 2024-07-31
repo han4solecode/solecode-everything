@@ -1,14 +1,16 @@
+using System.ComponentModel.DataAnnotations;
 using VehiclesSystemAPI.Interfaces;
 
 namespace VehiclesSystemAPI.Models
 {
     public class MobilListrik : Mobil, IElektrik
     {
+        [Required]
         public int DayaBaterai { get; set; }
 
         public void Charge(int jumlah)
         {
-
+            DayaBaterai += jumlah;
         }
 
         public override void Nyalakan()
