@@ -1,4 +1,5 @@
-﻿using VehiclesSystemAPI.Interfaces;
+﻿using System.Text;
+using VehiclesSystemAPI.Interfaces;
 using VehiclesSystemAPI.Models;
 
 namespace VehiclesSystemAPI.Services
@@ -56,7 +57,7 @@ namespace VehiclesSystemAPI.Services
 
         public Kendaraan? UpdateKendaraan(int id, Kendaraan inputKendaraan)
         {
-            var kendaraan = _kendaraan.FirstOrDefault(k => k.Id == id);
+            var kendaraan = GetKendaraanById(id);
 
             if (kendaraan == null)
             {
@@ -70,14 +71,17 @@ namespace VehiclesSystemAPI.Services
             return kendaraan;
         }
 
-        public void DeleteKendaraan(int id)
+        public bool DeleteKendaraan(int id)
         {
             var kendaraan = _kendaraan.FirstOrDefault(k => k.Id == id);
 
             if (kendaraan != null)
             {
                 _kendaraan.Remove(kendaraan);
+                return true;
             }
+
+            return false;
 
         }
 
@@ -87,9 +91,26 @@ namespace VehiclesSystemAPI.Services
             {
                 if (k is IElektrik ke)
                 {
-                    ke.DayaBaterai += jumlah;
+                    ke.Charge(jumlah);
+
+                    if (ke.DayaBaterai >= 100)
+                    {
+                        ke.DayaBaterai = 100;
+                    }
                 }
             }
+        }
+
+        public string TampilkanSemuaKendaraan()
+        {
+            StringBuilder sb = new();
+
+            foreach (Kendaraan k in _kendaraan)
+            {
+                sb.AppendLine(k.InfoKendaraan());
+            }
+
+            return sb.ToString();
         }
 
     }
