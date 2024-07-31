@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using SimpleLibraryManagementSystemAPI.Interfaces;
 using SimpleLibraryManagementSystemAPI.Services;
 
 namespace SimpleLibraryManagementSystemAPI;
@@ -14,7 +15,7 @@ public class Program
 
         builder.Services.AddControllers();
 
-        builder.Services.AddScoped<BooksService>();
+        builder.Services.AddScoped<IBooksService, BooksService>();
 
         builder.Services.AddEndpointsApiExplorer();
 
