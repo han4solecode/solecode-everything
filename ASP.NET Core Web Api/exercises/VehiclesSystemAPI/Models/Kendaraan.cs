@@ -11,13 +11,6 @@ namespace VehiclesSystemAPI.Models
         [Required]
         public int Tahun {  get; set; }
 
-        /*public Kendaraan(int id, string merk, int tahun)
-        {
-            Id = id;
-            Merk = merk;
-            Tahun = tahun;
-        }*/
-
         public virtual void Nyalakan()
         {
 

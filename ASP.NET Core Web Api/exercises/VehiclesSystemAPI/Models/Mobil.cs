@@ -7,11 +7,6 @@ namespace VehiclesSystemAPI.Models
         [Required]
         public int JumlahPintu { get; set; }
 
-        /*public Mobil(int id, string merk, int tahun, int jumlahPintu) : base(id, merk, tahun)
-        {
-            JumlahPintu = jumlahPintu;
-        }*/
-
         public override void Nyalakan()
         {
             base.Nyalakan();

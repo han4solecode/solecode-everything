@@ -31,30 +31,6 @@ namespace VehiclesSystemAPI.Services
             return kendaraan;
         }
 
-        /*public Mobil AddMobil(Mobil mobil)
-        {
-            _kendaraan.Add(mobil);
-            return mobil;
-        }
-
-        public Motor AddMotor(Motor motor)
-        {
-            _kendaraan.Add(motor);
-            return motor;
-        }
-
-        public MobilListrik AddMobilListrik(MobilListrik mobilListrik)
-        {
-            _kendaraan.Add(mobilListrik);
-            return mobilListrik;
-        }
-
-        public MotorListrik AddMotorListrik(MotorListrik motorListrik)
-        {
-            _kendaraan.Add(motorListrik);
-            return motorListrik;
-        }*/
-
         public Kendaraan? UpdateKendaraan(int id, Kendaraan inputKendaraan)
         {
             var kendaraan = GetKendaraanById(id);
