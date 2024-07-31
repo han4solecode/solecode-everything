@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SimpleLibraryManagementSystemAPI.Interfaces;
 using SimpleLibraryManagementSystemAPI.Models;
 using SimpleLibraryManagementSystemAPI.Services;
 
@@ -9,7 +10,12 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
     [Route("api/v1/[controller]")]
     public class BooksController : ControllerBase
     {
-        private readonly BooksService _bookService = new();
+        private readonly IBooksService _booksService;
+
+        public BooksController(IBooksService booksService)
+        {
+            _booksService = booksService;
+        }
 
         /// <summary>
         /// Retrieve all available Books
@@ -20,7 +26,7 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_bookService.GetAllBooks());
+            return Ok(_booksService.GetAllBooks());
         }
 
         /// <summary>
@@ -42,7 +48,7 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var book = _bookService.GetBookById(id);
+            var book = _booksService.GetBookById(id);
             
             if (book == null)
             {
@@ -77,7 +83,7 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Post([FromBody] Book book)
         {
-            _bookService.CreateBook(book);
+            _booksService.CreateBook(book);
 
             return Created($"books/{book.ID}", book);
         }
@@ -116,7 +122,7 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var book = _bookService.UpdateBook(id, inputBook);
+            var book = _booksService.UpdateBook(id, inputBook);
 
             if (book == null)
             {
@@ -145,7 +151,7 @@ namespace SimpleLibraryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var isDeleted = _bookService.DeleteBook(id);
+            var isDeleted = _booksService.DeleteBook(id);
 
             if (!isDeleted)
             {
