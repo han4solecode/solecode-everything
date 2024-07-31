@@ -1,8 +1,9 @@
+using SimpleLibraryManagementSystemAPI.Interfaces;
 using SimpleLibraryManagementSystemAPI.Models;
 
 namespace SimpleLibraryManagementSystemAPI.Services
 {
-    public class BooksService
+    public class BooksService : IBooksService
     {
         private static List<Book> books = [];
 
