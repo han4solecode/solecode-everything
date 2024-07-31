@@ -12,8 +12,8 @@ namespace VehiclesSystemAPI.Interfaces
         MobilListrik AddMobilListrik(MobilListrik mobilListrik);
         MotorListrik AddMotorListrik(MotorListrik mobilListrik);*/
         Kendaraan? UpdateKendaraan(int id, Kendaraan inputKendaraan);
-        void DeleteKendaraan(int id);
+        bool DeleteKendaraan(int id);
         void ChargeKendaraanListrik(int jumlah);
-        string TampilkanSemuaKendaraan();
+        string? TampilkanSemuaKendaraan();
     }
 }
