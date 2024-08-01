@@ -8,9 +8,9 @@ namespace OnlineFoodOrderingSystemWebAPI.Interfaces
 
         List<Menu> GetAllMenu();
 
-        Menu GetMenuById(int id);
+        Menu? GetMenuById(int id);
 
-        Menu UpdateMenu(int id, Menu inputMenu);
+        Menu? UpdateMenu(int id, Menu inputMenu);
 
         bool DeleteMenu(int id);
 
