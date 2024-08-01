@@ -6,6 +6,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public int CustomerId { get; set; }
 
         [DataType(DataType.DateTime)]
@@ -20,6 +21,9 @@ namespace OnlineFoodOrderingSystemWebAPI.Models
 
         [StringLength(300)]
         public string? CustomerNote { get; set; }
+
+        [Required]
+        public string? OrderNumber { get; set; }
         
         public virtual void CalculatedTotalOrder()
         {
