@@ -14,15 +14,14 @@ namespace OnlineFoodOrderingSystemWebAPI.Models
 
         public decimal TotalPrice { get; set; }
 
-        [AllowedValues("Processed", "Delivered", "Canceled")]
+        [AllowedValues("Processed", "Delivered", "Canceled", ErrorMessage = "Order status must be either 'Processed', 'Delivered', or 'Canceled'")]
         public string OrderStatus { get; set; } = "Processed";
         
         public List<Menu> Menus { get; set; } = [];
 
-        [StringLength(300)]
+        [StringLength(300, ErrorMessage = "Note exceed 300 character limit")]
         public string? CustomerNote { get; set; }
 
-        [Required]
         public string? OrderNumber { get; set; }
         
         public virtual void CalculatedTotalOrder()
