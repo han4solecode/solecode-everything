@@ -18,6 +18,13 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
         [HttpPost]
         public IActionResult AddCustomer([FromBody] Customer customer)
         {
+            var existingCustomer = _customerService.GetCustomerById(customer.CustomerId);
+
+            if (existingCustomer != null)
+            {
+                return BadRequest("Customer with this id already exist");
+            }
+
             _customerService.AddCustomer(customer);
             return Created($"customer/{customer.CustomerId}", customer);
         }
@@ -33,14 +40,14 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid id input");
             }
 
             var customer = _customerService.GetCustomerById(id);
 
             if (customer == null)
             {
-                return NotFound();
+                return NotFound("Customer does not exist");
             }
 
             return Ok(customer);
@@ -51,14 +58,14 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid id input");
             }
 
             var customer = _customerService.UpdateCustomer(id, inputCustomer);
 
             if (customer == null)
             {
-                return NotFound();
+                return NotFound("Customer does not exist");
             }
 
             return Ok(customer);
@@ -69,14 +76,14 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid id input");
             }
 
             var isDeleted = _customerService.DeleteCustomer(id);
 
             if (!isDeleted)
             {
-                return NotFound();
+                return NotFound("Customer does not exist");
             }
 
             return NoContent();
