@@ -1,3 +1,4 @@
+using System.Collections;
 using OnlineFoodOrderingSystemWebAPI.Interfaces;
 using OnlineFoodOrderingSystemWebAPI.Models;
 
@@ -7,14 +8,22 @@ namespace OnlineFoodOrderingSystemWebAPI.Services
     {
         private static List<Menu> menus = [];
 
+        private static Dictionary<int, List<double>> storedRating = [];
+
         public MenuService()
         {
-            
+
         }
 
         public Menu AddMenu(Menu menu)
         {
             menus.Add(menu);
+            var v = new List<double>
+            {
+                menu.Rating
+            };
+            storedRating.Add(menu.Id, v);
+
             return menu;
         }
 
@@ -68,9 +77,22 @@ namespace OnlineFoodOrderingSystemWebAPI.Services
             return true;
         }
 
-        public void AddRating(int rating)
+        public bool AddRating(int id, double rating)
         {
+            var menuToAddRating = GetMenuById(id);
 
+            if (menuToAddRating == null)
+            {
+                return false;
+            }
+
+            if (storedRating.TryGetValue(id, out List<double>? value))
+            {
+                value.Add(rating);
+                menuToAddRating.Rating = Math.Round(value.Average(), 2);
+            }
+
+            return true;
         }
     }
 }
