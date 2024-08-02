@@ -6,23 +6,19 @@ namespace OnlineFoodOrderingSystemWebAPI.Services
     public class OrderService : IOrderService
     {
         private static List<Order> orders = [];
+        private static int orderId = 300;
 
-        public string? PlaceOrder(int customerId, List<Menu> menus, string customerNote)
+        public string? PlaceOrder(int customerId, List<Menu> menus, string? customerNote)
         {
-            // get cutomer by id
+            // get customer by id
             var customer = new CustomerService().GetCustomerById(customerId);
 
-            // var cust = new Customer{
-            //     CustomerId = customerId
-            // };
-
             // get all menu
-            var availableMenu = new MenuService().GetAllMenu();
+            var availableMenu = new MenuService().GetAllMenu().FindAll(m => m.IsAvailable == true);
 
             // check if menu available to order
-            var IsMenuAvailable = availableMenu.Any(x => menus.Any(y => y.IsAvailable == true));
+            var IsMenuAvailable = menus.All(x => availableMenu.Any(y => (y.Id == x.Id) && (y.Name == x.Name) && (y.Category == x.Category) && (y.Price == x.Price) && (y.Rating == x.Rating)));
 
-            
             if (customer == null)
             {
                 return null;
@@ -33,17 +29,17 @@ namespace OnlineFoodOrderingSystemWebAPI.Services
                 return null;
             }
 
-            var orderNumber = new Guid().ToString();
+            var orderNumber = Guid.NewGuid().ToString();
             
             var newOrder = new Order{
-                // Id = 1,
-                Id = orders.Last().Id + 1,
+                Id = orderId + 1,
                 CustomerId = customerId,
-                // OrderDate = DateTime.Now,
                 Menus = menus,
                 CustomerNote = customerNote,
-                OrderNumber = orderNumber,
+                OrderNumber = orderNumber
             };
+
+            orderId++;
 
             // calculate order total price
             newOrder.CalculatedTotalOrder();
