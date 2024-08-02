@@ -22,7 +22,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
 
             if (orderNumber == null)
             {
-                return BadRequest();
+                return BadRequest("Something is wrong");
             }
 
             return Ok(orderNumber);
@@ -35,7 +35,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
 
             if (order == null)
             {
-                return NotFound();
+                return NotFound("Order does not exist");
             }
 
             return Ok(order);
@@ -49,7 +49,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
 
             if (orderStatus == null)
             {
-                return NotFound();
+                return NotFound("Order does not exist");
             }
 
             return Ok(orderStatus);
@@ -63,7 +63,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
 
             if (!isUpdated)
             {
-                return BadRequest();
+                return BadRequest("Order does not exist");
             }
 
             return NoContent();
@@ -77,7 +77,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Controllers
 
             if (!isCanceled)
             {
-                return BadRequest();
+                return BadRequest("Order does not exist");
             }
 
             return NoContent();
