@@ -14,6 +14,6 @@ namespace OnlineFoodOrderingSystemWebAPI.Interfaces
 
         bool DeleteMenu(int id);
 
-        void AddRating(int rating);
+        bool AddRating(int id, double rating);
     }
 }
