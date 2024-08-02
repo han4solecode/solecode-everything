@@ -4,7 +4,7 @@ namespace OnlineFoodOrderingSystemWebAPI.Interfaces
 {
     public interface IOrderService
     {
-        string? PlaceOrder(int customerId, List<Menu> menus, string customerNote);
+        string? PlaceOrder(int customerId, List<Menu> menus, string? customerNote);
 
         Order? DisplayOrderDetails(string orderNumber);
 
