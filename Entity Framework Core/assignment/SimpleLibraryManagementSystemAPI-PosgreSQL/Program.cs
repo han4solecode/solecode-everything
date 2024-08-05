@@ -1,4 +1,8 @@
 
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.EntityFrameworkCore;
+using SimpleLibraryManagementSystemAPI_PosgreSQL.Data;
+
 namespace SimpleLibraryManagementSystemAPI_PosgreSQL;
 
 public class Program
@@ -8,6 +12,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddDbContext<AppDbContext>(option => {
+            option.UseNpgsql(builder.Configuration.GetConnectionString("SLMSWebAPIDatabase"));
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
