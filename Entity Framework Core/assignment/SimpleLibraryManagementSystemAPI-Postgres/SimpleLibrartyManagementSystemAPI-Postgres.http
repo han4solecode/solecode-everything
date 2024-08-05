@@ -1,0 +1,6 @@
+@SimpleLibrartyManagementSystemAPI_Postgres_HostAddress = http://localhost:5169
+
+GET {{SimpleLibrartyManagementSystemAPI_Postgres_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
