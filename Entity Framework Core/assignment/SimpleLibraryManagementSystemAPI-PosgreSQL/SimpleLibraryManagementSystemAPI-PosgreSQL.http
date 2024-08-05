@@ -1,0 +1,6 @@
+@SimpleLibraryManagementSystemAPI_PosgreSQL_HostAddress = http://localhost:5018
+
+GET {{SimpleLibraryManagementSystemAPI_PosgreSQL_HostAddress}}/book/
+Accept: application/json
+
+###
