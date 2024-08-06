@@ -2,6 +2,8 @@ using VehiclesSystemAPI.Interfaces;
 using VehiclesSystemAPI.Services;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using VehiclesSystemAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace VehiclesSystemAPI;
 
@@ -12,6 +14,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        var conntectionString = builder.Configuration.GetConnectionString("PostgresDbConnection");
+        builder.Services.AddDbContext<AppDbContext>(option =>
+        {
+            option.UseNpgsql(conntectionString);
+        });
 
         builder.Services.AddControllers();
 
@@ -40,7 +47,7 @@ public class Program
             c.IncludeXmlComments(xmlPath);
         });
 
-        builder.Services.AddSingleton<IKendaraanService, KendaraanService>();
+        builder.Services.AddScoped<IKendaraanService, KendaraanService>();
 
         var app = builder.Build();
 
