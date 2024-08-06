@@ -1,3 +1,6 @@
+using EventManagementAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace EventManagementAPI;
 
 public class Program
@@ -7,6 +10,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        var conntectionString = builder.Configuration.GetConnectionString("MySQLDbConnection");
+        builder.Services.AddDbContext<AppDbContext>(option =>
+        {
+            option.UseMySQL(conntectionString);
+        });
 
         builder.Services.AddControllers();
 
