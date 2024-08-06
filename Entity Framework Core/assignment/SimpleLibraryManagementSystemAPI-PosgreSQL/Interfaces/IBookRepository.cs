@@ -6,9 +6,9 @@ namespace SimpleLibraryManagementSystemAPI_PosgreSQL.Interfaces
     {
         IEnumerable<Book> GetAllBooks();
         Book? GetBookbyId(int id);
-        void CreateBook(Book book);
-        void UpdateBook(Book inputBook);
-        void DeleteBook(int id);
-        void Save();
+        Book CreateBook(Book book);
+        Book? UpdateBook(int id, Book inputBook);
+        bool DeleteBook(int id);
+        // void Save();
     }
 }
