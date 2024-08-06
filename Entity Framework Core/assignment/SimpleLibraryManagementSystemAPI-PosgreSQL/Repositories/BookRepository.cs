@@ -31,47 +31,50 @@ namespace SimpleLibraryManagementSystemAPI_PosgreSQL.Repositories
             return book;
         }
 
-        public void CreateBook(Book book)
+        public Book CreateBook(Book book)
         {
-            // var newBook = new Book()
-            // {
-            //     Title = book.Title,
-            //     Author = book.Author,
-            //     PublicationYear = book.PublicationYear,
-            //     ISBN = book.ISBN
-            // };
-
             _context.Books.Add(book);
-            // return book;
+            _context.SaveChanges();
+            return book;
         }
 
-        public void UpdateBook(Book inputBook)
+        public Book? UpdateBook(int id, Book inputBook)
         {
-            // var bookToBeUpdated = GetBookbyId(id);
+            var bookToBeUpdated = GetBookbyId(id);
 
-            // if (bookToBeUpdated == null)
-            // {
-            //     return null;
-            // }
+            if (bookToBeUpdated == null)
+            {
+                return null;
+            }
 
-            // bookToBeUpdated.
-            _context.Entry(inputBook).State = EntityState.Modified;
-            
+            // _context.Entry(inputBook).State = EntityState.Modified;
+            bookToBeUpdated.Title = inputBook.Title;
+            bookToBeUpdated.Author = inputBook.Author;
+            bookToBeUpdated.PublicationYear = inputBook.PublicationYear;
+            bookToBeUpdated.ISBN = inputBook.ISBN;
+
+            _context.Books.Update(bookToBeUpdated);
+            _context.SaveChanges();
+            return bookToBeUpdated;
         }
 
-        public void DeleteBook(int id)
+        public bool DeleteBook(int id)
         {
             var bookToBeDeleted = GetBookbyId(id);
 
-            if (bookToBeDeleted != null)
+            if (bookToBeDeleted == null)
             {
-                _context.Books.Remove(bookToBeDeleted);
+                return false;
             }
+
+            _context.Books.Remove(bookToBeDeleted);
+            _context.SaveChanges();
+            return true;
         }
 
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
+        // public void Save()
+        // {
+        //     _context.SaveChanges();
+        // }
     }
 }
