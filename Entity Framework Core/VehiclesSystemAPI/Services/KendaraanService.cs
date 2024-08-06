@@ -54,20 +54,20 @@ namespace VehiclesSystemAPI.Services
             }
 
             // kendaraan.Id = inputKendaraan.Id;
-            // kendaraan.Merk = inputKendaraan.Merk;
-            // kendaraan.Tahun = inputKendaraan.Tahun;
+            kendaraan.Merk = inputKendaraan.Merk;
+            kendaraan.Tahun = inputKendaraan.Tahun;
 
-            var updatedKendaraan = new Kendaraan()
+            /*var updatedKendaraan = new Kendaraan()
             {
                 Id = id,
                 Merk = inputKendaraan.Merk,
                 Tahun = inputKendaraan.Tahun,
-            };
+            };*/
 
-            _context.Vehicles.Update(updatedKendaraan);
+            _context.Vehicles.Update(kendaraan);
             _context.SaveChanges();
 
-            return updatedKendaraan;
+            return kendaraan;
         }
 
         public bool DeleteKendaraan(int id)
