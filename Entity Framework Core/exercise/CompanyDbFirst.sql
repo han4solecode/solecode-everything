@@ -44,6 +44,7 @@ CREATE TABLE WorksOns (
 	-- 	REFERENCES Employees(empNo)
 	-- 	ON DELETE SET NULL,
 	-- CONSTRAINT fk_worksons_projects_projNo
+	--  FOREIGN KEY (projNo)
 	-- 	REFERENCES Projects(projNo)
 	-- 	ON DELETE SET NULL
 );
