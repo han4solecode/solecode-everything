@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using SimpleLibraryManagementSystemAPI_PosgreSQL.Data;
+using SimpleLibraryManagementSystemAPI_PosgreSQL.Interfaces;
+using SimpleLibraryManagementSystemAPI_PosgreSQL.Repositories;
 
 namespace SimpleLibraryManagementSystemAPI_PosgreSQL;
 
@@ -20,6 +22,8 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<IBookRepository, BookRepository>();
 
         var app = builder.Build();
 
