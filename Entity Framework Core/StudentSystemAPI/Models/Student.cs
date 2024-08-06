@@ -4,7 +4,8 @@ namespace StudentSystemAPI.Models
 {
     public class Student
     {
-        [Required(ErrorMessage = "Student ID is required")]
+        [Key]
+        // [Required(ErrorMessage = "Student ID is required")]
         public int StudentId { get; set; }
 
         [Required(ErrorMessage = "Student name is required")]
@@ -17,6 +18,6 @@ namespace StudentSystemAPI.Models
         public int Age { get; set; }
 
         [MinLength(1, ErrorMessage = "Minimum 1 hobby")]
-        public List<string>? Hobbies { get; set; }
+        public List<Hobby>? Hobbies { get; set; }
     }
 }

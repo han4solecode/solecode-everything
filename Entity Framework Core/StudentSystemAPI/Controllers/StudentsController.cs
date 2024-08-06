@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentSystemAPI.Interfaces;
 using StudentSystemAPI.Models;
 
 namespace StudentSystemAPI.Controllers
@@ -8,13 +9,18 @@ namespace StudentSystemAPI.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private static List<Student> students = [];
+        // private static List<Student> students = [];
+        private readonly IStudentService _studentService;
+
+        public StudentsController(IStudentService studentService)
+        {
+            _studentService = studentService;
+        }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {   
-            await Task.Delay(1500);
-            return Ok(students);
+            return Ok(_studentService.GetAllStudent());
         }
 
         [HttpGet("{id}")]
@@ -25,7 +31,7 @@ namespace StudentSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var student = students.FirstOrDefault(s => s.StudentId == id);
+            var student = _studentService.GetStudentById(id);
 
             if (student == null)
             {
@@ -36,36 +42,34 @@ namespace StudentSystemAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Student student)
+        public IActionResult Post([FromBody] Student student)
         {
-            await Task.Delay(1000);
+           var newStudent = _studentService.AddStudent(student);
 
-            students.Add(student);
-            return Created($"students/{student.StudentId}", student);
+            if (newStudent == null)
+            {
+                return BadRequest();
+            }
+
+            return Created($"students/{newStudent.StudentId}", newStudent);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id , [FromBody] Student inputStudent)
+        public IActionResult Put(int id, [FromBody] Student inputStudent)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            var newStudent = students.FirstOrDefault(s => s.StudentId == id);
+            var updatedStudent = _studentService.UpdateStudent(id, inputStudent);
 
-            if (newStudent == null)
+            if (updatedStudent == null)
             {
                 return NotFound();
             }
 
-            newStudent.StudentId = id;
-            newStudent.Name = inputStudent.Name;
-            newStudent.Major = inputStudent.Major;
-            newStudent.Age = inputStudent.Age;
-            newStudent.Hobbies = inputStudent.Hobbies;
-
-            return Ok(newStudent);
+            return Ok(updatedStudent);
         }
 
         [HttpDelete("{id}")]
@@ -76,14 +80,13 @@ namespace StudentSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var student = students.FirstOrDefault(s => s.StudentId == id);
+            var isStudentDeleted = _studentService.DeleteStudent(id);
 
-            if (student == null)
+            if (isStudentDeleted == false)
             {
                 return NotFound();
             }
 
-            students.Remove(student);
             return NoContent();
         }
     }

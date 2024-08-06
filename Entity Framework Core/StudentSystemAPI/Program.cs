@@ -1,4 +1,8 @@
 using Asp.Versioning;
+using Microsoft.EntityFrameworkCore;
+using StudentSystemAPI.Data;
+using StudentSystemAPI.Interfaces;
+using StudentSystemAPI.Services;
 
 namespace StudentSystemAPI;
 
@@ -9,6 +13,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        var conntectionString = builder.Configuration.GetConnectionString("SQLServerDbConntection");
+        builder.Services.AddDbContext<AppDbContext>(option =>
+        {
+            option.UseSqlServer(conntectionString);
+        });
 
         builder.Services.AddControllers();
 
@@ -28,6 +37,8 @@ public class Program
             options.GroupNameFormat = "'v'VVV"; //The say our format of our version number “‘v’major[.minor][-status]”
             options.SubstituteApiVersionInUrl = true; //This will help us to resolve the ambiguity when there is a routing conflict due to routing template one or more end points are same.
         });
+
+        builder.Services.AddScoped<IStudentService, StudentService>();
 
         var app = builder.Build();
 
