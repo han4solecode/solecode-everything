@@ -25,7 +25,7 @@ namespace EventManagementAPI.Controllers
                 return BadRequest();
             }
 
-            var eventData = events.FirstOrDefault(e => e.Id == id);
+            var eventData = events.FirstOrDefault(e => e.EventId == id);
 
             if (eventData == null)
             {
@@ -112,18 +112,18 @@ namespace EventManagementAPI.Controllers
         public IActionResult CreateEvent([FromBody] Event eventData)
         {
             events.Add(eventData);
-            return Created($"events/{eventData.Id}", eventData);
+            return Created($"events/{eventData.EventId}", eventData);
         }
 
         [HttpPost("{id}/tags")]
-        public IActionResult AddTag(int id, [FromHeader] string tag)
+        public IActionResult AddTag(int id, [FromBody] Tag tag)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            var eventData = events.FirstOrDefault(e => e.Id == id);
+            var eventData = events.FirstOrDefault(e => e.EventId == id);
 
             if (eventData == null)
             {
@@ -142,14 +142,14 @@ namespace EventManagementAPI.Controllers
                 return BadRequest();
             }
 
-            var eventData = events.FirstOrDefault(e => e.Id == id);
+            var eventData = events.FirstOrDefault(e => e.EventId == id);
 
             if (eventData == null)
             {
                 return NotFound();
             }
 
-            eventData.Id = inputEventData.Id;
+            eventData.EventId = inputEventData.EventId;
             eventData.Name = inputEventData.Name;
             eventData.Date = inputEventData.Date;
             eventData.Location = inputEventData.Location;
@@ -166,7 +166,7 @@ namespace EventManagementAPI.Controllers
                 return BadRequest();
             }
 
-            var eventData = events.FirstOrDefault(e => e.Id == id);
+            var eventData = events.FirstOrDefault(e => e.EventId == id);
 
             if (eventData == null)
             {
@@ -185,7 +185,7 @@ namespace EventManagementAPI.Controllers
                 return BadRequest();
             }
 
-            var eventData = events.FirstOrDefault(e => e.Id == id);
+            var eventData = events.FirstOrDefault(e => e.EventId == id);
 
             if (eventData == null)
             {
