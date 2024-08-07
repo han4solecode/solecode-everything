@@ -16,12 +16,12 @@ namespace StudentSystemAPI.Services
 
         public IEnumerable<Student> GetAllStudent()
         {
-            return _context.Students.Include(s => s.Hobbies).ToList();
+            return _context.Students.ToList();
         }
 
         public Student? GetStudentById(int id)
         {
-            var student = _context.Students.Include(s => s.Hobbies).FirstOrDefault(s => s.StudentId == id);
+            var student = _context.Students.FirstOrDefault(s => s.StudentId == id);
 
             if (student == null)
             {
@@ -38,10 +38,11 @@ namespace StudentSystemAPI.Services
                 Name = student.Name,
                 Age = student.Age,
                 Major = student.Major,
-                Hobbies = [],
+                Kelas = student.Kelas,
+                NilaiRataRata = student.NilaiRataRata
             };
 
-            List<Hobby> studentHobbies = [];
+           /* List<Hobby> studentHobbies = [];
 
             if (student.Hobbies == null)
             {
@@ -51,16 +52,16 @@ namespace StudentSystemAPI.Services
             foreach (var item in student.Hobbies)
             {
                 studentHobbies.Add(item);
-            }
+            }*/
 
-            inputStudent.Hobbies.AddRange(studentHobbies);
-            _context.Students.AddRange(student);
+            /*inputStudent.Hobbies.AddRange(studentHobbies);*/
+            _context.Students.Add(student);
             _context.SaveChanges();
 
             return student;
         }
 
-        public Student? UpdateStudent(int id, Student intputStudent)
+        public Student? UpdateStudent(int id, Student inputStudent)
         {
             var student = GetStudentById(id);
 
@@ -69,10 +70,12 @@ namespace StudentSystemAPI.Services
                 return null;
             }
 
-            student.Name = intputStudent.Name;
-            student.Age = intputStudent.Age;
-            student.Major = intputStudent.Major;
-            student.Hobbies = intputStudent.Hobbies;
+            student.Name = inputStudent.Name;
+            student.Age = inputStudent.Age;
+            student.Major = inputStudent.Major;
+            student.Kelas = inputStudent.Kelas;
+            student.NilaiRataRata = inputStudent.NilaiRataRata;
+            /*student.Hobbies = inputStudent.Hobbies;*/
 
             _context.Students.Update(student);
             _context.SaveChanges();

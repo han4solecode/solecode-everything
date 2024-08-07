@@ -17,7 +17,13 @@ namespace StudentSystemAPI.Models
         [Range(1, 100, ErrorMessage = "Age has to be between 1 to 100")]
         public int Age { get; set; }
 
-        [MinLength(1, ErrorMessage = "Minimum 1 hobby")]
-        public List<Hobby>? Hobbies { get; set; }
+        public string? Kelas { get; set; }
+
+        public double NilaiRataRata { get; set; }
+
+        public List<Kehadiran>? Kehadirans { get; set; }
+
+        /*[MinLength(1, ErrorMessage = "Minimum 1 hobby")]
+        public List<Hobby>? Hobbies { get; set; }*/
     }
 }

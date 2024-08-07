@@ -39,6 +39,9 @@ public class Program
         });
 
         builder.Services.AddScoped<IStudentService, StudentService>();
+        builder.Services.AddScoped<IGuruService, GuruService>();
+        builder.Services.AddScoped<IKehadiranService, KehadiranService>();
+        builder.Services.AddScoped<ISystemService, SystemService>();
 
         var app = builder.Build();
 

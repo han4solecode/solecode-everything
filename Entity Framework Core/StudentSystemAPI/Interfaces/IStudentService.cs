@@ -10,7 +10,7 @@ namespace StudentSystemAPI.Interfaces
 
         Student? AddStudent(Student student);
 
-        Student? UpdateStudent(int id, Student intputStudent);
+        Student? UpdateStudent(int id, Student inputStudent);
 
         bool DeleteStudent(int id);
     }

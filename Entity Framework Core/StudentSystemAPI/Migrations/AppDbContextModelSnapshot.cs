@@ -22,27 +22,57 @@ namespace StudentSystemAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StudentSystemAPI.Models.Hobby", b =>
+            modelBuilder.Entity("StudentSystemAPI.Models.Guru", b =>
                 {
-                    b.Property<int>("HobbyId")
+                    b.Property<int>("GuruId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HobbyId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GuruId"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MataKuliah")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StudentId")
+                    b.HasKey("GuruId");
+
+                    b.ToTable("Gurus");
+                });
+
+            modelBuilder.Entity("StudentSystemAPI.Models.Kehadiran", b =>
+                {
+                    b.Property<int>("KehadiranId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.HasKey("HobbyId");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KehadiranId"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GuruId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("KehadiranId");
+
+                    b.HasIndex("GuruId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Hobbies");
+                    b.ToTable("Kehadirans");
                 });
 
             modelBuilder.Entity("StudentSystemAPI.Models.Student", b =>
@@ -56,6 +86,9 @@ namespace StudentSystemAPI.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("Kelas")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Major")
                         .HasColumnType("nvarchar(max)");
 
@@ -63,21 +96,41 @@ namespace StudentSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("NilaiRataRata")
+                        .HasColumnType("float");
+
                     b.HasKey("StudentId");
 
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("StudentSystemAPI.Models.Hobby", b =>
+            modelBuilder.Entity("StudentSystemAPI.Models.Kehadiran", b =>
                 {
-                    b.HasOne("StudentSystemAPI.Models.Student", null)
-                        .WithMany("Hobbies")
-                        .HasForeignKey("StudentId");
+                    b.HasOne("StudentSystemAPI.Models.Guru", "Guru")
+                        .WithMany("Kehadirans")
+                        .HasForeignKey("GuruId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentSystemAPI.Models.Student", "Student")
+                        .WithMany("Kehadirans")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guru");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentSystemAPI.Models.Guru", b =>
+                {
+                    b.Navigation("Kehadirans");
                 });
 
             modelBuilder.Entity("StudentSystemAPI.Models.Student", b =>
                 {
-                    b.Navigation("Hobbies");
+                    b.Navigation("Kehadirans");
                 });
 #pragma warning restore 612, 618
         }
