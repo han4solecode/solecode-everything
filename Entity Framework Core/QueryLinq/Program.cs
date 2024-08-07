@@ -130,7 +130,7 @@ class Program
 
         // var a = anonTypeMethodAnnualSalary.Max(x => x.AnnualSalary);
 
-        var empFromIT = Employee.GetEmployees().Select(emp => new
+        /*var empFromIT = Employee.GetEmployees().Select(emp => new
         {
             FullName = string.Concat(emp.FirstName, " ", emp.LastName),
             Department = emp.Department,
@@ -152,11 +152,91 @@ class Program
             Console.WriteLine($"Fullname: {item.FullName} | Department: {item.Department} | Annual Salary: {item.AnnualSalary}");
         }
 
-        var ITannualSalaryMoreThanSixtyK = Employee.GetEmployees().Where(emp => emp.Department == "IT" && (emp.Salary * 12) > 60000);
-        foreach (var item in ITannualSalaryMoreThanSixtyK)
+        var ITannualSalaryMoreThan800K = Employee.GetEmployees().Where(emp => emp.Department == "IT" && (emp.Salary * 12) > 800000);
+        foreach (var item in ITannualSalaryMoreThan800K)
         {
             Console.WriteLine($"ID: {item.ID} | First name: {item.FirstName} | Last name: {item.LastName} | Department: {item.Department} | Salary: {item.Salary}");
+        }*/
+
+        var departmentList = new List<Department>
+        {
+            new Department { Id = 1 , Name = "IT"},
+            new Department { Id = 2 , Name = "Sales"},
+            new Department { Id = 3 , Name = "Finance"}
+        };
+
+        var result = from emp in Employee.GetEmployees()
+                     join dept in departmentList on emp.DeptId equals dept.Id
+                     select new
+                     {
+                         EmployeeName = string.Concat(emp.FirstName, " ", emp.LastName),
+                         Department = dept.Name
+                     };
+
+        foreach (var item in result)
+        {
+            Console.WriteLine($"Fullname: {item.EmployeeName} | Department: {item.Department}");
         }
+
+        var resAny = (from emp in Employee.GetEmployees()
+                      select emp).Any(emp => emp.Salary > 100000);
+        Console.WriteLine(resAny);
+
+        var resAll = (from emp in Employee.GetEmployees()
+                      select emp).All(emp => emp.Salary > 100000);
+        Console.WriteLine(resAll);
+
+        var groupBy = (from emp in Employee.GetEmployees()
+                       group emp by emp.DeptId);
+        foreach (var item in groupBy)
+        {
+            Console.WriteLine($"{item.Key} : {item.Count()}");
+            foreach (var emp in item)
+            {
+                Console.WriteLine($"Name: {emp.FirstName}");
+            }
+
+        }
+
+        var resGroupBy = Employee.GetEmployees()
+            .GroupBy(e => e.DeptId)
+            .Select(g => new
+            {
+                DeptID = g.Key,
+                avgSalary = g.Average(e => e.Salary)
+            });
+        foreach (var item in resGroupBy)
+        {
+            Console.WriteLine($"DeptID: {item.DeptID} | Average salary: {item.avgSalary}");
+        }
+
+        var take = Employee.GetEmployees().Take(2).ToList();
+        var skip = Employee.GetEmployees().Skip(2).ToList();
+
+        int recordsPerPage = 2;
+        int pageNumber = 1;
+
+        var empPage = Employee.GetEmployees()
+            .Skip((pageNumber -1) * recordsPerPage)
+            .Take(recordsPerPage).ToList();
+        foreach (var item in empPage)
+        {
+            Console.WriteLine($"ID: {item.ID} | First name: {item.FirstName} | Last name: {item.LastName} | Department: {item.DeptId} | Salary: {item.Salary}");
+        }
+
+        var distinctItems = Employee.GetEmployees()
+                            .Select(emp => emp.FirstName)
+                            .Distinct().ToList();
+        Console.WriteLine(string.Join(", ", distinctItems));
+
+        List<int> data1 = [1, 2, 3, 4, 5, 6];
+        List<int> data2 = [1, 3, 5, 8, 9, 10];
+
+        var intersectList = data1.Intersect(data2).ToList();
+        var exceptList = data1.Except(data2).ToList();
+        Console.WriteLine(string.Join(", ", intersectList));
+        Console.WriteLine(string.Join(", ", exceptList));
+
     }
 
     public static void Display(IEnumerable<int> res, string message)
