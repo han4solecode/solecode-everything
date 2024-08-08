@@ -6,11 +6,11 @@ namespace CompanySystemWebAPI.Interfaces
     {
         Task<IEnumerable<Employee>> GetAllEmployee(int recordsPerPage, int currentPage);
 
-        Task<Employee> GetEmployeeById(int id);
+        Task<Employee?> GetEmployeeById(int id);
 
-        Task<Employee> AddEmployee(Employee employee);
+        Task AddEmployee(Employee employee);
 
-        Task<Employee> UpdateEmployee(int id, Employee inputEmployee);
+        Task<Employee?> UpdateEmployee(int id, Employee inputEmployee);
 
         Task<bool> DeleteEmployee(int id);
     }
