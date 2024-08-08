@@ -12,6 +12,6 @@ namespace CompanySystemWebAPI.Interfaces
 
         Task<Department?> UpdateDepartment(int id, Department inputDepartment);
 
-        Task<bool> DeleteEmployee(int id);
+        Task<bool> DeleteDepartment(int id);
     }
 }

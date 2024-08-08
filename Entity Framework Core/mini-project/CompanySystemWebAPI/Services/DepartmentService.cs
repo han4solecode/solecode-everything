@@ -49,7 +49,7 @@ namespace CompanySystemWebAPI.Services
             return departmentToBeUpdated;
         }
 
-        public async Task<bool> DeleteEmployee(int id)
+        public async Task<bool> DeleteDepartment(int id)
         {
             var departmentToBeDeleted = await _context.Departments.FindAsync(id);
 
