@@ -26,9 +26,9 @@ public partial class Workson
 
     [ForeignKey("Empno")]
     [InverseProperty("Worksons")]
-    public virtual Employee EmpnoNavigation { get; set; } = null!;
+    public virtual Employee? EmpnoNavigation { get; set; }
 
     [ForeignKey("Projno")]
     [InverseProperty("Worksons")]
-    public virtual Project ProjnoNavigation { get; set; } = null!;
+    public virtual Project? ProjnoNavigation { get; set; }
 }
