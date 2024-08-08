@@ -51,7 +51,7 @@ namespace CompanySystemWebAPI.Services
 
         public async Task<bool> DeleteProject(int id)
         {
-            var projectToBeDeleted = await _context.Projects.FindAsync();
+            var projectToBeDeleted = await _context.Projects.FindAsync(id);
 
             if (projectToBeDeleted != null)
             {
@@ -60,6 +60,21 @@ namespace CompanySystemWebAPI.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<IEnumerable<Project>> NoEmpProject()
+        {
+            var workson = await _context.Worksons.Select(w => w.Projno).ToListAsync();
+            var NoEmpProject = await _context.Projects.Where(p => !workson.Contains(p.Projno)).ToListAsync();
+
+            return NoEmpProject;
+        }
+
+        public async Task<IEnumerable<Project>> ITAndHRProjects()
+        {
+            var projects = await _context.Projects.Where(p => p.DeptnoNavigation.Deptname == "IT" || p.DeptnoNavigation.Deptname == "HR").ToListAsync();
+
+            return projects;
         }
     }
 }

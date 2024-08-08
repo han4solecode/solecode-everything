@@ -72,5 +72,71 @@ namespace CompanySystemWebAPI.Services
             }
             return false;
         }
+
+        public async Task<IEnumerable<Employee>> FromBRICS()
+        {
+            var employees = await _context.Employees.Where(e => e.Address == "Brazil" || e.Address == "Russia" || e.Address == "India" || e.Address == "China" || e.Address == "South Africa").OrderBy(e => e.Lname).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> Born8090()
+        {
+            var employees = await _context.Employees.Where(e => e.Dob >= new DateOnly(1980, 1, 1) && e.Dob <= new DateOnly(1990, 1, 1)).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> FemaleBornAfter90()
+        {
+            var employees = await _context.Employees.Where(e => e.Sex == "Female" && e.Dob >= new DateOnly(1990, 1, 1)).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> FemaleManager()
+        {
+            var employees = await _context.Employees.Where(e => e.Sex == "Female" && e.Empno == e.Department.Mgrempno).OrderBy(e => e.Lname).ThenBy(e => e.Fname).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Object>> ITDeptEmployees()
+        {
+            var employees = await _context.Employees.Where(e => e.Department.Deptname == "IT").Select(e => new {
+                Name = $"{e.Fname} {e.Lname}",
+                Address = e.Address
+            }).ToListAsync();
+
+            // var asd = await _context.Departments.Include(d => d.Employees).Where(d => d.Deptname == "IT").Select(d => new {
+            //     Name = d.Employees.
+            // });
+
+            // var kjgn = await (from emp in _context.Employees)
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> DueRetireManager()
+        {
+            var managers = await _context.Employees.Where(e => e.Empno == e.Department.Mgrempno && (DateOnly.FromDateTime(DateTime.Now).Year - e.Dob.Year) == 40).OrderBy(e => e.Lname).ToListAsync();
+
+            return managers;
+        }
+
+        public async Task<int> FemaleManagerCount()
+        {
+            var count = await _context.Employees.Where(e => e.Sex == "Female" && e.Empno == e.Department.Mgrempno).CountAsync();
+
+            return count;
+        }
+
+        public async Task<IEnumerable<Employee>> ManagerUnder40()
+        {
+            var managers = await _context.Employees.Where(e => e.Empno == e.Department.Mgrempno && (DateOnly.FromDateTime(DateTime.Now).Year - e.Dob.Year) < 40).ToListAsync();
+
+            return managers;
+        }
+
     }
 }

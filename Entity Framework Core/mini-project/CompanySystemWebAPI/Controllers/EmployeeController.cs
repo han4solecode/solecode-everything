@@ -87,5 +87,85 @@ namespace CompanySystemWebAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("from-brics")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> FromBRICS()
+        {
+            var employees = await _employeeService.FromBRICS();
+
+            return Ok(employees);
+        }
+
+        [HttpGet]
+        [Route("born-between-8090")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> Born8090()
+        {
+            var employees = await _employeeService.Born8090();
+
+            return Ok(employees);
+        }
+
+        [HttpGet]
+        [Route("female-90")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> FemaleBornAfter90()
+        {
+            var employees = await _employeeService.FemaleBornAfter90();
+
+            return Ok(employees);
+        }
+
+        [HttpGet]
+        [Route("female-manager")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> FemaleManager()
+        {
+            var employees = await _employeeService.FemaleManager();
+
+            return Ok(employees);
+        }
+
+        [HttpGet]
+        [Route("it-employee")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> ITDeptEmployees()
+        {
+            var employees = await _employeeService.ITDeptEmployees();
+
+            return Ok(employees);
+        }
+
+        [HttpGet]
+        [Route("retire-manager")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> DueRetireManager()
+        {
+            var managers = await _employeeService.DueRetireManager();
+
+            return Ok(managers);
+        }
+
+        [HttpGet]
+        [Route("female-manager-count")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> FemaleManagerCount()
+        {
+            var count = await _employeeService.FemaleManagerCount();
+
+            return Ok(count);
+        }
+
+        [HttpGet]
+        [Route("manager-under40")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> ManagerUnder40()
+        {
+            var managers = await _employeeService.ManagerUnder40();
+
+            return Ok(managers);
+        }
     }
 }

@@ -13,5 +13,7 @@ namespace CompanySystemWebAPI.Interfaces
         Task<Department?> UpdateDepartment(int id, Department inputDepartment);
 
         Task<bool> DeleteDepartment(int id);
+
+        Task<IEnumerable<Object>> ListDeptWithMore10Emp();
     }
 }

@@ -61,5 +61,15 @@ namespace CompanySystemWebAPI.Services
             }
             return false;
         }
+
+        public async Task<IEnumerable<Object>> ListDeptWithMore10Emp()
+        {
+            var departments = await _context.Departments.Where(d => d.Employees.Count() > 10).Select(d => new{
+                DeptName = d.Deptname,
+                EmpCount = d.Employees.Count()
+            }).ToListAsync();
+
+            return departments;
+        }
     }
 }

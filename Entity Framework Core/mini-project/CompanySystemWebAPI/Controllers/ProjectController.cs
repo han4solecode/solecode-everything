@@ -87,5 +87,25 @@ namespace CompanySystemWebAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("no-employee")]
+        [MapToApiVersion("2.0")]
+        public async Task<IEnumerable<Project>> NoEmpProject()
+        {
+            var projects = await _projectService.NoEmpProject();
+
+            return projects;
+        }
+
+        [HttpGet]
+        [Route("it-hr-project")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> ITAndHRProjects()
+        {
+            var projects = await _projectService.ITAndHRProjects();
+
+            return Ok(projects);
+        }
     }
 }

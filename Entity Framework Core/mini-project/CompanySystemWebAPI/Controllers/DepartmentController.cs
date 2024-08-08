@@ -87,5 +87,15 @@ namespace CompanySystemWebAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("emp-count")]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> ListDeptWithMore10Emp()
+        {
+            var departments = await _departmentService.ListDeptWithMore10Emp();
+
+            return Ok(departments);
+        }
     }
 }

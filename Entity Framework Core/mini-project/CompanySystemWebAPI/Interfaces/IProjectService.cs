@@ -13,5 +13,9 @@ namespace CompanySystemWebAPI.Interfaces
         Task<Project?> UpdateProject(int id, Project inputProject);
 
         Task<bool> DeleteProject(int id);
+
+        Task<IEnumerable<Project>> NoEmpProject();
+
+        Task<IEnumerable<Project>> ITAndHRProjects();
     }
 }
