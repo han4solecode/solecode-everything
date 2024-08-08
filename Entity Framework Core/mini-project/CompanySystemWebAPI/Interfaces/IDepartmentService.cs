@@ -6,7 +6,7 @@ namespace CompanySystemWebAPI.Interfaces
     {
         Task<IEnumerable<Department>> GetAllDepartment(int recordsPerPage, int currentPage);
 
-        Task<IEnumerable<Department>> GetDepartmentById(int id);
+        Task<Department> GetDepartmentById(int id);
 
         Task<Department> AddDepartment(Department department);
 
