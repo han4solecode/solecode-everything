@@ -9,7 +9,7 @@ namespace CompanySystemWebAPI.Controllers
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[Controller]")]
-    class ProjectController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
 
