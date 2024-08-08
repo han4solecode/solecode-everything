@@ -20,9 +20,9 @@ namespace CompanySystemWebAPI.Services
             return worksons;
         }
 
-        public async Task<Workson?> GetWorksonById(int id)
+        public async Task<Workson?> GetWorksonById(int empNo, int projNo)
         {
-            var workson = await _context.Worksons.FindAsync(id);
+            var workson = await _context.Worksons.FindAsync(empNo, projNo);
             return workson;
         }
 
@@ -32,9 +32,9 @@ namespace CompanySystemWebAPI.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Workson?> UpdateWorkson(int id, Workson inputWorkson)
+        public async Task<Workson?> UpdateWorkson(int empNo, int projNo, Workson inputWorkson)
         {
-            var worksonToBeUpdated = await _context.Worksons.FindAsync(id);
+            var worksonToBeUpdated = await _context.Worksons.FindAsync(empNo, projNo);
 
             if (worksonToBeUpdated == null)
             {
@@ -51,9 +51,9 @@ namespace CompanySystemWebAPI.Services
             return worksonToBeUpdated;
         }
 
-        public async Task<bool> DeleteWorkson(int id)
+        public async Task<bool> DeleteWorkson(int empNo, int projNo)
         {
-            var worksonToBeDeleted = await _context.Worksons.FindAsync(id);
+            var worksonToBeDeleted = await _context.Worksons.FindAsync(empNo, projNo);
 
             if (worksonToBeDeleted != null)
             {

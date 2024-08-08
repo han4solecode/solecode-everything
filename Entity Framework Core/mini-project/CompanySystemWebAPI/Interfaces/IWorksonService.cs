@@ -6,12 +6,12 @@ namespace CompanySystemWebAPI.Interfaces
     {
         Task<IEnumerable<Workson>> GetAllWorkson(int recordsPerPage, int currentPage);
 
-        Task<Workson?> GetWorksonById(int id);
+        Task<Workson?> GetWorksonById(int empNo, int projNo);
 
         Task AddWorkson(Workson workson);
 
-        Task<Workson?> UpdateWorkson(int id, Workson inputWorkson);
+        Task<Workson?> UpdateWorkson(int empNo, int projNo, Workson inputWorkson);
 
-        Task<bool> DeleteWorkson(int id);
+        Task<bool> DeleteWorkson(int empNo, int projNo);
     }
 }
