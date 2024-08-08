@@ -25,7 +25,7 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Workson> Worksons { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Name=PostgresDbConntection");
+        => optionsBuilder.UseNpgsql("Name=PostgresDbConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
