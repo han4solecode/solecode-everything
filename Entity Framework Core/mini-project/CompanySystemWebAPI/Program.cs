@@ -1,5 +1,7 @@
 
 using CompanySystemWebAPI.Data;
+using CompanySystemWebAPI.Interfaces;
+using CompanySystemWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystemWebAPI;
@@ -20,6 +22,11 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+        builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+        builder.Services.AddScoped<IProjectService, ProjectService>();
+        builder.Services.AddScoped<IWorksonService, WorksonService>();
 
         var app = builder.Build();
 
