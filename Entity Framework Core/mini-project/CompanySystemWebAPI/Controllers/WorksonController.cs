@@ -26,15 +26,15 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(worksons);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetWorksonById(int id)
+        [HttpGet("{empNo}/{projNo}")]
+        public async Task<IActionResult> GetWorksonById(int empNo, int projNo)
         {
-            if (id <= 0)
+            if (empNo <= 0 || projNo <= 0)
             {
                 return BadRequest();
             }
 
-            var workson = await _worksonService.GetWorksonById(id);
+            var workson = await _worksonService.GetWorksonById(empNo, projNo);
 
             if (workson == null)
             {
@@ -52,15 +52,15 @@ namespace CompanySystemWebAPI.Controllers
             return Created($"api/v1/project/{workson.Empno}", workson);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWorkson(int id, [FromBody] Workson inputWorkson)
+        [HttpPut("{empNo}/{projNo}")]
+        public async Task<IActionResult> UpdateWorkson(int empNo, int projNo, [FromBody] Workson inputWorkson)
         {
-            if (id <= 0)
+            if (empNo <= 0 || projNo <= 0)
             {
                 return BadRequest();
             }
 
-            var woUpdated = await _worksonService.UpdateWorkson(id, inputWorkson);
+            var woUpdated = await _worksonService.UpdateWorkson(empNo, projNo, inputWorkson);
 
             if (woUpdated == null)
             {
@@ -70,15 +70,15 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(woUpdated);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWorkson(int id)
+        [HttpDelete("{empNo}/{projNo}")]
+        public async Task<IActionResult> DeleteWorkson(int empNo, int projNo)
         {
-            if (id <= 0)
+            if (empNo <= 0 || projNo <= 0)
             {
                 return BadRequest();
             }
 
-            var isWoDeleted = await _worksonService.DeleteWorkson(id);
+            var isWoDeleted = await _worksonService.DeleteWorkson(empNo, projNo);
 
             if (!isWoDeleted)
             {
