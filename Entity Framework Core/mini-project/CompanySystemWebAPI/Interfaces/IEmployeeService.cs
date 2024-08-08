@@ -6,7 +6,7 @@ namespace CompanySystemWebAPI.Interfaces
     {
         Task<IEnumerable<Employee>> GetAllEmployee(int recordsPerPage, int currentPage);
 
-        Task<IEnumerable<Employee>> GetEmployeeById(int id);
+        Task<Employee> GetEmployeeById(int id);
 
         Task<Employee> AddEmployee(Employee employee);
 
