@@ -1,4 +1,3 @@
-using System.Net;
 using CompanySystemWebAPI.Data;
 using CompanySystemWebAPI.Interfaces;
 using CompanySystemWebAPI.Models;
