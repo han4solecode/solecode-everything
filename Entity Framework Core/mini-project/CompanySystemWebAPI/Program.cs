@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using CompanySystemWebAPI.Api;
@@ -27,11 +28,6 @@ public class Program
             option.AssumeDefaultVersionWhenUnspecified = true;
             option.DefaultApiVersion = new ApiVersion(1, 0);
             option.ReportApiVersions = true;
-            // option.ApiVersionReader = ApiVersionReader.Combine(
-            //     new QueryStringApiVersionReader("api-version"),
-            //     new HeaderApiVersionReader("X-Version"),
-            //     new MediaTypeApiVersionReader("ver")
-            // );
         }).AddApiExplorer(option => {
             option.GroupNameFormat = "'v'VVV";
             option.SubstituteApiVersionInUrl = true;
@@ -40,15 +36,12 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
 
-        // var info = new OpenApiInfo()
-        // {
-        //     Title = "Company System Web API Documentation",
-
-        // };
-
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(option => {
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            option.IncludeXmlComments(xmlPath);
+        });
         builder.Services.ConfigureOptions<ConfifureSwaggerOptions>();
-        // builder.Services.ConfigureOptions
 
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
         builder.Services.AddScoped<IDepartmentService, DepartmentService>();
