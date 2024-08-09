@@ -19,6 +19,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllDepartment([FromQuery] int recordsPerPage, [FromQuery] int currentPage)
         {
             var departments = await _departmentService.GetAllDepartment(recordsPerPage, currentPage);
@@ -27,6 +28,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetDepartmentById(int id)
         {
             if (id <= 0)
@@ -45,6 +47,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddDepartment([FromBody] Department department)
         {
             await _departmentService.AddDepartment(department);
@@ -53,6 +56,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] Department inputDepartment)
         {
             if (id <= 0)
@@ -71,6 +75,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
             if (id <= 0)

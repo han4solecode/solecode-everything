@@ -19,6 +19,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllProject([FromQuery] int recordsPerPage, [FromQuery] int currentPage)
         {
             var projects = await _projectService.GetAllProject(recordsPerPage, currentPage);
@@ -27,6 +28,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetProjectById(int id)
         {
             if (id <= 0)
@@ -45,6 +47,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddProject([FromBody] Project project)
         {
             await _projectService.AddProject(project);
@@ -53,6 +56,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> UpdateProject(int id, [FromBody] Project inputProject)
         {
             if (id <= 0)
@@ -71,6 +75,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             if (id <= 0)

@@ -19,6 +19,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllWorkson([FromQuery] int recordsPerPage, [FromQuery] int currentPage)
         {
             var worksons = await _worksonService.GetAllWorkson(recordsPerPage, currentPage);
@@ -27,6 +28,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet("{empNo}/{projNo}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetWorksonById(int empNo, int projNo)
         {
             if (empNo <= 0 || projNo <= 0)
@@ -45,6 +47,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddWorkson([FromBody] Workson workson)
         {
             await _worksonService.AddWorkson(workson);
@@ -53,6 +56,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPut("{empNo}/{projNo}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> UpdateWorkson(int empNo, int projNo, [FromBody] Workson inputWorkson)
         {
             if (empNo <= 0 || projNo <= 0)
@@ -71,6 +75,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpDelete("{empNo}/{projNo}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> DeleteWorkson(int empNo, int projNo)
         {
             if (empNo <= 0 || projNo <= 0)

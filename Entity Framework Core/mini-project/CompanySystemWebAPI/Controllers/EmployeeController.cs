@@ -19,6 +19,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllEmployee([FromQuery] int recordsPerPage, [FromQuery] int currentPage)
         {
             var employees = await _employeeService.GetAllEmployee(recordsPerPage, currentPage);
@@ -27,6 +28,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {
             if (id <= 0)
@@ -45,6 +47,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
             await _employeeService.AddEmployee(employee);
@@ -53,6 +56,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee inputEmployee)
         {
             if (id <= 0)
@@ -71,6 +75,7 @@ namespace CompanySystemWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             if (id <= 0)
