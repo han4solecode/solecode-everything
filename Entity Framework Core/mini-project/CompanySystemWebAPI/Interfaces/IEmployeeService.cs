@@ -28,6 +28,6 @@ namespace CompanySystemWebAPI.Interfaces
 
         Task<int> FemaleManagerCount();
 
-        Task<IEnumerable<Employee>> ManagerUnder40();
+        Task<IEnumerable<Object>> ManagerUnder40();
     }
 }

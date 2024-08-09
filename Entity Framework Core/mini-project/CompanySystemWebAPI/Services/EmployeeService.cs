@@ -22,20 +22,14 @@ namespace CompanySystemWebAPI.Services
 
         public async Task<Employee?> GetEmployeeById(int id)
         {
-            // var employee = await _context.Employees.SingleOrDefaultAsync(e => e.Empno == id);
             var employee = await _context.Employees.FindAsync(id);
             return employee;
         }
 
         public async Task AddEmployee(Employee employee)
         {
-            // var newEmployee = new Employee()
-            // {
-            //     Fname = employee.Fname,
-            // };
             await _context.Employees.AddAsync(employee);
             await _context.SaveChangesAsync();
-            // return employee;
         }
 
         public async Task<Employee?> UpdateEmployee(int id, Employee inputEmployee)
@@ -75,7 +69,7 @@ namespace CompanySystemWebAPI.Services
 
         public async Task<IEnumerable<Employee>> FromBRICS()
         {
-            var employees = await _context.Employees.Where(e => e.Address == "Brazil" || e.Address == "Russia" || e.Address == "India" || e.Address == "China" || e.Address == "South Africa").OrderBy(e => e.Lname).ToListAsync();
+            var employees = await _context.Employees.Where(e => e.Address.Contains("Brazil") || e.Address.Contains("Russia") || e.Address.Contains("India") || e.Address.Contains("China") || e.Address.Contains("South Africa")).OrderBy(e => e.Lname).ToListAsync();
 
             return employees;
         }
@@ -103,16 +97,10 @@ namespace CompanySystemWebAPI.Services
 
         public async Task<IEnumerable<Object>> ITDeptEmployees()
         {
-            var employees = await _context.Employees.Where(e => e.Deptno == 1).Select(e => new {
+            var employees = await _context.Employees.Include(e => e.DeptnoNavigation).Where(e => e.DeptnoNavigation.Deptname == "IT").Select(e => new {
                 Name = $"{e.Fname} {e.Lname}",
                 Address = e.Address
             }).ToListAsync();
-
-            // var asd = await _context.Departments.Include(d => d.Employees).Where(d => d.Deptname == "IT").Select(d => new {
-            //     Name = d.Employees.
-            // });
-
-            // var kjgn = await (from emp in _context.Employees)
 
             return employees;
         }
@@ -131,9 +119,12 @@ namespace CompanySystemWebAPI.Services
             return count;
         }
 
-        public async Task<IEnumerable<Employee>> ManagerUnder40()
+        public async Task<IEnumerable<Object>> ManagerUnder40()
         {
-            var managers = await _context.Employees.Where(e => e.Empno == e.Department.Mgrempno && (DateOnly.FromDateTime(DateTime.Now).Year - e.Dob.Year) < 40).ToListAsync();
+            var managers = await _context.Employees.Where(e => e.Empno == e.Department.Mgrempno && (DateOnly.FromDateTime(DateTime.Now).Year - e.Dob.Year) < 40).Select(m => new {
+                Name = $"{m.Fname} {m.Lname}",
+                Age = DateOnly.FromDateTime(DateTime.Now).Year - m.Dob.Year
+            }).ToListAsync();
 
             return managers;
         }
