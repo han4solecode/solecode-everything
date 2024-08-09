@@ -103,7 +103,7 @@ namespace CompanySystemWebAPI.Services
 
         public async Task<IEnumerable<Object>> ITDeptEmployees()
         {
-            var employees = await _context.Employees.Where(e => e.Department.Deptname == "IT").Select(e => new {
+            var employees = await _context.Employees.Where(e => e.Deptno == 1).Select(e => new {
                 Name = $"{e.Fname} {e.Lname}",
                 Address = e.Address
             }).ToListAsync();
