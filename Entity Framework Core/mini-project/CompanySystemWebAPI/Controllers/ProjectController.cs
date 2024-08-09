@@ -205,9 +205,21 @@ namespace CompanySystemWebAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieve all projects with no employee
+        /// </summary>
+        /// <returns>A list of projects</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/project/no-project
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of projects</response>
         [HttpGet]
         [Route("no-project")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<Project>> NoEmpProject()
         {
             var projects = await _projectService.NoEmpProject();
@@ -215,9 +227,21 @@ namespace CompanySystemWebAPI.Controllers
             return projects;
         }
 
+        /// <summary>
+        /// Retrieve all projects from IT and HR department
+        /// </summary>
+        /// <returns>A list of projects</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/project/it-hr-project
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of projects</response>
         [HttpGet]
         [Route("it-hr-project")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ITAndHRProjects()
         {
             var projects = await _projectService.ITAndHRProjects();

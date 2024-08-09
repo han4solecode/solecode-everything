@@ -205,9 +205,21 @@ namespace CompanySystemWebAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieve the total number of employees in each department for those departments with more than 10 employees
+        /// </summary>
+        /// <returns>A list of department name and employee count</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/department/emp-count
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of department name and employee count</response>
         [HttpGet]
         [Route("emp-count")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ListDeptWithMore10Emp()
         {
             var departments = await _departmentService.ListDeptWithMore10Emp();

@@ -215,9 +215,21 @@ namespace CompanySystemWebAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieve employees from BRICS (Brazil, Russia, India, China, South Africa) countries in alphabetical order of surname
+        /// </summary>
+        /// <returns>A list of employees</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/from-brics
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employees</response>
         [HttpGet]
         [Route("from-brics")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FromBRICS()
         {
             var employees = await _employeeService.FromBRICS();
@@ -225,9 +237,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
 
+        /// <summary>
+        /// Retrieve employees born between 1980–1990
+        /// </summary>
+        /// <returns>A list of employees</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/born-between-8090
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employees</response>
         [HttpGet]
         [Route("born-between-8090")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Born8090()
         {
             var employees = await _employeeService.Born8090();
@@ -235,9 +259,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
 
+        /// <summary>
+        /// Retrieve employees who are female and born after 1990
+        /// </summary>
+        /// <returns>A list of employees</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/female-90
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employees</response>
         [HttpGet]
         [Route("female-90")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FemaleBornAfter90()
         {
             var employees = await _employeeService.FemaleBornAfter90();
@@ -245,9 +281,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
 
+        /// <summary>
+        /// Retrieve managers who are female in alphabetical order of surname, and then first name
+        /// </summary>
+        /// <returns>A list of employees</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/female-manager
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employees</response>
         [HttpGet]
         [Route("female-manager")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FemaleManager()
         {
             var employees = await _employeeService.FemaleManager();
@@ -255,9 +303,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
 
+        /// <summary>
+        /// Retrieve a list of the names and addresses of all employees who work for the IT department
+        /// </summary>
+        /// <returns>A list of employee full name and address</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/it-employee
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employee full name and address</response>
         [HttpGet]
         [Route("it-employee")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ITDeptEmployees()
         {
             var employees = await _employeeService.ITDeptEmployees();
@@ -265,9 +325,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
 
+        /// <summary>
+        /// Retrieve a complete list of all managers who are due to retire this year, in alphabetical order of surname
+        /// </summary>
+        /// <returns>A list of employees</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/retire-manager
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employees</response>
         [HttpGet]
         [Route("retire-manager")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DueRetireManager()
         {
             var managers = await _employeeService.DueRetireManager();
@@ -275,9 +347,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(managers);
         }
 
+        /// <summary>
+        /// Retrieve how many female managers
+        /// </summary>
+        /// <returns>Count of female managers</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/female-manager-count
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns the count of female managers</response>
         [HttpGet]
         [Route("female-manager-count")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FemaleManagerCount()
         {
             var count = await _employeeService.FemaleManagerCount();
@@ -285,9 +369,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(count);
         }
 
+        /// <summary>
+        /// Retrieve all managers under 40 years of age
+        /// </summary>
+        /// <returns>A list of employee fullname and age</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/v2/employee/manager-under40
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns a list of employee fullname and age</response>
         [HttpGet]
         [Route("manager-under40")]
         [MapToApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ManagerUnder40()
         {
             var managers = await _employeeService.ManagerUnder40();
