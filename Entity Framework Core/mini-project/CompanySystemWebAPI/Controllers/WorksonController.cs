@@ -50,9 +50,16 @@ namespace CompanySystemWebAPI.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddWorkson([FromBody] Workson workson)
         {
-            await _worksonService.AddWorkson(workson);
+            try
+            {
+                await _worksonService.AddWorkson(workson);
 
-            return Created($"api/v1/project/{workson.Empno}", workson);
+                return Created($"api/v1/project/{workson.Empno}", workson);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{empNo}/{projNo}")]
@@ -83,14 +90,23 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var isWoDeleted = await _worksonService.DeleteWorkson(empNo, projNo);
-
-            if (!isWoDeleted)
+            try
             {
-                return NotFound();
+                var isWoDeleted = await _worksonService.DeleteWorkson(empNo, projNo);
+
+                if (!isWoDeleted)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
             }
 
-            return NoContent();
+
         }
 
     }

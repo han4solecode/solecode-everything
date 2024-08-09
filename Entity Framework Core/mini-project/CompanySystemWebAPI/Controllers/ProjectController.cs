@@ -50,9 +50,16 @@ namespace CompanySystemWebAPI.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddProject([FromBody] Project project)
         {
-            await _projectService.AddProject(project);
+            try
+            {
+                await _projectService.AddProject(project);
 
-            return Created($"api/v1/project/{project.Projno}", project);
+                return Created($"api/v1/project/{project.Projno}", project);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]
@@ -64,14 +71,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var projUpdated = await _projectService.UpdateProject(id, inputProject);
-
-            if (projUpdated == null)
+            try
             {
-                return NotFound();
+                var projUpdated = await _projectService.UpdateProject(id, inputProject);
+
+                if (projUpdated == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(projUpdated);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
             }
 
-            return Ok(projUpdated);
         }
 
         [HttpDelete("{id}")]
@@ -83,14 +98,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var isProjDeleted = await _projectService.DeleteProject(id);
-
-            if (!isProjDeleted)
+            try
             {
-                return NotFound();
+                var isProjDeleted = await _projectService.DeleteProject(id);
+
+                if (!isProjDeleted)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
             }
 
-            return NoContent();
         }
 
         [HttpGet]

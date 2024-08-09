@@ -50,9 +50,17 @@ namespace CompanySystemWebAPI.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
-            await _employeeService.AddEmployee(employee);
+            try
+            {
+                await _employeeService.AddEmployee(employee);
 
-            return Created($"api/v1/employee/{employee.Empno}", employee);
+                return Created($"api/v1/employee/{employee.Empno}", employee);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("Something is wrong");
+            }
+
         }
 
         [HttpPut("{id}")]
@@ -64,14 +72,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var empUpdated = await _employeeService.UpdateEmployee(id, inputEmployee);
+            try
+            {    
+                var empUpdated = await _employeeService.UpdateEmployee(id, inputEmployee);
 
-            if (empUpdated == null)
+                if (empUpdated == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(empUpdated);
+            }
+            catch (System.Exception)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            return Ok(empUpdated);
         }
 
         [HttpDelete("{id}")]
@@ -83,14 +99,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var isEmpDeleted = await _employeeService.DeleteEmployee(id);
-
-            if (!isEmpDeleted)
+            try
             {
-                return NotFound();
+                var isEmpDeleted = await _employeeService.DeleteEmployee(id);
+
+                if (!isEmpDeleted)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();   
             }
 
-            return NoContent();
         }
 
         [HttpGet]

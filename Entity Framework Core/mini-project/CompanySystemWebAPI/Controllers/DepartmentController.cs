@@ -50,9 +50,16 @@ namespace CompanySystemWebAPI.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddDepartment([FromBody] Department department)
         {
-            await _departmentService.AddDepartment(department);
+            try
+            {
+                await _departmentService.AddDepartment(department);
 
-            return Created($"api/v1/department/{department.Deptno}", department);
+                return Created($"api/v1/department/{department.Deptno}", department);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]
@@ -64,14 +71,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var deptUpdated = await _departmentService.UpdateDepartment(id, inputDepartment);
-
-            if (deptUpdated == null)
+            try
             {
-                return NotFound();
+                var deptUpdated = await _departmentService.UpdateDepartment(id, inputDepartment);
+
+                if (deptUpdated == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(deptUpdated);
+            }
+            catch (System.Exception)
+            {   
+                return BadRequest();
             }
 
-            return Ok(deptUpdated);
         }
 
         [HttpDelete("{id}")]
@@ -83,14 +98,22 @@ namespace CompanySystemWebAPI.Controllers
                 return BadRequest();
             }
 
-            var isDeptDeleted = await _departmentService.DeleteDepartment(id);
-
-            if (!isDeptDeleted)
+            try
             {
-                return NotFound();
+                var isDeptDeleted = await _departmentService.DeleteDepartment(id);
+
+                if (!isDeptDeleted)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
             }
 
-            return NoContent();
         }
 
         [HttpGet]
