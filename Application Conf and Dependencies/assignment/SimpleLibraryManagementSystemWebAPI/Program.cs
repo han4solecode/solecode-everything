@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using SimpleLibraryManagementSystemWebAPI.Data;
+
 namespace SimpleLibraryManagementSystemWebAPI;
 
 public class Program
@@ -8,6 +11,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        var connectionString = builder.Configuration["ConnectionStrings:PostgresDbConnection"];
+        builder.Services.AddDbContext<LibraryContext>(option => {
+            option.UseNpgsql(connectionString);
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
