@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleLibraryManagementSystemWebAPI.Data;
 using SimpleLibraryManagementSystemWebAPI.Interfaces;
+using SimpleLibraryManagementSystemWebAPI.Options;
 using SimpleLibraryManagementSystemWebAPI.Repositories;
 
 namespace SimpleLibraryManagementSystemWebAPI;
@@ -17,6 +18,10 @@ public class Program
         builder.Services.AddDbContext<LibraryContext>(option => {
             option.UseNpgsql(connectionString);
         });
+
+        // inject appsettings with options pattern
+        var libraryConfig = builder.Configuration.GetSection(LibraryOptions.SettingName);
+        builder.Services.Configure<LibraryOptions>(libraryConfig);
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
