@@ -27,9 +27,9 @@ public partial class Lending
 
     [ForeignKey("Bookid")]
     [InverseProperty("Lendings")]
-    public virtual Book Book { get; set; } = null!;
+    public virtual Book? Book { get; set; } = null!;
 
     [ForeignKey("Userid")]
     [InverseProperty("Lendings")]
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; } = null!;
 }
