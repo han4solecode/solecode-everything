@@ -19,6 +19,7 @@ public partial class User
 
     [Column("email")]
     [StringLength(255)]
+    [EmailAddress]
     public string Email { get; set; } = null!;
 
     [Column("address")]

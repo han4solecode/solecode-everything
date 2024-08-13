@@ -26,6 +26,7 @@ public partial class Book
 
     [Column("isbn")]
     [StringLength(17)]
+    [RegularExpression(@"^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$", ErrorMessage = "ISBN is invalid")]
     public string Isbn { get; set; } = null!;
 
     [InverseProperty("Book")]
