@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using SimpleLibraryManagementSystemWebAPI.Data;
+using SimpleLibraryManagementSystemWebAPI.Interfaces;
+using SimpleLibraryManagementSystemWebAPI.Repositories;
 
 namespace SimpleLibraryManagementSystemWebAPI;
 
@@ -20,6 +22,9 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IBookRepository, BookRepository>();
 
         var app = builder.Build();
 
