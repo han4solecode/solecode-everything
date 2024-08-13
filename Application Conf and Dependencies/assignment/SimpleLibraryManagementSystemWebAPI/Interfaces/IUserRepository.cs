@@ -14,8 +14,8 @@ namespace SimpleLibraryManagementSystemWebAPI.Interfaces
 
         Task<bool> DeleteUser(int id);
 
-        Task<Lending?> BorrowBook(Lending lending);
+        // Task<IEnumerable<Lending>?> BorrowBook(int userId, List<int> books);
 
-        Task ReturnBook(int userId);
+        // Task ReturnBook(int userId);
     }
 }

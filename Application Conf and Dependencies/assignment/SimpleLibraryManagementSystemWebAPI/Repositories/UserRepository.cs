@@ -72,45 +72,55 @@ namespace SimpleLibraryManagementSystemWebAPI.Repositories
             return true;
         }
 
-        public async Task<Lending?> BorrowBook(Lending lending)
-        {
-            var user = await _context.Users.FindAsync(lending.Userid);
+        // public async Task<IEnumerable<Lending>?> BorrowBook(int userId, List<int> books)
+        // {
+        //     var user = await _context.Users.FindAsync(userId);
 
-            if (user == null)
-            {
-                return null;
-            }
+        //     if (user == null)
+        //     {
+        //         return null;
+        //     }
 
-            if (lending.Bookid.Count > _libraryOptions.MaxBorrowedBook)
-            {
-                return null;
-            }
+        //     if (books.Count > _libraryOptions.MaxBorrowedBook)
+        //     {
+        //         return null;
+        //     }
 
-            var isBookAvailable = lending.Bookid.All(x => _context.Books.Any(y => y.Bookid == x));
+        //     var isBookAvailable = books.All(x => _context.Books.Any(y => y.Bookid == x));
 
-            if (!isBookAvailable)
-            {
-                return null;
-            }
+        //     if (!isBookAvailable)
+        //     {
+        //         return null;
+        //     }
 
-            var lendTransac = new Lending()
-            {
-                Userid = user.Userid,
-                Bookid = [],
-                Borrowdate = DateOnly.FromDateTime(DateTime.Now),
-                Returndate = DateOnly.FromDateTime(DateTime.Now).AddDays(_libraryOptions.BookLoanDuration),
-            };
+        //     List<Lending> input = [];
 
-            lendTransac.Bookid.AddRange(lending.Bookid);
-            await _context.Lendings.AddAsync(lendTransac);
-            await _context.SaveChangesAsync();
+        //     foreach (var id in books)
+        //     {    
+        //         var lendTransac = new Lending()
+        //         {
+        //             Userid = user.Userid,
+        //             Bookid = id,
+        //             Borrowdate = DateOnly.FromDateTime(DateTime.Now),
+        //             Returndate = DateOnly.FromDateTime(DateTime.Now).AddDays(_libraryOptions.BookLoanDuration),
+        //         };
 
-            return lendTransac;
-        }
+        //         input.Add(lendTransac);
+        //     }
 
-        public async Task ReturnBook(int userId)
-        {
-            
-        }
+        //     await _context.Lendings.AddRangeAsync(input);
+
+        //     await _context.SaveChangesAsync();
+        //     // lendTransac.Bookid.AddRange(lending.Bookid);
+        //     // await _context.Lendings.AddAsync(lendTransac);
+
+        //     return await _context.Lendings.Where(l => l.Userid == userId).ToListAsync();
+        // }
+
+        // public async Task ReturnBook(int userId)
+        // {
+        //     _context.Lendings.RemoveRange(_context.Lendings.Where(l => l.Userid == userId));
+        //     await _context.SaveChangesAsync();
+        // }
     }
 }

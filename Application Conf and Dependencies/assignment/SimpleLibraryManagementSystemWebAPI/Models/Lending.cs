@@ -17,7 +17,7 @@ public partial class Lending
     public int Userid { get; set; }
 
     [Column("bookid")]
-    public List<int> Bookid { get; set; } = [];
+    public int Bookid { get; set; }
 
     [Column("borrowdate")]
     public DateOnly? Borrowdate { get; set; }
