@@ -1,17 +1,21 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SimpleLibraryManagementSystemWebAPI.Data;
 using SimpleLibraryManagementSystemWebAPI.Interfaces;
 using SimpleLibraryManagementSystemWebAPI.Models;
+using SimpleLibraryManagementSystemWebAPI.Options;
 
 namespace SimpleLibraryManagementSystemWebAPI.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly LibraryContext _context;
+        private readonly LibraryOptions _libraryOptions;
 
-        public UserRepository(LibraryContext libraryContext)
+        public UserRepository(LibraryContext libraryContext, IOptions<LibraryOptions> libraryOptions)
         {
             _context = libraryContext;
+            _libraryOptions = libraryOptions.Value;
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()
@@ -66,6 +70,47 @@ namespace SimpleLibraryManagementSystemWebAPI.Repositories
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Lending?> BorrowBook(Lending lending)
+        {
+            var user = await _context.Users.FindAsync(lending.Userid);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            if (lending.Bookid.Count > _libraryOptions.MaxBorrowedBook)
+            {
+                return null;
+            }
+
+            var isBookAvailable = lending.Bookid.All(x => _context.Books.Any(y => y.Bookid == x));
+
+            if (!isBookAvailable)
+            {
+                return null;
+            }
+
+            var lendTransac = new Lending()
+            {
+                Userid = user.Userid,
+                Bookid = [],
+                Borrowdate = DateOnly.FromDateTime(DateTime.Now),
+                Returndate = DateOnly.FromDateTime(DateTime.Now).AddDays(_libraryOptions.BookLoanDuration),
+            };
+
+            lendTransac.Bookid.AddRange(lending.Bookid);
+            await _context.Lendings.AddAsync(lendTransac);
+            await _context.SaveChangesAsync();
+
+            return lendTransac;
+        }
+
+        public async Task ReturnBook(int userId)
+        {
+            
         }
     }
 }
