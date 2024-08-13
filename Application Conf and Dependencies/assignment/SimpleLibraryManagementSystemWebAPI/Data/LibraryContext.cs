@@ -18,6 +18,8 @@ public partial class LibraryContext : DbContext
 
     public virtual DbSet<Book> Books { get; set; }
 
+    public virtual DbSet<Lending> Lendings { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,38 +30,22 @@ public partial class LibraryContext : DbContext
         modelBuilder.Entity<Book>(entity =>
         {
             entity.HasKey(e => e.Bookid).HasName("books_pkey");
+        });
 
-            entity.ToTable("books");
+        modelBuilder.Entity<Lending>(entity =>
+        {
+            entity.HasKey(e => e.Lendingid).HasName("lendings_pkey");
 
-            entity.Property(e => e.Bookid).HasColumnName("bookid");
-            entity.Property(e => e.Author)
-                .HasMaxLength(255)
-                .HasColumnName("author");
-            entity.Property(e => e.Isbn)
-                .HasMaxLength(17)
-                .HasColumnName("isbn");
-            entity.Property(e => e.Publicationyear).HasColumnName("publicationyear");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
+            entity.Property(e => e.Borrowdate).HasDefaultValueSql("CURRENT_DATE");
+
+            entity.HasOne(d => d.Book).WithMany(p => p.Lendings).HasConstraintName("fk_lendings_books_bookid");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Lendings).HasConstraintName("fk_lendings_users_userid");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Userid).HasName("users_pkey");
-
-            entity.ToTable("users");
-
-            entity.Property(e => e.Userid).HasColumnName("userid");
-            entity.Property(e => e.Address)
-                .HasMaxLength(255)
-                .HasColumnName("address");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
         });
 
         OnModelCreatingPartial(modelBuilder);
