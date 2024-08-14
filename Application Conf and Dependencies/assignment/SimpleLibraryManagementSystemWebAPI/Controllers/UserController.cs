@@ -16,21 +16,21 @@ namespace SimpleLibraryManagementSystemWebAPI.Controllers
             _userRepository = userRepository;
         }
 
-        // [HttpPost("lend")]
-        // public async Task<IActionResult> BorrowBook([FromBody] LendingDto lending)
-        // {
-        //     // var lendTransac = await _userRepository.BorrowBook(lending.UserId, lending.Books);
+        [HttpPost("lend")]
+        public async Task<IActionResult> BorrowBook([FromBody] LendingDto lending)
+        {
+            var lendTransac = await _userRepository.BorrowBook(lending.UserId, lending.Books);
 
-        //     // if (lendTransac == null)
-        //     // {
-        //     //     return BadRequest();
-        //     // }
+            if (lendTransac == null)
+            {
+                return BadRequest();
+            }
 
-        //     // return Created("Success!", lendTransac);
+            return Created("Success!", lendTransac);
 
-        //     BookManager bookManager = BookManager.Instance;
+            // BookManager bookManager = BookManager.Instance;
 
-        //     bookManager.BorrowBook();
-        // }
+            // bookManager.BorrowBook();
+        }
     }
 }

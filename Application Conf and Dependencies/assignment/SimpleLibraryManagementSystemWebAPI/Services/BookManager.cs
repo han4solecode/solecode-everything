@@ -5,20 +5,20 @@ namespace SimpleLibraryManagementSystemWebAPI.Services
 {
     public class BookManager
     {
-        // private static readonly Lazy<BookManager> lazyInstance = new Lazy<BookManager>(() => new BookManager());
+        private static readonly Lazy<BookManager> lazyInstance = new Lazy<BookManager>(() => new BookManager());
 
-        // private BookManager()
-        // {
+        private BookManager()
+        {
 
-        // }
+        }
 
-        // public static BookManager Instance
-        // {
-        //     get
-        //     {
-        //         return lazyInstance.Value;
-        //     }
-        // }
+        public static BookManager Instance
+        {
+            get
+            {
+                return lazyInstance.Value;
+            }
+        }
 
         // private readonly IUserRepository _userRepository;
 
@@ -27,9 +27,9 @@ namespace SimpleLibraryManagementSystemWebAPI.Services
         //     _userRepository = userRepository;
         // }
 
-        public void BorrowBook(List<Lending> lending)
+        public void BorrowBook(IUserRepository userRepository)
         {
-
+            
         }
 
         public void ReturnBook()
