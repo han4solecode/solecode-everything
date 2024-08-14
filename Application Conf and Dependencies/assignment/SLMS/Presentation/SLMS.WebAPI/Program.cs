@@ -1,3 +1,4 @@
+using SLMS.Persistance;
 
 namespace SLMS.WebAPI;
 
@@ -8,6 +9,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.ConfiguringPersistance(builder.Configuration);
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

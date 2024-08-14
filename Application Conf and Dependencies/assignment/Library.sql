@@ -29,3 +29,5 @@ create table lendings (
 
 alter table lendings add column borrowDate Date default current_date,
 					 add column returnDate Date;
+
+alter sequence lendings_lendingId_seq restart;
