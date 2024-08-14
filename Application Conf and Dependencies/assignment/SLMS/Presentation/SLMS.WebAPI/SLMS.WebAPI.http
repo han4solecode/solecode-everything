@@ -1,0 +1,6 @@
+@SLMS.WebAPI_HostAddress = http://localhost:5286
+
+GET {{SLMS.WebAPI_HostAddress}}
+Accept: application/json
+
+###
