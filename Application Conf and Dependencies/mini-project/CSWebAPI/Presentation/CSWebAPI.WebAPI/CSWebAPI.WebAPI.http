@@ -1,0 +1,6 @@
+@CSWebAPI.WebAPI_HostAddress = http://localhost:5283
+
+GET {{CSWebAPI.WebAPI_HostAddress}}
+Accept: application/json
+
+###
