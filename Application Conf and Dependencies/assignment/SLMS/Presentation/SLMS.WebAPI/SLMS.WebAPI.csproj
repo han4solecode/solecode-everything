@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\SLMS.Persistance\SLMS.Persistance.csproj" />
     <ProjectReference Include="..\..\Core\SLMS.Application\SLMS.Application.csproj" />
+    <ProjectReference Include="..\..\Core\SLMS.Domain\SLMS.Domain.csproj" />
   </ItemGroup>
 
 </Project>
