@@ -9,12 +9,10 @@ namespace CSWebAPI.WebAPI.Controllers
     [Route("api/[controller]")]
     public class WorksonController : ControllerBase
     {
-        // private readonly IWorksonRepository _worksonRepository;
         private readonly IWorksonService _worksonService;
 
         public WorksonController(IWorksonService worksonService)
         {
-            // _worksonRepository = worksonRepository;
             _worksonService = worksonService;
         }
 
@@ -53,18 +51,6 @@ namespace CSWebAPI.WebAPI.Controllers
             {
                 return BadRequest();
             }
-
-
-            // try
-            // {
-            //     await _worksonRepository.AddWorkson(workson);
-
-            //     return CreatedAtAction(nameof(GetById), new { empNo = workson.Empno, projNo = workson.Projno }, workson);
-            // }
-            // catch (System.Exception)
-            // {
-            //     return BadRequest();
-            // }
         }
 
         [HttpPut("{empNo}/{projNo}")]

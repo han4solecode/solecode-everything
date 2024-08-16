@@ -9,12 +9,10 @@ namespace CSWebAPI.WebAPI.Controllers
     [Route("api/[controller]")]
     public class ProjectController : ControllerBase
     {
-        // private readonly IProjectRepository _projectRepository;
         private readonly IProjectService _projectService;
 
         public ProjectController(IProjectService projectService)
         {
-            // _projectRepository = projectRepository;
             _projectService = projectService;
         }
 

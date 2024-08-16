@@ -8,12 +8,10 @@ namespace CSWebAPI.Persistance.Repositories
     public class ProjectRepository : IProjectRepository
     {
         private readonly AppDbContext _context;
-        // private readonly CompanyOptions _options;
 
         public ProjectRepository(AppDbContext appDbContext)
         {
             _context = appDbContext;
-            // _options = options.Value
         }
 
         public async Task AddProject(Project project)

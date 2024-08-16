@@ -9,12 +9,10 @@ namespace CSWebAPI.WebAPI.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        // private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmployeeService _employeeService;
 
         public EmployeeController(IEmployeeService employeeService)
         {
-            // _employeeRepository = employeeRepository;
             _employeeService = employeeService;
         }
 
@@ -57,17 +55,6 @@ namespace CSWebAPI.WebAPI.Controllers
             {
                 return BadRequest("sumtingwong");
             }
-
-            // try
-            // {
-            //     await _employeeRepository.AddEmployee(employee);
-
-            //     return Created($"api/v1/employee/{employee.Empno}", employee);
-            // }
-            // catch (System.Exception)
-            // {
-            //     return BadRequest("Something is wrong");
-            // }
 
         }
 

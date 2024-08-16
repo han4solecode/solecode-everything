@@ -8,12 +8,10 @@ namespace CSWebAPI.Persistance.Repositories
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly AppDbContext _context;
-        // private readonly CompanyOptions _options;
 
         public EmployeeRepository(AppDbContext appDbContext)
         {
             _context = appDbContext;
-            // _options = options.Value;
         }
 
         public async Task AddEmployee(Employee employee)

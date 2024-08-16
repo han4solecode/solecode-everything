@@ -8,12 +8,10 @@ namespace CSWebAPI.WebAPI.Controllers
     [Route("api/[controller]")]
     public class InfoController : ControllerBase
     {
-        // private readonly ICompanyService _companyService;
         private readonly IInfoService _infoService;
 
         public InfoController(IInfoService infoService)
         {
-            // _companyService = companyService;
             _infoService = infoService;
         }
 
