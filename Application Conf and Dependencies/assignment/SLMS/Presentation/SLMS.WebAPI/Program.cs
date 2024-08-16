@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using SLMS.Persistance;
 
 namespace SLMS.WebAPI;
@@ -11,7 +12,10 @@ public class Program
         // Add services to the container.
         builder.Services.ConfiguringPersistance(builder.Configuration);
 
-        builder.Services.AddControllers();
+        var libraryConfig = builder.Configuration.GetSection(LibraryOptions.SettingName);
+        builder.Services.Configure<LibraryOptions>(libraryConfig);
+
+        builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
