@@ -4,6 +4,6 @@ namespace SLMS.Domain.DTOs
     {
         public int UserId { get; set; }
 
-        public int[] BookIds { get; set; } = []; 
+        public int[] BookIds { get; set; } = [];
     }
 }
