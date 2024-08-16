@@ -17,9 +17,9 @@ namespace SLMS.Persistance.Repositories
             _options = libraryOptions.Value;
         }
 
-        public async Task AddLending(Lending lending)
+        public async Task AddLending(IEnumerable<Lending> lending)
         {
-            await _context.Lendings.AddAsync(lending);
+            _context.Lendings.AddRange(lending);
             await _context.SaveChangesAsync();
         }
 
@@ -76,31 +76,5 @@ namespace SLMS.Persistance.Repositories
 
             return lendingToBeUpdated;
         }
-
-        // public async Task<IEnumerable<Lending>?> BorrowBook(int userId, int[] bookIds)
-        // {
-        //     var user = new UserRepository(_context).GetUserById(userId);
-
-        //     if (user == null)
-        //     {
-        //         return null;
-        //     }
-
-        //     if (bookIds.Length > _options.MaxBorrowedBook)
-        //     {
-        //         return null;
-        //     }
-
-        //     // var availableBooks = new BookRepository(_context).GetAllBooks();
-
-        //     var isBookAvailable = bookIds.All(x => _context.Books.Any(y => y.Bookid == x));
-
-        //     if (!isBookAvailable)
-        //     {
-        //         return null;
-        //     }
-
-
-        // }
     }
 }

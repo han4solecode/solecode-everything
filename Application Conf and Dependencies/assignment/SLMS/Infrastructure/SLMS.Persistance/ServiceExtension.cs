@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SLMS.Application.Repositories;
 using SLMS.Persistance.Data;
 using SLMS.Persistance.Repositories;
+using SLMS.Persistance.Services;
 
 namespace SLMS.Persistance
 {
@@ -17,6 +18,8 @@ namespace SLMS.Persistance
             });
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ILendingRepository, LendingRepository>();
+            services.AddScoped<BookManager>();
         }
     }
 }
