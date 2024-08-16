@@ -10,8 +10,16 @@ namespace CSWebAPI.Application.Repositories
 
         Task AddProject(Project project);
 
-        Task<Project?> UpdateProject(int id, Project inputProject);
+        Task UpdateProject(Project inputProject);
 
-        Task<bool> DeleteProject(int id);
+        Task DeleteProject(Project project);
+
+        Task<int> DepartmentProjectCount(int projDeptNo);
+
+        Task<IEnumerable<Project>> ITAndHRProjects();
+
+        Task<IEnumerable<Project>> NoEmpProject();
+
+        Task<IEnumerable<Project>> PlanningProjects();
     }
 }

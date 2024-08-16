@@ -10,8 +10,26 @@ namespace CSWebAPI.Application.Repositories
 
         Task AddEmployee(Employee employee);
 
-        Task<Employee?> UpdateEmployee(int id, Employee inputEmployee);
+        Task UpdateEmployee(Employee inputEmployee);
 
-        Task<bool> DeleteEmployee(int id);
+        Task DeleteEmployee(Employee employee);
+
+        Task<int> ITEmpCount();
+
+        Task<int> ITDeptNo();
+
+        Task<IEnumerable<Employee>> Born8090();
+
+        Task<IEnumerable<Employee>> DueRetireManager(int retirementAge);
+
+        Task<IEnumerable<Employee>> EmpNotManager();
+
+        Task<IEnumerable<Employee>> FemaleBornAfter90();
+
+        Task<IEnumerable<Employee>> FemaleManager();
+
+        Task<int> FemaleManagerCount();
+
+        Task<IEnumerable<Employee>> FromBRICS();
     }
 }

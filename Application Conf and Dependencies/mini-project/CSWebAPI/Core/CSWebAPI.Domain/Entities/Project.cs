@@ -18,7 +18,7 @@ public partial class Project
     public string Projname { get; set; } = null!;
 
     [Column("deptno")]
-    public int? Deptno { get; set; }
+    public int Deptno { get; set; }
 
     [ForeignKey("Deptno")]
     [InverseProperty("Projects")]

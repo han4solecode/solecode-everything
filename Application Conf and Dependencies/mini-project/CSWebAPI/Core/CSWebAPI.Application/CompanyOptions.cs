@@ -1,4 +1,4 @@
-namespace CSWebAPI.Persistance
+namespace CSWebAPI.Application
 {
     public class CompanyOptions
     {

@@ -10,8 +10,8 @@ namespace CSWebAPI.Application.Repositories
 
         Task AddDepartment(Department department);
 
-        Task<Department?> UpdateDepartment(int id, Department inputDepartment);
+        Task UpdateDepartment(Department inputDepartment);
 
-        Task<bool> DeleteDepartment(int id);
+        Task DeleteDepartment(Department department);
     }
 }

@@ -8,55 +8,24 @@ namespace CSWebAPI.Persistance.Repositories
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly AppDbContext _context;
-        private readonly CompanyOptions _options;
+        // private readonly CompanyOptions _options;
 
-        public EmployeeRepository(AppDbContext appDbContext, IOptions<CompanyOptions> options)
+        public EmployeeRepository(AppDbContext appDbContext)
         {
             _context = appDbContext;
-            _options = options.Value;
+            // _options = options.Value;
         }
 
         public async Task AddEmployee(Employee employee)
         {
-            var itEmpCount = await _context.Employees.Include(e => e.DeptnoNavigation).Where(e => e.DeptnoNavigation.Deptname == "IT").CountAsync();
-
-            // check if new employee dept is IT and IT emp count less than 9
-            // if (employee.Department.Deptname == "IT")
-            // {
-            //     if (itEmpCount < _options.ITDeptMaxEmp)
-            //     {
-
-            //     }
-            //     else
-            //     {
-
-            //     }
-            // }
-
-            // check if new employee dept is IT and IT emp count less than 9
-            if (employee.Department.Deptname == "IT" && itEmpCount < _options.ITDeptMaxEmp)
-            {
-                await _context.Employees.AddAsync(employee);
-                await _context.SaveChangesAsync();
-            }
-            else if (employee.Department.Deptname != "IT")
-            {
-                await _context.Employees.AddAsync(employee);
-                await _context.SaveChangesAsync();
-            }
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteEmployee(int id)
+        public async Task DeleteEmployee(Employee employee)
         {
-            var employeeToBeDeleted = await _context.Employees.FindAsync(id);
-
-            if (employeeToBeDeleted != null)
-            {
-                _context.Employees.Remove(employeeToBeDeleted);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _context.Employees.Remove(employee);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Employee>> GetAllEmployee(int recordsPerPage, int currentPage)
@@ -71,39 +40,73 @@ namespace CSWebAPI.Persistance.Repositories
             return employee;
         }
 
-        public async Task<Employee?> UpdateEmployee(int id, Employee inputEmployee)
+        public async Task UpdateEmployee(Employee inputEmployee)
         {
-            var employeeToBeUpdated = await _context.Employees.FindAsync(id);
-            var itEmpCount = await _context.Employees.Include(e => e.DeptnoNavigation).Where(e => e.DeptnoNavigation.Deptname == "IT").CountAsync();
+            _context.Employees.Update(inputEmployee);
+            await _context.SaveChangesAsync();
+        }
 
-            if (employeeToBeUpdated == null)
-            {
-                return null;
-            }
+        public async Task<int> ITEmpCount()
+        {
+            var count = await _context.Employees.Include(e => e.DeptnoNavigation).Where(e => e.DeptnoNavigation.Deptname == "IT").CountAsync();
 
-            employeeToBeUpdated.Fname = inputEmployee.Fname;
-            employeeToBeUpdated.Lname = inputEmployee.Lname;
-            employeeToBeUpdated.Address = inputEmployee.Address;
-            employeeToBeUpdated.Dob = inputEmployee.Dob;
-            employeeToBeUpdated.Sex = inputEmployee.Sex;
-            employeeToBeUpdated.Position = inputEmployee.Position;
-            employeeToBeUpdated.Deptno = inputEmployee.Deptno;
+            return count;
+        }
 
-            // check if the updated employee dept is IT and IT emp count less than 9
-            if (employeeToBeUpdated.Department.Deptname == "IT" && itEmpCount < _options.ITDeptMaxEmp)
-            {
-                _context.Employees.Update(employeeToBeUpdated);
-                await _context.SaveChangesAsync();
-                return employeeToBeUpdated;
-            }
-            else if (employeeToBeUpdated.Department.Deptname != "IT")
-            {
-                _context.Employees.Update(employeeToBeUpdated);
-                await _context.SaveChangesAsync();
-                return employeeToBeUpdated;
-            }
+        public async Task<int> ITDeptNo()
+        {
+            var deptNo = await _context.Departments.Where(d => d.Deptname == "IT").Select(d => d.Deptno).SingleOrDefaultAsync();
 
-            return null;
+            return deptNo;
+        }
+
+        public async Task<IEnumerable<Employee>> Born8090()
+        {
+            var employees = await _context.Employees.Where(e => e.Dob >= new DateOnly(1980, 1, 1) && e.Dob <= new DateOnly(1990, 1, 1)).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> DueRetireManager(int retirementAge)
+        {
+            var managers = await _context.Employees.Where(e => e.Empno == e.Department.Mgrempno && (DateOnly.FromDateTime(DateTime.Now).Year - e.Dob.Year) == retirementAge).OrderBy(e => e.Lname).ToListAsync();
+
+            return managers;
+        }
+
+        public async Task<IEnumerable<Employee>> EmpNotManager()
+        {
+            var employee = await _context.Employees.Where(e => e.Empno != e.Department.Mgrempno).ToListAsync();
+
+            return employee;
+        }
+
+        public async Task<IEnumerable<Employee>> FemaleBornAfter90()
+        {
+            var employees = await _context.Employees.Where(e => e.Sex == "Female" && e.Dob >= new DateOnly(1990, 1, 1)).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> FemaleManager()
+        {
+            var employees = await _context.Employees.Where(e => e.Sex == "Female" && e.Empno == e.Department.Mgrempno).OrderBy(e => e.Lname).ThenBy(e => e.Fname).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<int> FemaleManagerCount()
+        {
+            var count = await _context.Employees.Where(e => e.Sex == "Female" && e.Empno == e.Department.Mgrempno).CountAsync();
+
+            return count;
+        }
+
+        public async Task<IEnumerable<Employee>> FromBRICS()
+        {
+            var employees = await _context.Employees.Where(e => e.Address.Contains("Brazil") || e.Address.Contains("Russia") || e.Address.Contains("India") || e.Address.Contains("China") || e.Address.Contains("South Africa")).OrderBy(e => e.Lname).ToListAsync();
+
+            return employees;
         }
     }
 }

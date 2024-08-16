@@ -22,7 +22,7 @@ public partial class Workson
     public DateOnly? Dateworked { get; set; }
 
     [Column("hoursworked")]
-    public int? Hoursworked { get; set; }
+    public int Hoursworked { get; set; }
 
     [ForeignKey("Empno")]
     [InverseProperty("Worksons")]

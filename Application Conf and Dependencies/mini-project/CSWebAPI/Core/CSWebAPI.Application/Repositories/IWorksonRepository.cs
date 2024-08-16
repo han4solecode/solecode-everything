@@ -10,8 +10,12 @@ namespace CSWebAPI.Application.Repositories
 
         Task AddWorkson(Workson workson);
 
-        Task<Workson?> UpdateWorkson(int empNo, int projNo, Workson inputWorkson);
+        Task UpdateWorkson(Workson inputWorkson);
 
-        Task<bool> DeleteWorkson(int empNo, int projNo);
+        Task DeleteWorkson(Workson workson);
+
+        Task<int> TotalHoursWorkedInProject(int projNo);
+
+        Task<int> AssignedEmployeeCount(int empNo);
     }
 }

@@ -1,8 +1,8 @@
 using CSWebAPI.Domain.Entities;
 
-namespace CSWebAPI.Application.Services
+namespace CSWebAPI.Application.Services.Interfaces
 {
-    public interface ICompanyServices
+    public interface IInfoService
     {
         // a
         Task<IEnumerable<Employee>> FromBRICS();
@@ -47,10 +47,10 @@ namespace CSWebAPI.Application.Services
         Task<IEnumerable<Object>> EmpNotManagerAndSupervisor();
 
         // o
-        Task<IEnumerable<Employee>> FemaleManagerProjects();
+        Task<IEnumerable<Object>> FemaleManagerProjects();
 
         // p
-        Task<IEnumerable<Object>> MaxAndMinWorkHours();
+        Task<Object> MaxAndMinWorkHours();
 
         // q
         Task<IEnumerable<Object>> EmpTotalWorkHours();

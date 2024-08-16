@@ -8,37 +8,26 @@ namespace CSWebAPI.Persistance.Repositories
     public class ProjectRepository : IProjectRepository
     {
         private readonly AppDbContext _context;
-        private readonly CompanyOptions _options;
+        // private readonly CompanyOptions _options;
 
-        public ProjectRepository(AppDbContext appDbContext, IOptions<CompanyOptions> options)
+        public ProjectRepository(AppDbContext appDbContext)
         {
             _context = appDbContext;
-            _options = options.Value;
+            // _options = options.Value
         }
 
         public async Task AddProject(Project project)
         {
-            var deptProjCount = await _context.Projects.Where(p => p.Deptno == project.Deptno).CountAsync();
 
-            // check if dept project is less than 10
-            if (deptProjCount < _options.MaxDeptProject)
-            {
-                await _context.Projects.AddAsync(project);
-                await _context.SaveChangesAsync();
-            }
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+
         }
 
-        public async Task<bool> DeleteProject(int id)
+        public async Task DeleteProject(Project project)
         {
-            var projectToBeDeleted = await _context.Projects.FindAsync(id);
-
-            if (projectToBeDeleted != null)
-            {
-                _context.Projects.Remove(projectToBeDeleted);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Project>> GetAllProject(int recordsPerPage, int currentPage)
@@ -53,31 +42,39 @@ namespace CSWebAPI.Persistance.Repositories
             return project;
         }
 
-        public async Task<Project?> UpdateProject(int id, Project inputProject)
+        public async Task UpdateProject(Project inputProject)
         {
-            var projectToBeUpdated = await _context.Projects.FindAsync(id);
+            _context.Projects.Update(inputProject);
+            await _context.SaveChangesAsync();
+        }
 
-            if (projectToBeUpdated == null)
-            {
-                return null;
-            }
+        public async Task<int> DepartmentProjectCount(int projDeptNo)
+        {
+            var deptProjCount = await _context.Projects.Where(p => p.Deptno == projDeptNo).CountAsync();
 
-            projectToBeUpdated.Projname = inputProject.Projname;
-            projectToBeUpdated.Deptno = inputProject.Deptno;
+            return deptProjCount;
+        }
 
-            var deptProjCount = await _context.Projects.Where(p => p.Deptno == projectToBeUpdated.Deptno).CountAsync();
+        public async Task<IEnumerable<Project>> ITAndHRProjects()
+        {
+            var projects = await _context.Projects.Where(p => p.DeptnoNavigation.Deptname == "IT" || p.DeptnoNavigation.Deptname == "HR").ToListAsync();
 
-            // check if dept project is less than 10
-            if (deptProjCount < _options.MaxDeptProject)
-            {
-                _context.Projects.Update(projectToBeUpdated);
-                await _context.SaveChangesAsync();
-                return projectToBeUpdated;
-            } 
-            else
-            {
-                return null;
-            }
+            return projects;
+        }
+
+        public async Task<IEnumerable<Project>> NoEmpProject()
+        {
+            var workson = await _context.Worksons.Select(w => w.Projno).ToListAsync();
+            var NoEmpProject = await _context.Projects.Where(p => !workson.Contains(p.Projno)).ToListAsync();
+
+            return NoEmpProject;
+        }
+
+        public async Task<IEnumerable<Project>> PlanningProjects()
+        {
+            var projects = await _context.Projects.Where(p => p.DeptnoNavigation.Deptname == "Planning").ToListAsync();
+
+            return projects;
         }
     }
 }

@@ -19,17 +19,10 @@ namespace CSWebAPI.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteDepartment(int id)
+        public async Task DeleteDepartment(Department department)
         {
-            var departmentToBeDeleted = await _context.Departments.FindAsync(id);
-
-            if (departmentToBeDeleted != null)
-            {
-                _context.Departments.Remove(departmentToBeDeleted);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _context.Departments.Remove(department);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Department>> GetAllDepartment(int recordsPerPage, int currentPage)
@@ -44,21 +37,10 @@ namespace CSWebAPI.Persistance.Repositories
             return department;
         }
 
-        public async Task<Department?> UpdateDepartment(int id, Department inputDepartment)
+        public async Task UpdateDepartment(Department inputDepartment)
         {
-            var departmentToBeUpdated = await _context.Departments.FindAsync(id);
-
-            if (departmentToBeUpdated == null)
-            {
-                return null;
-            }
-
-            departmentToBeUpdated.Deptname = inputDepartment.Deptname;
-            departmentToBeUpdated.Mgrempno = inputDepartment.Mgrempno;
-
-            _context.Departments.Update(departmentToBeUpdated);
+            _context.Departments.Update(inputDepartment);
             await _context.SaveChangesAsync();
-            return departmentToBeUpdated;
         }
     }
 }
