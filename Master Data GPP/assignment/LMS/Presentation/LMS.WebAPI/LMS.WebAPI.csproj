@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\LMS.Application\LMS.Application.csproj" />
     <ProjectReference Include="..\..\Core\LMS.Domain\LMS.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LMS.Persistance\LMS.Persistance.csproj" />
   </ItemGroup>
 
 </Project>
