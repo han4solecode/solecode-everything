@@ -54,11 +54,11 @@ namespace LMS.Persistance.Repositories
             var books = _context.Books.AsQueryable();
 
             var res = await books.Where(b => 
-                ((!string.IsNullOrEmpty(query.Author) && b.Author.Contains(query.Author)) ||
-                (!string.IsNullOrEmpty(query.Category) && b.Category!.Contains(query.Category)) ||
-                (!string.IsNullOrEmpty(query.ISBN) && b.ISBN.Contains(query.ISBN)) ||
-                (!string.IsNullOrEmpty(query.Language) && b.Language!.Contains(query.Language)) ||
-                (!string.IsNullOrEmpty(query.Title) && b.Title.Contains(query.Title))) && b.IsDeleted == false
+                ((!string.IsNullOrEmpty(query.Author) && b.Author.ToLower().Contains(query.Author.ToLower())) ||
+                (!string.IsNullOrEmpty(query.Category) && b.Category!.ToLower().Contains(query.Category.ToLower())) ||
+                (!string.IsNullOrEmpty(query.ISBN) && b.ISBN.ToLower().Contains(query.ISBN.ToLower())) ||
+                (!string.IsNullOrEmpty(query.Language) && b.Language!.ToLower().Contains(query.Language.ToLower())) ||
+                (!string.IsNullOrEmpty(query.Title) && b.Title.ToLower().Contains(query.Title.ToLower()))) && b.IsDeleted == false
             ).Skip((currentPage - 1) * recordsPerPage).Take(recordsPerPage).OrderBy(b => b.Title).ToListAsync();
 
             return res;
