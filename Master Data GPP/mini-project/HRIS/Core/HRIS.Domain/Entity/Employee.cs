@@ -45,6 +45,9 @@ namespace HRIS.Domain.Entity
         [StringLength(255)]
         public string Position { get; set; } = null!;
 
+        [Column("level")]
+        public int Level { get; set; }
+
         [Column("employmenttype")]
         [StringLength(255)]
         public string Employmenttype { get; set; } = null!;
