@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\HRIS.Domain\HRIS.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\HRIS.Application\HRIS.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\HRIS.Persistance\HRIS.Persistance.csproj" />
+  </ItemGroup>
+
+</Project>
