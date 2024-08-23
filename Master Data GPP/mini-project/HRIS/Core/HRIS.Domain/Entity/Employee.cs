@@ -45,9 +45,6 @@ namespace HRIS.Domain.Entity
         [StringLength(255)]
         public string Position { get; set; } = null!;
 
-        [Column("level")]
-        public int Level { get; set; }
-
         [Column("employmenttype")]
         [StringLength(255)]
         public string Employmenttype { get; set; } = null!;
@@ -72,6 +69,12 @@ namespace HRIS.Domain.Entity
         [Column("deptno")]
         public int? Deptno { get; set; }
 
+        [Column("level")]
+        public int Level { get; set; }
+
+        [Column("supervisorempno")]
+        public int? Supervisorempno { get; set; }
+
         [InverseProperty("MgrempnoNavigation")]
         public virtual Department? Department { get; set; }
 
@@ -81,6 +84,13 @@ namespace HRIS.Domain.Entity
 
         [InverseProperty("EmpnoNavigation")]
         public virtual ICollection<Empdependent> Empdependents { get; set; } = new List<Empdependent>();
+
+        [InverseProperty("SupervisorempnoNavigation")]
+        public virtual ICollection<Employee> InverseSupervisorempnoNavigation { get; set; } = new List<Employee>();
+
+        [ForeignKey("Supervisorempno")]
+        [InverseProperty("InverseSupervisorempnoNavigation")]
+        public virtual Employee? SupervisorempnoNavigation { get; set; }
 
         [InverseProperty("EmpnoNavigation")]
         public virtual ICollection<Workson> Worksons { get; set; } = new List<Workson>();

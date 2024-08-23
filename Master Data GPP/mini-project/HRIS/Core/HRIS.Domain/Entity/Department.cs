@@ -19,9 +19,6 @@ namespace HRIS.Domain.Entity
         [Column("mgrempno")]
         public int? Mgrempno { get; set; }
 
-        [Column("locationid")]
-        public int? Locationid { get; set; }
-
         [InverseProperty("DeptnoNavigation")]
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
