@@ -1,3 +1,5 @@
+using HRIS.Persistance;
+using HRIS.Application;
 
 namespace HRIS.WebAPI;
 
@@ -8,6 +10,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.ConfigurePersistance(builder.Configuration);
+        builder.Services.ConfigureApplication();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
