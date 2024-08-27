@@ -1,0 +1,6 @@
+@LMS.WebAPI_HostAddress = http://localhost:5167
+
+GET {{LMS.WebAPI_HostAddress}}/swagger
+Accept: application/json
+
+###
