@@ -1,10 +1,10 @@
-using LMS.Application.Persistance.Common;
-using LMS.Domain.Entities;
+// using LMS.Application.Persistance.Common;
+// using LMS.Domain.Entities;
 
-namespace LMS.Application.Persistance
-{
-    public interface IUserRepository : IBaseRepository<User>
-    {
+// namespace LMS.Application.Persistance
+// {
+//     public interface IUserRepository : IBaseRepository<User>
+//     {
         
-    }
-}
+//     }
+// }
