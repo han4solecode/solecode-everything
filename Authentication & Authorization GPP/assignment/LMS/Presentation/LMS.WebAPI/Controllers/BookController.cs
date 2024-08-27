@@ -2,6 +2,7 @@ using LMS.Application.Contracts;
 using LMS.Application.Mappers;
 using LMS.Application.Persistance.Helper;
 using LMS.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.WebAPI.Controllers
@@ -17,6 +18,7 @@ namespace LMS.WebAPI.Controllers
             _bookService = bookService;
         }
 
+        [Authorize(Roles = "Library User, Librarian")]
         [HttpGet]
         public async Task<IActionResult> GetAllBooks([FromQuery] int recordsPerPage, [FromQuery] int currentPage)
         {
@@ -25,6 +27,7 @@ namespace LMS.WebAPI.Controllers
             return Ok(books);
         }
 
+        [Authorize(Roles = "Library User, Librarian")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById(int id)
         {
@@ -43,6 +46,7 @@ namespace LMS.WebAPI.Controllers
             return Ok(book);
         }
 
+        [Authorize(Roles = "Librarian")]
         [HttpPost]
         public async Task<IActionResult> AddBook([FromBody] Book book)
         {
@@ -56,6 +60,7 @@ namespace LMS.WebAPI.Controllers
             return CreatedAtAction(nameof(GetBookById), new { id = book.Id}, book);
         }
 
+        [Authorize(Roles = "Librarian")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(int id, [FromBody] Book inputBook)
         {
@@ -80,7 +85,8 @@ namespace LMS.WebAPI.Controllers
                 return BadRequest();
             }
         }
-
+        
+        [Authorize(Roles = "Librarian")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveBook(int id)
         {
@@ -106,6 +112,7 @@ namespace LMS.WebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "Library User, Librarian")]
         [HttpGet("search")]
         public async Task<IActionResult> SearchBookByQuery([FromQuery] int recordsPerPage, [FromQuery] int currentPage, [FromQuery] QueryObject query)
         {
@@ -114,6 +121,7 @@ namespace LMS.WebAPI.Controllers
             return Ok(books);
         }
 
+        [Authorize(Roles = "Librarian")]
         [HttpPatch("{id}/softdelete")]
         public async Task<IActionResult> BookSoftDelete(int id, [FromQuery] string? reason)
         {

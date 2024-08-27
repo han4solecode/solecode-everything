@@ -1,5 +1,8 @@
 using LMS.Persistance;
 using LMS.Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 namespace LMS.WebAPI;
 
 public class Program
@@ -11,6 +14,27 @@ public class Program
         // Add services to the container.
         builder.Services.ConfigurePersistance(builder.Configuration);
         builder.Services.ConfigureApplication();
+
+        var configuration = builder.Configuration;
+
+        builder.Services.AddAuthentication(opt => {
+            opt.DefaultAuthenticateScheme =
+            opt.DefaultChallengeScheme =
+            opt.DefaultForbidScheme =
+            opt.DefaultScheme =
+            opt.DefaultSignInScheme =
+            opt.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(opt => {
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = configuration["JWT:Issuer"],
+                ValidateAudience = true,
+                ValidAudience= configuration["JWT:Audience"],
+                ValidateIssuerSigningKey= true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SigningKey"]!)),
+            };
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -28,6 +52,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
 
