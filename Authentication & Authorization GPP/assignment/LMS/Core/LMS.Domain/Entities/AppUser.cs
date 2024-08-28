@@ -18,5 +18,9 @@ namespace LMS.Domain.Entities
 
         [PersonalData]
         public decimal? Penalty { get; set; }
+
+        // refresh token
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

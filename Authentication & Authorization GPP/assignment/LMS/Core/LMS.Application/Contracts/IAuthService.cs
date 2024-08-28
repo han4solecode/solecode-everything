@@ -9,6 +9,8 @@ namespace LMS.Application.Contracts
 
         Task<ResponseModel> LoginAsync(LoginModel model);
 
+        Task<ResponseModel> LogoutAsync(string userName);
+
         Task<ResponseModel> CreateRoleAsync(string roleName);
 
         Task<ResponseModel> RegisterLibraryManager(RegisterModel model);
@@ -16,5 +18,7 @@ namespace LMS.Application.Contracts
         Task<ResponseModel> RegisterLibrarian(RegisterModel model);
 
         Task<ResponseModel> RegisterLibraryUser(RegisterModel model);
+
+        Task<ResponseModel> RefreshAccessToken(string refreshToken);
     }
 }

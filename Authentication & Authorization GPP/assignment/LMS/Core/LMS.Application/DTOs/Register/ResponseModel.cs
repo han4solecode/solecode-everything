@@ -9,5 +9,9 @@ namespace LMS.Application.DTOs.Register
         public string? Token { get; set; }
 
         public DateTime? ExpiredOn { get; set; }
+
+        public string? RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

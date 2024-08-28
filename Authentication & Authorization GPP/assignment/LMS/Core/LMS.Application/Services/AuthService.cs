@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using LMS.Application.Contracts;
 using LMS.Application.DTOs.Login;
@@ -68,10 +69,36 @@ namespace LMS.Application.Services
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
 
+                // check if refresh token is exist and valid
+                if (user.RefreshToken != null && user.RefreshTokenExpiryTime > DateTime.UtcNow)
+                {
+                    return new ResponseModel
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(token),
+                        ExpiredOn = token.ValidTo,
+                        RefreshToken = user.RefreshToken,
+                        RefreshTokenExpiryTime = user.RefreshTokenExpiryTime,
+                        Status = "Success",
+                        Message = "Login successful!"
+                    };
+                }
+
+                // if refresh token is null or invalid, generate refresh token and update user
+                var refreshToken = GenerateRefreshToken();
+                // var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+                var refreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(3);
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = refreshTokenExpiryTime;
+
+                await _userManager.UpdateAsync(user);
+
                 return new ResponseModel
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
                     ExpiredOn = token.ValidTo,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = refreshTokenExpiryTime,
                     Status = "Success",
                     Message = "Login successful!"
                 };
@@ -82,6 +109,96 @@ namespace LMS.Application.Services
                 Status = "Error",
                 Message = "Username or password is not valid!"
             };
+        }
+
+        public async Task<ResponseModel> LogoutAsync(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+            {
+                return new ResponseModel
+                {
+                    Status = "Error",
+                    Message = "User not found"
+                };
+            }
+
+            if (user.RefreshToken == null)
+            {
+                return new ResponseModel
+                {
+                    Status = "Error",
+                    Message = "User already logged out"
+                };
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+            await _userManager.UpdateAsync(user);
+
+            return new ResponseModel
+            {
+                Status = "Success",
+                Message = "User logged out successfully"
+            };
+        }
+
+        public async Task<ResponseModel> RefreshAccessToken(string refreshToken)
+        {
+            var user = await _userManager.Users.Where(u => u.RefreshToken == refreshToken).SingleOrDefaultAsync();
+
+            if (user == null)
+            {
+                return new ResponseModel
+                {
+                    Status = "Error",
+                    Message = $"User with {refreshToken} refresh token does not exist."
+                };
+            }
+
+            if (user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            {
+                return new ResponseModel
+                {
+                    Status = "Error",
+                    Message = "Refresh token is not valid. Please log in.",
+                };
+            } else
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName!),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]!));
+
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["JWT:Issuer"],
+                    audience: _configuration["JWT:Audience"],
+                    expires: DateTime.Now.AddMinutes(1),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+                return new ResponseModel
+                {
+                    Status = "Success",
+                    Message = "Access token refreshed successfully!",
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    ExpiredOn = token.ValidTo,
+                    RefreshToken = user.RefreshToken,
+                    RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+                };
+            }
         }
 
         public async Task<ResponseModel> RegisterLibrarian(RegisterModel model)
@@ -149,6 +266,16 @@ namespace LMS.Application.Services
             };
         }
 
+        private static string GenerateRefreshToken()
+        {
+            var randNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randNumber);
+                return Convert.ToBase64String(randNumber);
+            }
+        }
+
         private async Task<ResponseModel> CreateUser(RegisterModel model, string role)
         {
             var userExist = await _userManager.FindByNameAsync(model.Username);
@@ -163,111 +290,40 @@ namespace LMS.Application.Services
             }
 
             AppUser user = new AppUser()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                LibraryCard = new LibraryCard
                 {
-                    Email = model.Email,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = model.Username,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    LibraryCard = new LibraryCard
-                    {
-                        CardNumber = Guid.NewGuid().ToString(),
-                        ExpiryDate = DateOnly.FromDateTime(DateTime.Now).AddMonths(3)
-                    }
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (!result.Succeeded)
-                {
-                    return new ResponseModel
-                    {
-                        Status = "Error",
-                        Message = "User creation failed! Please check user details and try again."
-                    };
+                    CardNumber = Guid.NewGuid().ToString(),
+                    ExpiryDate = DateOnly.FromDateTime(DateTime.Now).AddMonths(3)
                 }
+            };
 
-                if (await _roleManager.RoleExistsAsync(role))
-                {
-                    await _userManager.AddToRoleAsync(user, role);
-                }
+            var result = await _userManager.CreateAsync(user, model.Password);
 
+            if (!result.Succeeded)
+            {
                 return new ResponseModel
                 {
-                    Status = "Success",
-                    Message = "User created successfully!"
+                    Status = "Error",
+                    Message = "User creation failed! Please check user details and try again."
                 };
+            }
 
-            // if (role == "Library Manager" || role == "Librarian")
-            // {
-            //     AppUser user = new AppUser()
-            //     {
-            //         Email = model.Email,
-            //         SecurityStamp = Guid.NewGuid().ToString(),
-            //         UserName = model.Username,
-            //         FirstName = model.FirstName,
-            //         LastName = model.LastName,
-            //         LibraryCard = new LibraryCard
-            //         {
-            //             CardNumber = Guid.NewGuid().ToString(),
-            //             ExpiryDate = DateOnly.FromDateTime(DateTime.Now).AddMonths(3)
-            //         }
-            //     };
+            if (await _roleManager.RoleExistsAsync(role))
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            }
 
-            //     var result = await _userManager.CreateAsync(user, model.Password);
-
-            //     if (!result.Succeeded)
-            //     {
-            //         return new ResponseModel
-            //         {
-            //             Status = "Error",
-            //             Message = "User creation failed! Please check user details and try again."
-            //         };
-            //     }
-
-            //     if (await _roleManager.RoleExistsAsync(role))
-            //     {
-            //         await _userManager.AddToRoleAsync(user, role);
-            //     }
-
-            //     return new ResponseModel
-            //     {
-            //         Status = "Success",
-            //         Message = "User created successfully!"
-            //     };
-            // } else
-            // {
-            //     AppUser user = new AppUser()
-            //     {
-            //         Email = model.Email,
-            //         SecurityStamp = Guid.NewGuid().ToString(),
-            //         UserName = model.Username,
-            //         FirstName = model.FirstName,
-            //         LastName = model.LastName,
-            //     };
-
-            //     var result = await _userManager.CreateAsync(user, model.Password);
-
-            //     if (!result.Succeeded)
-            //     {
-            //         return new ResponseModel
-            //         {
-            //             Status = "Error",
-            //             Message = "User creation failed! Please check user details and try again."
-            //         };
-            //     }
-
-            //     if (await _roleManager.RoleExistsAsync(role))
-            //     {
-            //         await _userManager.AddToRoleAsync(user, role);
-            //     }
-
-            //     return new ResponseModel
-            //     {
-            //         Status = "Success",
-            //         Message = "User created successfully!"
-            //     };
-            // }
+            return new ResponseModel
+            {
+                Status = "Success",
+                Message = "User created successfully!"
+            };
         }
     }
 }
