@@ -54,6 +54,19 @@ namespace LMS.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync([FromBody] string userName)
+        {
+            var result = await _authService.LogoutAsync(userName);
+
+            if (result.Status == "Error")
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result.Message);
+        }
+
         [HttpPost("role")]
         public async Task<IActionResult> CreateRoleAsync([FromBody] string roleName)
         {
@@ -109,6 +122,19 @@ namespace LMS.WebAPI.Controllers
             }
 
             var result = await _authService.RegisterLibraryManager(model);
+
+            if (result.Status == "Error")
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshAccessToken([FromBody] string refreshToken)
+        {
+            var result = await _authService.RefreshAccessToken(refreshToken);
 
             if (result.Status == "Error")
             {
