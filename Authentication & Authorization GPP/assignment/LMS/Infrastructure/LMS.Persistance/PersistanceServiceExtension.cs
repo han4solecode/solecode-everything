@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LMS.Persistance
 {
-    public static class ApplicationServiceExtension
+    public static class PersistanceServiceExtension
     {
         public static void ConfigurePersistance(this IServiceCollection services, IConfiguration configuration)
         {
