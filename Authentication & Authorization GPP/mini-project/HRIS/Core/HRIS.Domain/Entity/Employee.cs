@@ -1,11 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 
 namespace HRIS.Domain.Entity
 {
     public class Employee : IdentityUser
     {
+        // [Key]
+        // [Column("empno")]
+        // public int Empno { get; set; }
+
         [Column("fname")]
         [StringLength(255)]
         public string Fname { get; set; } = null!;
@@ -24,7 +29,7 @@ namespace HRIS.Domain.Entity
 
         // [Column("phonenumber")]
         // [StringLength(255)]
-        // public string PhoneNumber { get; set; } = null!;
+        // public string Phonenumber { get; set; } = null!;
 
         // [Column("email")]
         // [StringLength(255)]
@@ -37,13 +42,13 @@ namespace HRIS.Domain.Entity
         [StringLength(255)]
         public string Sex { get; set; } = null!;
 
-        [Column("position")]
-        [StringLength(255)]
-        public string Position { get; set; } = null!;
+        // [Column("position")]
+        // [StringLength(255)]
+        // public string Position { get; set; } = null!;
 
         [Column("employmenttype")]
         [StringLength(255)]
-        public string EmploymentType { get; set; } = null!;
+        public string Employmenttype { get; set; } = null!;
 
         [Column("salary")]
         public decimal Salary { get; set; }
@@ -57,7 +62,7 @@ namespace HRIS.Domain.Entity
 
         [Column("deactreason")]
         [StringLength(255)]
-        public string? DeactReason { get; set; }
+        public string? Deactreason { get; set; }
 
         [Column("deactivated_at")]
         public DateOnly? DeactivatedAt { get; set; }
@@ -94,5 +99,9 @@ namespace HRIS.Domain.Entity
         // refresh token
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        // // foreign key to ApplicationUser entity
+        // public string ApplicationUserId { get; set; } = null!;
+        // public ApplicationUser ApplicationUser { get; set; } = null!;
     }
 }

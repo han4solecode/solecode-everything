@@ -7,7 +7,7 @@ namespace HRIS.Domain.Entity
     public class Location
     {
         [Key]
-        [Column("id")]
+        [Column("locationid")]
         public int Id { get; set; }
 
         [Column("address")]

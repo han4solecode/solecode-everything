@@ -17,7 +17,7 @@ namespace HRIS.Domain.Entity
         public string Deptname { get; set; } = null!;
 
         [Column("mgrempno")]
-        public int? Mgrempno { get; set; }
+        public string? Mgrempno { get; set; }
 
         [InverseProperty("DeptnoNavigation")]
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();

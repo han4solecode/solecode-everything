@@ -24,7 +24,7 @@ namespace HRIS.Domain.Entity
         public string Relationship { get; set; } = null!;
 
         [Column("empno")]
-        public int? Empno { get; set; }
+        public string? Empno { get; set; }
 
         [ForeignKey("Empno")]
         [InverseProperty("Empdependents")]
