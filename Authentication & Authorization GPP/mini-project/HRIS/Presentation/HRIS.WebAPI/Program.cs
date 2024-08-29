@@ -1,5 +1,6 @@
 using System.Text;
 using HRIS.Persistance;
+using HRIS.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,6 +15,7 @@ public class Program
         // Add services to the container.
         builder.Services.ConfigurePersistance(builder.Configuration);
         builder.Services.ConfigureIdentity();
+        builder.Services.ConfigureApplication();
 
         var configuration = builder.Configuration;
 
