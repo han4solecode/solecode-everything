@@ -14,7 +14,11 @@ namespace HRIS.Application.DTOs.Register
 
         public string Lname { get; set; } = null!;
 
+        public string Address { get; set; } = null!;
+
         public string Ssn { get; set; } = null!;
+
+        public string PhoneNumber { get; set; } = null!;
 
         public DateOnly Dob { get; set; }
 
@@ -25,6 +29,8 @@ namespace HRIS.Application.DTOs.Register
         public decimal Salary { get; set; }
 
         public string Status { get; set; } = null!;
+
+        public int? Deptno { get; set; }
 
         public int Level { get; set; }
 

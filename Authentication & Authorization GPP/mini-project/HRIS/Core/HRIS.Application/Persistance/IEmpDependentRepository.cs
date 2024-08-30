@@ -5,6 +5,6 @@ namespace HRIS.Application.Persistance
 {
     public interface IEmpDependentRepository : IBaseRepository<EmpDependent>
     {
-        
+        Task<IEnumerable<EmpDependent>> GetAllNoPaging();
     }
 }

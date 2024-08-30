@@ -7,7 +7,7 @@ namespace HRIS.Application.Contracts
 {
     public interface IAuthService
     {
-        Task<BaseResponseDto> CreateRoleAsyc(string roleName);
+        // Task<BaseResponseDto> CreateRoleAsyc(string roleName);
 
         Task<RegisterResponseDto> RegisterEmployeeAsync(RegisterRequestDto registerRequest, string roleName);
 

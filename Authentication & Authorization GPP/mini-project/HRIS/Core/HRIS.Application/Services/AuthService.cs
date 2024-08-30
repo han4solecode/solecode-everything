@@ -28,20 +28,6 @@ namespace HRIS.Application.Services
             _roleManager = roleManager;
         }
 
-        public async Task<BaseResponseDto> CreateRoleAsyc(string roleName)
-        {
-            if (!await _roleManager.RoleExistsAsync(roleName))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(roleName));
-            }
-
-            return new BaseResponseDto
-            {
-                Status = "Success",
-                Message = "Role created successfully"
-            };
-        }
-
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto loginRequest)
         {
             var user = await _userManager.FindByNameAsync(loginRequest.Username);
@@ -152,7 +138,7 @@ namespace HRIS.Application.Services
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:Issuer"],
                     audience: _configuration["JWT:Audience"],
-                    expires: DateTime.Now.AddMinutes(1),
+                    expires: DateTime.Now.AddDays(1),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -196,6 +182,8 @@ namespace HRIS.Application.Services
             {
                 UserName = registerRequest.Username,
                 Email = registerRequest.Email,
+                PhoneNumber = registerRequest.PhoneNumber,
+                Address = registerRequest.Address,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Fname = registerRequest.Fname,
                 Lname = registerRequest.Lname,
@@ -207,7 +195,8 @@ namespace HRIS.Application.Services
                 Status = registerRequest.Status,
                 Level = registerRequest.Level,
                 Supervisorempno = registerRequest.Supervisorempno,
-                Empdependents = registerRequest.EmpDependent!
+                Empdependents = registerRequest.EmpDependent!,
+                Deptno = registerRequest.Deptno
             };
 
             var res = await _userManager.CreateAsync(employee, registerRequest.Password);

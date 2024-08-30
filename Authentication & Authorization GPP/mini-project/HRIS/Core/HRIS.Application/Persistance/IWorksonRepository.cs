@@ -6,12 +6,15 @@ namespace HRIS.Application.Persistance
     {
         Task<IEnumerable<Workson>> GetAll(int recordsPerPage, int currentPage);
 
-        Task<Workson?> GetById(int empNo, int projNo);
+        Task<Workson?> GetById(string empNo, int projNo);
 
         Task Create(Workson workson);
 
         Task Update(Workson workson);
 
         Task Delete(Workson workson);
+
+        Task<IEnumerable<Workson>> GetAllNoPaging();
+
     }
 }

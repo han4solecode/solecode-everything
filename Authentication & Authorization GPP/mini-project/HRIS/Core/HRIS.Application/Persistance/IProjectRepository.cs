@@ -5,6 +5,6 @@ namespace HRIS.Application.Persistance
 {
     public interface IProjectRepository : IBaseRepository<Project>
     {
-        
+        Task<IEnumerable<Project>> GetAllNoPaging();
     }
 }
