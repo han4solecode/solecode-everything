@@ -32,6 +32,13 @@ namespace HRIS.Persistance.Repository
             return empDependents;
         }
 
+        public async Task<IEnumerable<EmpDependent>> GetAllNoPaging()
+        {
+            var empDependents = await _context.EmpDependents.ToListAsync();
+
+            return empDependents;
+        }
+
         public async Task<EmpDependent?> GetById(int id)
         {
             var empDependent = await _context.EmpDependents.FindAsync(id);

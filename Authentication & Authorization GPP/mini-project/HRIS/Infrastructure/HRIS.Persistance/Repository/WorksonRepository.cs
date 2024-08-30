@@ -32,7 +32,14 @@ namespace HRIS.Persistance.Repository
             return worksons;
         }
 
-        public async Task<Workson?> GetById(int empNo, int projNo)
+        public async Task<IEnumerable<Workson>> GetAllNoPaging()
+        {
+            var worksons = await _context.Worksons.ToListAsync();
+
+            return worksons;
+        }
+
+        public async Task<Workson?> GetById(string empNo, int projNo)
         {
             var workson = await _context.Worksons.FindAsync(empNo, projNo);
             return workson;

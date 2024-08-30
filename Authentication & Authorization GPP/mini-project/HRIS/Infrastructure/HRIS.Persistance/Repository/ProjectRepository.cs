@@ -32,6 +32,13 @@ namespace HRIS.Persistance.Repository
             return projects;
         }
 
+        public async Task<IEnumerable<Project>> GetAllNoPaging()
+        {
+            var projects = await _context.Projects.ToListAsync();
+
+            return projects;
+        }
+
         public async Task<Project?> GetById(int id)
         {
             var project = await _context.Projects.FindAsync(id);
