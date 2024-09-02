@@ -57,5 +57,12 @@ namespace LMS.Persistance.Repositories
 
             return userLendings;
         }
+
+        public async Task<IEnumerable<Lending>> GetAllNoPaging()
+        {
+            var lendings = await _context.Lendings.ToListAsync();
+
+            return lendings;
+        }
     }
 }
