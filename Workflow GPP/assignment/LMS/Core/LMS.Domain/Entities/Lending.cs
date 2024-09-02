@@ -16,5 +16,6 @@ namespace LMS.Domain.Entities
 
         public DateOnly DueReturnDate { get; set; }
 
+        public string Status { get; set; } = null!;
     }
 }
