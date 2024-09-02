@@ -7,6 +7,6 @@ namespace LMS.Application.Persistance
     {
         Task<object> GetUserLendingInfo(string id);
 
-        Task<IEnumerable<Lending>> GetAllLendingNoPaging();
+        Task<IEnumerable<Lending>> GetAllNoPaging();
     }
 }
