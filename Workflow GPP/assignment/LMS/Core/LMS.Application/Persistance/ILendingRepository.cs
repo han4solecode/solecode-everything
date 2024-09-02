@@ -6,5 +6,7 @@ namespace LMS.Application.Persistance
     public interface ILendingRepository : IBaseRepository<Lending>
     {
         Task<object> GetUserLendingInfo(string id);
+
+        Task<IEnumerable<Lending>> GetAllLendingNoPaging();
     }
 }
