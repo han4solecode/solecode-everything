@@ -3,6 +3,7 @@ using LMS.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using LMS.Application.Options;
 namespace LMS.WebAPI;
 
 public class Program
@@ -35,6 +36,9 @@ public class Program
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SigningKey"]!)),
             };
         });
+
+        // options pattern
+        builder.Services.Configure<MailOptions>(builder.Configuration.GetSection(MailOptions.MailSettings));
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
