@@ -39,7 +39,8 @@ namespace LMS.Application.Services
             var emailBodyBuilder = new BodyBuilder
             {
                 // TextBody = model.EmailBody,
-                HtmlBody = "<h1>Hello </h1>" + model.EmailBody
+                // HtmlBody = "<h1>Hello </h1>" + model.EmailBody
+                HtmlBody = model.EmailBody
             };
 
             emailMessage.Body = emailBodyBuilder.ToMessageBody();

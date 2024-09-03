@@ -167,7 +167,8 @@ namespace LMS.Application.Services
                     Status = "Error",
                     Message = "Refresh token is not valid. Please log in.",
                 };
-            } else
+            }
+            else
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -221,6 +222,31 @@ namespace LMS.Application.Services
         public async Task<ResponseModel> RegisterLibraryUser(RegisterModel model)
         {
             var res = await CreateUser(model, "Library User");
+
+            if (res.Status == "Success")
+            {
+                var emailTemplate = File.ReadAllText(@"./EmailTemplates/Register.html");
+
+                var emailBody = string.Format(emailTemplate, 
+                    "Library Management System",
+                    String.Format("{0:dddd, d MMMM yyyy}", DateTime.Now),
+                    $"{model.FirstName} {model.LastName}",
+                    model.Email,
+                    model.Username,
+                    model.Password
+                );
+
+                var mail = new EmailModel()
+                {
+                    EmailToId = model.Email,
+                    EmailToName = $"{model.FirstName} {model.LastName}",
+                    EmailSubject = "Registration Successful",
+                    // EmailBody = $"Your account is now active. Contact a librarian to start borrowing books"
+                    EmailBody = emailBody
+                };
+
+                await _emailService.SendEmail(mail);
+            }
 
             return res;
         }
@@ -321,16 +347,6 @@ namespace LMS.Application.Services
             {
                 await _userManager.AddToRoleAsync(user, role);
             }
-
-            var mail = new EmailModel()
-            {
-                EmailToId = model.Email,
-                EmailToName = $"{model.FirstName} {model.LastName}",
-                EmailSubject = "Registration Successful",
-                EmailBody = $"Your account is now active. Contact a librarian to start borrowing books"
-            };
-
-            await _emailService.SendEmail(mail);
 
             return new ResponseModel
             {
