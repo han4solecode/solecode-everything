@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using LMS.Application.Contracts;
+using LMS.Application.DTOs.Email;
 using LMS.Application.DTOs.Login;
 using LMS.Application.DTOs.Register;
 using LMS.Domain.Entities;
@@ -18,12 +19,14 @@ namespace LMS.Application.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<AppUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<AppUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _roleManager = roleManager;
+            _emailService = emailService;
         }
 
         public async Task<ResponseModel> CreateRoleAsync(string roleName)
@@ -318,6 +321,16 @@ namespace LMS.Application.Services
             {
                 await _userManager.AddToRoleAsync(user, role);
             }
+
+            var mail = new EmailModel()
+            {
+                EmailToId = model.Email,
+                EmailToName = $"{model.FirstName} {model.LastName}",
+                EmailSubject = "Registration Successful",
+                EmailBody = $"Your account is now active. Contact a librarian to start borrowing books"
+            };
+
+            await _emailService.SendEmail(mail);
 
             return new ResponseModel
             {
