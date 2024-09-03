@@ -31,9 +31,29 @@ namespace LMS.Application.Services
 
             emailMessage.From.Add(emailFrom);
 
-            var emailTo = new MailboxAddress(model.EmailToName, model.EmailToId);
+            // Multiple email receiver logic
+            if (model.EmailToIds != null && model.EmailToIds.Count != 0)
+            {
+                foreach (var to in model.EmailToIds)
+                {
+                    var emailTos = new MailboxAddress(to ,to);
+                    emailMessage.To.Add(emailTos);
+                }
+            }
 
-            emailMessage.To.Add(emailTo);
+            // Multiple email cc logic
+            if (model.EmailCCIds != null && model.EmailCCIds.Count != 0)
+            {
+                foreach (var cc in model.EmailCCIds)
+                {
+                    var emailCc = new MailboxAddress(cc ,cc);
+                    emailMessage.Cc.Add(emailCc);
+                }
+            }
+
+            // var emailTo = new MailboxAddress(model.EmailToName, model.EmailToId);
+
+            // emailMessage.To.Add(emailTo);
             emailMessage.Subject = model.EmailSubject;
 
             var emailBodyBuilder = new BodyBuilder
@@ -42,6 +62,35 @@ namespace LMS.Application.Services
                 // HtmlBody = "<h1>Hello </h1>" + model.EmailBody
                 HtmlBody = model.EmailBody
             };
+
+            // Email attachments logic
+            // Must be placed under emailBodyBuilder instance
+            // This logic is used to accept a form-data from an endpoint (IFormFileCollection data type)
+            if (model.Attachments != null && model.Attachments.Any())
+            {
+                byte[] fileBytes;
+
+                foreach (var attachment in model.Attachments)
+                {
+                    using var ms = new MemoryStream();
+                    attachment.CopyTo(ms);
+                    fileBytes = ms.ToArray();
+                    
+                    // pass attachment to emailBodyBuilder
+                    emailBodyBuilder.Attachments.Add(attachment.FileName, fileBytes, ContentType.Parse(attachment.ContentType));
+                }
+            }
+
+            // Email attachment logic
+            // This logic is used to set a server generated file as an email attachment
+            if (model.Files != null && model.Files.Count != 0)
+            {
+                foreach (var file in model.Files)
+                {
+                    // pass file to emailBodyBuilder
+                    emailBodyBuilder.Attachments.Add(file);
+                }
+            }
 
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
 
