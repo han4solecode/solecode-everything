@@ -17,7 +17,7 @@ namespace LMS.Domain.Entities.Workflow
         public string StepName { get; set; } = null!;
 
         // reference to AppRole
-        public string RequiredRoleId { get; set; } = null!;
+        public string? RequiredRoleId { get; set; } = null!;
         [ForeignKey("RequiredRoleId")]
         public AppRole RequiredRoleIdNavigation { get; set; } = null!;
 
@@ -27,7 +27,10 @@ namespace LMS.Domain.Entities.Workflow
         // public WorkflowSequence? NextStepIdNavigation { get; set; }
 
         // navigation to Request
-        public ICollection<Request> Requests { get; set; } = [];
+        // public ICollection<Request> Requests { get; set; } = [];
+
+        // navigation to Process
+        public ICollection<Process> Processes { get; set; } = [];
 
         // navigation to WorkflowAction
         public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];

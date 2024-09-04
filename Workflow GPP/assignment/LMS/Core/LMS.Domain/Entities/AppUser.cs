@@ -25,7 +25,10 @@ namespace LMS.Domain.Entities
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
         // navigation to Request
-        public ICollection<Request> Requests { get; set; } = [];
+        // public ICollection<Request> Requests { get; set; } = [];
+
+        // navigation to Process
+        public ICollection<Process> Processes { get; set; } = [];
 
         // navigation to WorkflowAction
         public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];

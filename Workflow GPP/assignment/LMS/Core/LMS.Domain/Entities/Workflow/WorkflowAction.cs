@@ -15,8 +15,12 @@ namespace LMS.Domain.Entities.Workflow
         public string? Comment { get; set; }
 
         // reference to Request
-        public int RequestId { get; set; }
-        public Request RequestIdNavigation { get; set; } = null!;
+        // public int RequestId { get; set; }
+        // public Request RequestIdNavigation { get; set; } = null!;
+
+        // reference to Process
+        public int ProcessId { get; set; }
+        public Process ProcessIdNavigation { get; set; } = null!;
 
         // reference to WorkflowSequence
         public int StepId { get; set; }

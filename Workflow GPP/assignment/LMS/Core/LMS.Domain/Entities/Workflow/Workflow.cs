@@ -15,6 +15,9 @@ namespace LMS.Domain.Entities.Workflow
         public ICollection<WorkflowSequence> WorkflowSequences { get; set; } = [];
 
         // navigation to Request
-        public ICollection<Request> Requests { get; set; } = [];
+        // public ICollection<Request> Requests { get; set; } = [];
+
+        // navigation to Process
+        public ICollection<Process> Processes { get; set; } = [];
     }
 }
