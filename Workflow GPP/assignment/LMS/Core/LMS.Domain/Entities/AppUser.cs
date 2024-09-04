@@ -1,3 +1,4 @@
+using LMS.Domain.Entities.Workflow;
 using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Domain.Entities
@@ -22,5 +23,11 @@ namespace LMS.Domain.Entities
         // refresh token
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        // navigation to Request
+        public ICollection<Request> Requests { get; set; } = [];
+
+        // navigation to WorkflowAction
+        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
     }
 }
