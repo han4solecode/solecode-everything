@@ -33,5 +33,6 @@ namespace LMS.Persistance
         public DbSet<Process> Processes { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<WorkflowAction> WorkflowActions { get; set; }
+        public DbSet<NextStepRule> NextStepRules { get; set; }
     }
 }
