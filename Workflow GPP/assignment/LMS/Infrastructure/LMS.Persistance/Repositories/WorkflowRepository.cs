@@ -110,6 +110,38 @@ namespace LMS.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task CreateBookRequest(BookRequest bookRequest)
+        {
+            await _context.BookRequests.AddAsync(bookRequest);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<BookRequest>> GetAllBookRequests()
+        {
+            var p = await _context.BookRequests.ToListAsync();
+
+            return p;
+        }
+
+        public async Task<BookRequest?> GetBookRequestById(int id)
+        {
+            var p = await _context.BookRequests.FindAsync(id);
+
+            return p;
+        }
+
+        public async Task UpdateBookRequest(BookRequest bookRequest)
+        {
+            _context.BookRequests.Update(bookRequest);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteBookRequest(BookRequest bookRequest)
+        {
+            _context.BookRequests.Remove(bookRequest);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task CreateProcess(Process process)
         {
             await _context.Processes.AddAsync(process);
@@ -118,16 +150,16 @@ namespace LMS.Persistance.Repositories
 
         public async Task<IEnumerable<Process>> GetAllProcesses()
         {
-            var p = await _context.Processes.ToListAsync();
+            var r = await _context.Processes.ToListAsync();
 
-            return p;
+            return r;
         }
 
         public async Task<Process?> GetProcessById(int id)
         {
-            var p = await _context.Processes.FindAsync(id);
+            var r = await _context.Processes.FindAsync(id);
 
-            return p;
+            return r;
         }
 
         public async Task UpdateProcess(Process process)
@@ -139,38 +171,6 @@ namespace LMS.Persistance.Repositories
         public async Task DeleteProcess(Process process)
         {
             _context.Processes.Remove(process);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task CreateRequest(Request request)
-        {
-            await _context.Requests.AddAsync(request);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<Request>> GetAllRequests()
-        {
-            var r = await _context.Requests.ToListAsync();
-
-            return r;
-        }
-
-        public async Task<Request?> GetRequestById(int id)
-        {
-            var r = await _context.Requests.FindAsync(id);
-
-            return r;
-        }
-
-        public async Task UpdateRequest(Request request)
-        {
-            _context.Requests.Update(request);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteRequest(Request request)
-        {
-            _context.Requests.Remove(request);
             await _context.SaveChangesAsync();
         }
 

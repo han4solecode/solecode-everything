@@ -26,18 +26,33 @@ namespace LMS.Application.Persistance
         Task DeleteNextStepRule(NextStepRule nextStepRule);
 
         // Process CRUD
+        // Task CreateProcess(Process process);
+        // Task<IEnumerable<Process>> GetAllProcesses();
+        // Task<Process?> GetProcessById(int id);
+        // Task UpdateProcess(Process process);
+        // Task DeleteProcess(Process process);
+
+        // BookRequest CRUD
+        Task CreateBookRequest(BookRequest bookRequest);
+        Task<IEnumerable<BookRequest>> GetAllBookRequests();
+        Task<BookRequest?> GetBookRequestById(int id);
+        Task UpdateBookRequest(BookRequest bookRequest);
+        Task DeleteBookRequest(BookRequest bookRequest);
+
+
+        // Request CRUD
+        // Task CreateRequest(Request request);
+        // Task<IEnumerable<Request>> GetAllRequests();
+        // Task<Request?> GetRequestById(int id);
+        // Task UpdateRequest(Request request);
+        // Task DeleteRequest(Request request);
+
+        // Process CRUD
         Task CreateProcess(Process process);
         Task<IEnumerable<Process>> GetAllProcesses();
         Task<Process?> GetProcessById(int id);
         Task UpdateProcess(Process process);
         Task DeleteProcess(Process process);
-
-        // Request CRUD
-        Task CreateRequest(Request request);
-        Task<IEnumerable<Request>> GetAllRequests();
-        Task<Request?> GetRequestById(int id);
-        Task UpdateRequest(Request request);
-        Task DeleteRequest(Request request);
         
         // WorkflowAction CRUD
         Task CreateWorkflowAction(WorkflowAction workflowAction);
