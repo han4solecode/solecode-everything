@@ -3,6 +3,7 @@ using System;
 using LMS.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LMS.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240904020247_AddWorkflow")]
+    partial class AddWorkflow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,7 +161,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Lending", b =>
@@ -200,7 +203,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Lendings", (string)null);
+                    b.ToTable("Lendings");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.LibraryCard", b =>
@@ -238,7 +241,7 @@ namespace LMS.Persistance.Migrations
                     b.HasIndex("AppUserId")
                         .IsUnique();
 
-                    b.ToTable("LibraryCards", (string)null);
+                    b.ToTable("LibraryCards");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Process", b =>
@@ -264,7 +267,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasKey("ProcessId");
 
-                    b.ToTable("Processes", (string)null);
+                    b.ToTable("Process");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Request", b =>
@@ -274,6 +277,10 @@ namespace LMS.Persistance.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RequestId"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("CurrentStepId")
                         .HasColumnType("integer");
@@ -299,18 +306,21 @@ namespace LMS.Persistance.Migrations
                     b.Property<int>("WorkflowId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WorkflowSequenceStepId")
+                        .HasColumnType("integer");
+
                     b.HasKey("RequestId");
 
-                    b.HasIndex("CurrentStepId");
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("ProcessId")
                         .IsUnique();
 
-                    b.HasIndex("RequesterId");
-
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("Requests", (string)null);
+                    b.HasIndex("WorkflowSequenceStepId");
+
+                    b.ToTable("Request");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Workflow", b =>
@@ -330,7 +340,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasKey("WorkflowId");
 
-                    b.ToTable("Workflows", (string)null);
+                    b.ToTable("Workflow");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.WorkflowAction", b =>
@@ -352,6 +362,10 @@ namespace LMS.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Comment")
                         .HasColumnType("text");
 
@@ -361,15 +375,18 @@ namespace LMS.Persistance.Migrations
                     b.Property<int>("StepId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WorkflowSequenceStepId")
+                        .HasColumnType("integer");
+
                     b.HasKey("ActionId");
 
-                    b.HasIndex("ActorId");
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("RequestId");
 
-                    b.HasIndex("StepId");
+                    b.HasIndex("WorkflowSequenceStepId");
 
-                    b.ToTable("WorkflowActions", (string)null);
+                    b.ToTable("WorkflowAction");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.WorkflowSequence", b =>
@@ -380,10 +397,11 @@ namespace LMS.Persistance.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("StepId"));
 
-                    b.Property<int?>("NextStepId")
-                        .HasColumnType("integer");
+                    b.Property<string>("AppRoleId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<string>("RequiredRoleId")
+                    b.Property<string>("RequiredRole")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -391,7 +409,7 @@ namespace LMS.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("StepOrder")
+                    b.Property<int>("StepOrder")
                         .HasColumnType("integer");
 
                     b.Property<int>("WorkflowId")
@@ -399,13 +417,11 @@ namespace LMS.Persistance.Migrations
 
                     b.HasKey("StepId");
 
-                    b.HasIndex("NextStepId");
-
-                    b.HasIndex("RequiredRoleId");
+                    b.HasIndex("AppRoleId");
 
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("WorkflowSequences", (string)null);
+                    b.ToTable("WorkflowSequence");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -586,9 +602,9 @@ namespace LMS.Persistance.Migrations
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Request", b =>
                 {
-                    b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "WorkflowSequence")
+                    b.HasOne("LMS.Domain.Entities.AppUser", "AppUser")
                         .WithMany("Requests")
-                        .HasForeignKey("CurrentStepId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -598,15 +614,15 @@ namespace LMS.Persistance.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LMS.Domain.Entities.AppUser", "AppUser")
-                        .WithMany("Requests")
-                        .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LMS.Domain.Entities.Workflow.Workflow", "Workflow")
                         .WithMany("Requests")
                         .HasForeignKey("WorkflowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "WorkflowSequence")
+                        .WithMany("Requests")
+                        .HasForeignKey("WorkflowSequenceStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -623,7 +639,7 @@ namespace LMS.Persistance.Migrations
                 {
                     b.HasOne("LMS.Domain.Entities.AppUser", "AppUser")
                         .WithMany("WorkflowActions")
-                        .HasForeignKey("ActorId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -635,7 +651,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "WorkflowSequence")
                         .WithMany("WorkflowActions")
-                        .HasForeignKey("StepId")
+                        .HasForeignKey("WorkflowSequenceStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -648,13 +664,9 @@ namespace LMS.Persistance.Migrations
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.WorkflowSequence", b =>
                 {
-                    b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "NextStepIdNavigation")
-                        .WithMany()
-                        .HasForeignKey("NextStepId");
-
                     b.HasOne("LMS.Domain.Entities.AppRole", "AppRole")
                         .WithMany("WorkflowSequences")
-                        .HasForeignKey("RequiredRoleId")
+                        .HasForeignKey("AppRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -665,8 +677,6 @@ namespace LMS.Persistance.Migrations
                         .IsRequired();
 
                     b.Navigation("AppRole");
-
-                    b.Navigation("NextStepIdNavigation");
 
                     b.Navigation("Workflow");
                 });
