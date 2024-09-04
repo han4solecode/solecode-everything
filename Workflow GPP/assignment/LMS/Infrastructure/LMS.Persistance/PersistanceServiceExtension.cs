@@ -21,7 +21,7 @@ namespace LMS.Persistance
             services.AddScoped<ILendingRepository, LendingRepository>();
             // services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddIdentity<AppUser, IdentityRole>(opt => {
+            services.AddIdentity<AppUser, AppRole>(opt => {
                 opt.SignIn.RequireConfirmedEmail = true;
                 opt.Password.RequireLowercase = false;
                 opt.Password.RequireUppercase = false;
