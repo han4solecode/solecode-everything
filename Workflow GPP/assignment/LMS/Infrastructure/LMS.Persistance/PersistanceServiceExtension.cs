@@ -19,6 +19,7 @@ namespace LMS.Persistance
 
             services.AddScoped<IBookRepostory, BookRepository>();
             services.AddScoped<ILendingRepository, LendingRepository>();
+            services.AddScoped<IWorkflowRepository, WorkflowRepository>();
             // services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddIdentity<AppUser, AppRole>(opt => {
