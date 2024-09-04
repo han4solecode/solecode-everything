@@ -18,10 +18,10 @@ namespace LMS.Application.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppRole> _roleManager;
         private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<AppUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, IEmailService emailService)
+        public AuthService(UserManager<AppUser> userManager, IConfiguration configuration, RoleManager<AppRole> roleManager, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -33,7 +33,12 @@ namespace LMS.Application.Services
         {
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
-                await _roleManager.CreateAsync(new IdentityRole(roleName));
+                var role = new AppRole
+                {
+                    Name = roleName
+                };
+
+                await _roleManager.CreateAsync(role);
             }
 
             return new ResponseModel
@@ -88,8 +93,8 @@ namespace LMS.Application.Services
 
                 // if refresh token is null or invalid, generate refresh token and update user
                 var refreshToken = GenerateRefreshToken();
-                // var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-                var refreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(3);
+                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+                // var refreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(3);
 
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryTime = refreshTokenExpiryTime;
@@ -236,14 +241,25 @@ namespace LMS.Application.Services
                     model.Password
                 );
 
+                // var mail = new EmailModel()
+                // {
+                //     EmailToId = model.Email,
+                //     EmailToName = $"{model.FirstName} {model.LastName}",
+                //     EmailSubject = "Registration Successful",
+                //     // EmailBody = $"Your account is now active. Contact a librarian to start borrowing books"
+                //     EmailBody = emailBody
+                // };
+
                 var mail = new EmailModel()
                 {
-                    EmailToId = model.Email,
-                    EmailToName = $"{model.FirstName} {model.LastName}",
+                    EmailToIds = [model.Email],
+                    EmailCCIds = ["athaullahfarhan@gmail.com"],
                     EmailSubject = "Registration Successful",
-                    // EmailBody = $"Your account is now active. Contact a librarian to start borrowing books"
                     EmailBody = emailBody
                 };
+
+                // File attachmemnt
+                mail.Files.Add(@"./Files/something.txt");
 
                 await _emailService.SendEmail(mail);
             }
