@@ -3,6 +3,7 @@ using System;
 using LMS.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LMS.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240904063435_ChangeRequiredRoleIdToNullable")]
+    partial class ChangeRequiredRoleIdToNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,37 +244,6 @@ namespace LMS.Persistance.Migrations
                     b.ToTable("LibraryCards");
                 });
 
-            modelBuilder.Entity("LMS.Domain.Entities.Workflow.BookRequest", b =>
-                {
-                    b.Property<int>("BookRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookRequestId"));
-
-                    b.Property<string>("Author")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ISBN")
-                        .HasColumnType("text");
-
-                    b.Property<int>("ProcessId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Publisher")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.HasKey("BookRequestId");
-
-                    b.HasIndex("ProcessId")
-                        .IsUnique();
-
-                    b.ToTable("BookRequests");
-                });
-
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.NextStepRule", b =>
                 {
                     b.Property<int>("RuleId")
@@ -311,13 +283,43 @@ namespace LMS.Persistance.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProcessId"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ProcessName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ProcessId");
+
+                    b.ToTable("Processes");
+                });
+
+            modelBuilder.Entity("LMS.Domain.Entities.Workflow.Request", b =>
+                {
+                    b.Property<int>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RequestId"));
+
                     b.Property<int>("CurrentStepId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProcessId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("RequestType")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("RequesterId")
@@ -331,15 +333,18 @@ namespace LMS.Persistance.Migrations
                     b.Property<int>("WorkflowId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ProcessId");
+                    b.HasKey("RequestId");
 
                     b.HasIndex("CurrentStepId");
+
+                    b.HasIndex("ProcessId")
+                        .IsUnique();
 
                     b.HasIndex("RequesterId");
 
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("Processes");
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Workflow", b =>
@@ -384,7 +389,7 @@ namespace LMS.Persistance.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("text");
 
-                    b.Property<int>("ProcessId")
+                    b.Property<int>("RequestId")
                         .HasColumnType("integer");
 
                     b.Property<int>("StepId")
@@ -394,7 +399,7 @@ namespace LMS.Persistance.Migrations
 
                     b.HasIndex("ActorId");
 
-                    b.HasIndex("ProcessId");
+                    b.HasIndex("RequestId");
 
                     b.HasIndex("StepId");
 
@@ -607,17 +612,6 @@ namespace LMS.Persistance.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("LMS.Domain.Entities.Workflow.BookRequest", b =>
-                {
-                    b.HasOne("LMS.Domain.Entities.Workflow.Process", "ProcessIdNavigation")
-                        .WithOne("BookRequestNavigation")
-                        .HasForeignKey("LMS.Domain.Entities.Workflow.BookRequest", "ProcessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProcessIdNavigation");
-                });
-
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.NextStepRule", b =>
                 {
                     b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "CurrentStepIdNavigation")
@@ -637,27 +631,35 @@ namespace LMS.Persistance.Migrations
                     b.Navigation("NextStepIdNavigation");
                 });
 
-            modelBuilder.Entity("LMS.Domain.Entities.Workflow.Process", b =>
+            modelBuilder.Entity("LMS.Domain.Entities.Workflow.Request", b =>
                 {
                     b.HasOne("LMS.Domain.Entities.Workflow.WorkflowSequence", "CurrentStepIdNavigation")
-                        .WithMany("Processes")
+                        .WithMany("Requests")
                         .HasForeignKey("CurrentStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LMS.Domain.Entities.Workflow.Process", "ProcessIdNavigation")
+                        .WithOne("RequestNavigation")
+                        .HasForeignKey("LMS.Domain.Entities.Workflow.Request", "ProcessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LMS.Domain.Entities.AppUser", "RequesterIdNavigation")
-                        .WithMany("Processes")
+                        .WithMany("Requests")
                         .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LMS.Domain.Entities.Workflow.Workflow", "WorkflowIdNavigation")
-                        .WithMany("Processes")
+                        .WithMany("Requests")
                         .HasForeignKey("WorkflowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CurrentStepIdNavigation");
+
+                    b.Navigation("ProcessIdNavigation");
 
                     b.Navigation("RequesterIdNavigation");
 
@@ -672,9 +674,9 @@ namespace LMS.Persistance.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LMS.Domain.Entities.Workflow.Process", "ProcessIdNavigation")
+                    b.HasOne("LMS.Domain.Entities.Workflow.Request", "RequestIdNavigation")
                         .WithMany("WorkflowActions")
-                        .HasForeignKey("ProcessId")
+                        .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -686,7 +688,7 @@ namespace LMS.Persistance.Migrations
 
                     b.Navigation("ActorIdNavigation");
 
-                    b.Navigation("ProcessIdNavigation");
+                    b.Navigation("RequestIdNavigation");
 
                     b.Navigation("StepIdNavigation");
                 });
@@ -765,7 +767,7 @@ namespace LMS.Persistance.Migrations
 
                     b.Navigation("LibraryCard");
 
-                    b.Navigation("Processes");
+                    b.Navigation("Requests");
 
                     b.Navigation("WorkflowActions");
                 });
@@ -777,14 +779,17 @@ namespace LMS.Persistance.Migrations
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Process", b =>
                 {
-                    b.Navigation("BookRequestNavigation");
+                    b.Navigation("RequestNavigation");
+                });
 
+            modelBuilder.Entity("LMS.Domain.Entities.Workflow.Request", b =>
+                {
                     b.Navigation("WorkflowActions");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Workflow.Workflow", b =>
                 {
-                    b.Navigation("Processes");
+                    b.Navigation("Requests");
 
                     b.Navigation("WorkflowSequences");
                 });
@@ -795,7 +800,7 @@ namespace LMS.Persistance.Migrations
 
                     b.Navigation("NextStepIds");
 
-                    b.Navigation("Processes");
+                    b.Navigation("Requests");
 
                     b.Navigation("WorkflowActions");
                 });
