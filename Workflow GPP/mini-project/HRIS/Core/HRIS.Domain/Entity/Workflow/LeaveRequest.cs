@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRIS.Domain.Entity.Workflow
 {
@@ -7,7 +8,10 @@ namespace HRIS.Domain.Entity.Workflow
         [Key]
         public int LeaveRequestId { get; set; }
 
+        // reference to Employee
         public string EmployeeId { get; set; } = null!;
+        [ForeignKey("EmployeeId")]
+        public Employee EmployeeIdNavigation { get; set; } = null!;
 
         public DateTime StartDate { get; set; }
 

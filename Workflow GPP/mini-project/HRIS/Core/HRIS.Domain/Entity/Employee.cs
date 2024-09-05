@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
+using HRIS.Domain.Entity.Workflow;
 using Microsoft.AspNetCore.Identity;
 
 namespace HRIS.Domain.Entity
@@ -103,5 +104,8 @@ namespace HRIS.Domain.Entity
         // // foreign key to ApplicationUser entity
         // public string ApplicationUserId { get; set; } = null!;
         // public ApplicationUser ApplicationUser { get; set; } = null!;
+
+        // navigation to LeaveRequest
+        public ICollection<LeaveRequest> LeaveRequests { get; set; } = [];
     }
 }
