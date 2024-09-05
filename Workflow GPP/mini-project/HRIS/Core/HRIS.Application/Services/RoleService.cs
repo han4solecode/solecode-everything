@@ -9,9 +9,9 @@ namespace HRIS.Application.Services
     public class RoleService : IRoleService
     {
         private readonly UserManager<Employee> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public RoleService(UserManager<Employee> userManager, RoleManager<IdentityRole> roleManager)
+        public RoleService(UserManager<Employee> userManager, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -52,7 +52,12 @@ namespace HRIS.Application.Services
         {
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
-                await _roleManager.CreateAsync(new IdentityRole(roleName));
+                var role = new AppRole()
+                {
+                    Name = roleName
+                };
+
+                await _roleManager.CreateAsync(role);
 
                 return new BaseResponseDto
                 {

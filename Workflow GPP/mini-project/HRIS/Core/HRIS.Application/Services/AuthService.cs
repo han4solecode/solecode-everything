@@ -19,9 +19,9 @@ namespace HRIS.Application.Services
     {
         private readonly UserManager<Employee> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public AuthService(UserManager<Employee> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<Employee> userManager, IConfiguration configuration, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _configuration = configuration;
