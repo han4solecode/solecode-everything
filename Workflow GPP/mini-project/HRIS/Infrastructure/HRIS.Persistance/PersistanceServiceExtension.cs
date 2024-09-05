@@ -26,7 +26,7 @@ namespace HRIS.Persistance
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<Employee, IdentityRole>(opt => {
+            services.AddIdentity<Employee, AppRole>(opt => {
                 opt.SignIn.RequireConfirmedEmail = true;
                 opt.Password.RequireLowercase = true;
                 opt.Password.RequireUppercase = true;
