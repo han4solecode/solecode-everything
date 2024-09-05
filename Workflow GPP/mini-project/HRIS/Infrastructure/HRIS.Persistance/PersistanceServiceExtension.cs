@@ -22,6 +22,7 @@ namespace HRIS.Persistance
             services.AddScoped<IWorksonRepository, WorksonRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<IEmpDependentRepository, EmpDependentRepository>();
+            services.AddScoped<IWorkflowRepository, WorkflowRepository>();
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)
