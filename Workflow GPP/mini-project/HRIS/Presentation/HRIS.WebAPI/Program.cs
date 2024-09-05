@@ -3,6 +3,7 @@ using HRIS.Persistance;
 using HRIS.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using HRIS.Application.Options;
 
 namespace HRIS.WebAPI;
 
@@ -37,6 +38,9 @@ public class Program
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SigningKey"]!)),
             };
         });
+
+        // MailSettings options
+        builder.Services.Configure<MailOptions>(builder.Configuration.GetSection(MailOptions.MailSettings));
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
