@@ -16,6 +16,7 @@ namespace HRIS.Application
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IWorksonService, WorksonService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddTransient<IEmailService, EmailService>();
         }
     }
 }
