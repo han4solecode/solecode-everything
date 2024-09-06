@@ -1,4 +1,6 @@
 using LMS.Application.Contracts;
+using LMS.Application.DTOs.Book;
+using LMS.Application.DTOs.Request;
 using LMS.Application.Mappers;
 using LMS.Application.Persistance.Helper;
 using LMS.Domain.Entities;
@@ -134,5 +136,44 @@ namespace LMS.WebAPI.Controllers
 
             return NoContent();
         }
+
+        [Authorize(Roles = "Library User")]
+        [HttpPost("request")]
+        public async Task<IActionResult> BookRequest([FromBody] BookRequestDto bookRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isRequested = await _bookService.BookRequest(bookRequest);
+
+            if (!isRequested)
+            {
+                return BadRequest("Book request unsuceessful");
+            }
+
+            return Ok("Book request successful");
+        }
+
+        [Authorize(Roles = "Librarian, Library Manager")]
+        [HttpPost("request/review")]
+        public async Task<IActionResult> ReviewRequest([FromBody] ReviewRequestModel reviewRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isSuccessful = await _bookService.ReviewRequest(reviewRequest);
+
+            if (!isSuccessful)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
     }
 }

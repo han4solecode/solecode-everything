@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Persistance
 {
-    public partial class AppDbContext : IdentityDbContext<AppUser>
+    public partial class AppDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public AppDbContext() { }
 
