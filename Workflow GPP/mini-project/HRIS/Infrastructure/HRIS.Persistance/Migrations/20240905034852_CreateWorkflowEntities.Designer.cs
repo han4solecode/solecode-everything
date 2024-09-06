@@ -3,6 +3,7 @@ using System;
 using HRIS.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HRIS.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240905034852_CreateWorkflowEntities")]
+    partial class CreateWorkflowEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,8 +332,8 @@ namespace HRIS.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
@@ -343,8 +346,8 @@ namespace HRIS.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("LeaveRequestId");
 
@@ -744,7 +747,7 @@ namespace HRIS.Persistance.Migrations
                         .IsRequired();
 
                     b.HasOne("HRIS.Domain.Entity.Employee", "RequesterIdNavigation")
-                        .WithMany("Processes")
+                        .WithMany()
                         .HasForeignKey("RequesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -765,7 +768,7 @@ namespace HRIS.Persistance.Migrations
             modelBuilder.Entity("HRIS.Domain.Entity.Workflow.WorkflowAction", b =>
                 {
                     b.HasOne("HRIS.Domain.Entity.Employee", "ActorIdNavigation")
-                        .WithMany("WorkflowActions")
+                        .WithMany()
                         .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -792,7 +795,7 @@ namespace HRIS.Persistance.Migrations
             modelBuilder.Entity("HRIS.Domain.Entity.Workflow.WorkflowSequence", b =>
                 {
                     b.HasOne("HRIS.Domain.Entity.AppRole", "RequiredRoleIdNavigation")
-                        .WithMany("WorkflowSequences")
+                        .WithMany()
                         .HasForeignKey("RequiredRoleId");
 
                     b.HasOne("HRIS.Domain.Entity.Workflow.Workflow", "Workflow")
@@ -876,11 +879,6 @@ namespace HRIS.Persistance.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HRIS.Domain.Entity.AppRole", b =>
-                {
-                    b.Navigation("WorkflowSequences");
-                });
-
             modelBuilder.Entity("HRIS.Domain.Entity.Department", b =>
                 {
                     b.Navigation("Employees");
@@ -899,10 +897,6 @@ namespace HRIS.Persistance.Migrations
                     b.Navigation("InverseSupervisorempnoNavigation");
 
                     b.Navigation("LeaveRequests");
-
-                    b.Navigation("Processes");
-
-                    b.Navigation("WorkflowActions");
 
                     b.Navigation("Worksons");
                 });

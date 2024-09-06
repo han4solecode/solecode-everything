@@ -107,5 +107,11 @@ namespace HRIS.Domain.Entity
 
         // navigation to LeaveRequest
         public ICollection<LeaveRequest> LeaveRequests { get; set; } = [];
+
+        // navigation to Process
+        public ICollection<Process> Processes { get; set; } = [];
+
+        // navigation to WorkflowAction
+        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
     }
 }

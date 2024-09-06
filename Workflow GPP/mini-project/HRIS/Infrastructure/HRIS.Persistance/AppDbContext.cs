@@ -16,7 +16,7 @@ namespace HRIS.Persistance
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost; Database=HRIS2; username=solecode; Password=12344321");
+            optionsBuilder.UseNpgsql("Host=localhost; Database=HRIS3; username=solecode; Password=12344321");
         }
 
         public DbSet<Department> Departments { get; set; }

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using HRIS.Application.Contracts;
+using HRIS.Application.DTOs.LeaveRequest;
 using HRIS.Application.DTOs.Register;
 using HRIS.Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
@@ -120,6 +121,62 @@ namespace HRIS.WebAPI.Controllers
 
             return Ok(res);
         }
-        
+
+        [Authorize(Roles = "Employee")]
+        [HttpPost("request/leave")]
+        public async Task<IActionResult> EmployeeLeaveRequest([FromBody] LeaveRequestDto leaveRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var res = await _employeeService.EmployeeLeaveRequest(leaveRequest);
+
+            if (res.Status == "Error")
+            {
+                return BadRequest(res.Message);
+            }
+
+            return Ok(res);
+        }
+
+        [Authorize(Roles = "Employee Supervisor, HR Manager")]
+        [HttpPost("request/leave/approve")]
+        public async Task<IActionResult> ApproveLeaveRequest([FromBody] string empNo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var res = await _employeeService.ApproveLeaveRequest(empNo);
+
+            if (res.Status == "Error")
+            {
+                return BadRequest(res.Message);
+            }
+
+            return Ok(res);
+        }
+
+        [Authorize(Roles = "Employee Supervisor, HR Manager")]
+        [HttpPost("request/leave/reject")]
+        public async Task<IActionResult> RejectLeaveRequest([FromBody] string empNo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var res = await _employeeService.RejectLeaveRequest(empNo);
+
+            if (res.Status == "Error")
+            {
+                return BadRequest(res.Message);
+            }
+
+            return Ok(res);
+        }
     }
 }

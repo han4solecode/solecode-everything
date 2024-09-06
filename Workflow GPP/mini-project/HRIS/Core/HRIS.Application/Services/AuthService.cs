@@ -73,7 +73,7 @@ namespace HRIS.Application.Services
 
                 // if refresh token is null or invalid, generate refresh token and update user
                 var refreshToken = GenerateRefreshToken();
-                var refreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(3);
+                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(3);
 
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryTime = refreshTokenExpiryTime;

@@ -1,4 +1,5 @@
 using HRIS.Application.DTOs;
+using HRIS.Application.DTOs.LeaveRequest;
 using HRIS.Domain.Entity;
 
 namespace HRIS.Application.Contracts
@@ -29,6 +30,13 @@ namespace HRIS.Application.Contracts
 
         // admin and hr manager
         Task<BaseResponseDto> DeactivateEmployee(string id, string? reason);
+
+        // employee
+        Task<BaseResponseDto> EmployeeLeaveRequest(LeaveRequestDto leaveRequest);
+
+        // employee supervisor and HR manager
+        Task<BaseResponseDto> ApproveLeaveRequest(string empNo);
+        Task<BaseResponseDto> RejectLeaveRequest(string empNo);
 
     }
 }

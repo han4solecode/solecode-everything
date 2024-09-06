@@ -13,9 +13,9 @@ namespace HRIS.Domain.Entity.Workflow
         [ForeignKey("EmployeeId")]
         public Employee EmployeeIdNavigation { get; set; } = null!;
 
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateOnly EndDate { get; set; }
 
         public string LeaveType { get; set; } = null!;
 

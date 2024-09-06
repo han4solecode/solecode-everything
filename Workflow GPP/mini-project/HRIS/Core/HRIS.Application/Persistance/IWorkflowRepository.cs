@@ -38,6 +38,7 @@ namespace HRIS.Application.Persistance
         Task<Process?> GetProcessById(int id);
         Task UpdateProcess(Process process);
         Task DeleteProcess(Process process);
+        // Task<Process?> GetProcessToReview();
 
         // WorkflowAction CRUD
         Task CreateWorkflowAction(WorkflowAction workflowAction);
