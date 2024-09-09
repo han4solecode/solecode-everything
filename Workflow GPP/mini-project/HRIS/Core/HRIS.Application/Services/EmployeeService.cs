@@ -366,7 +366,7 @@ namespace HRIS.Application.Services
                     $"{employee.Fname} {employee.Lname}",
                     employee.Id,
                     employee.Email,
-                    // employee.DeptnoNavigation!.Deptname,
+                    employee.DeptnoNavigation!.Deptname,
                     string.Format("{0:dddd, d MMMM yyyy}", leaveRequest.StartDate),
                     string.Format("{0:dddd, d MMMM yyyy}", leaveRequest.EndDate),
                     leaveRequest.LeaveType,
@@ -426,7 +426,7 @@ namespace HRIS.Application.Services
 
                 // get the latest leave request process that has to be reviewed by supervisor
                 var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole.Id && p.RequesterId == empNo).TakeLast(1).Single();
+                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole.Id && p.RequesterId == empNo).TakeLast(1).SingleOrDefault();
     
                 if (latestProcess == null)
                 {
@@ -457,9 +457,9 @@ namespace HRIS.Application.Services
                 var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
                 // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
                 var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepOrder == latestProcess.CurrentStepId).Single();
+                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
                 // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.NextStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).Single();
+                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).SingleOrDefault();
 
                 // update process
                 latestProcess.Status = "Pending HR Manager Review";
@@ -540,9 +540,9 @@ namespace HRIS.Application.Services
                 var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
                 // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
                 var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepOrder == latestProcess.CurrentStepId).Single();
+                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
                 // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.NextStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).Single();
+                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).Single();
 
                 // update process
                 latestProcess.Status = "Leave Request Approved by HR Manager";
@@ -607,7 +607,7 @@ namespace HRIS.Application.Services
 
                 // get the latest leave request process that has to be reviewed by supervisor
                 var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole!.Id && p.RequesterId == empNo).TakeLast(1).Single();
+                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole!.Id && p.RequesterId == empNo).TakeLast(1).SingleOrDefault();
 
                 if (latestProcess == null)
                 {
@@ -638,9 +638,9 @@ namespace HRIS.Application.Services
                 var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
                 // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
                 var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepOrder == latestProcess.CurrentStepId).Single();
+                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
                 // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.NextStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
+                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
 
                 // update process
                 latestProcess.Status = "Leave Request Rejected by Supervisor";
@@ -723,9 +723,9 @@ namespace HRIS.Application.Services
                 var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
                 // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
                 var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepOrder == latestProcess.CurrentStepId).Single();
+                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
                 // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.NextStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
+                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
 
                 // update process
                 latestProcess.Status = "Leave Request Rejected by HR Manager";

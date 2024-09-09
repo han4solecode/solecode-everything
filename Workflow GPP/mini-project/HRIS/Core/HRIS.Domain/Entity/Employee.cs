@@ -106,12 +106,12 @@ namespace HRIS.Domain.Entity
         // public ApplicationUser ApplicationUser { get; set; } = null!;
 
         // navigation to LeaveRequest
-        public ICollection<LeaveRequest> LeaveRequests { get; set; } = [];
+        public virtual ICollection<LeaveRequest> LeaveRequests { get; set; } = [];
 
         // navigation to Process
-        public ICollection<Process> Processes { get; set; } = [];
+        public virtual ICollection<Process> Processes { get; set; } = [];
 
         // navigation to WorkflowAction
-        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
+        public virtual ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
     }
 }

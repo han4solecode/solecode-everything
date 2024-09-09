@@ -11,7 +11,7 @@ namespace HRIS.Domain.Entity.Workflow
         // reference to Employee
         public string EmployeeId { get; set; } = null!;
         [ForeignKey("EmployeeId")]
-        public Employee EmployeeIdNavigation { get; set; } = null!;
+        public virtual Employee EmployeeIdNavigation { get; set; } = null!;
 
         public DateOnly StartDate { get; set; }
 
@@ -23,6 +23,6 @@ namespace HRIS.Domain.Entity.Workflow
 
         // reference to Process
         public int ProcessId { get; set; }
-        public Process ProcessIdNavigation { get; set; } = null!;
+        public virtual Process ProcessIdNavigation { get; set; } = null!;
     }
 }

@@ -16,6 +16,7 @@ namespace HRIS.Persistance
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseLazyLoadingProxies();
             optionsBuilder.UseNpgsql("Host=localhost; Database=HRIS3; username=solecode; Password=12344321");
         }
 
