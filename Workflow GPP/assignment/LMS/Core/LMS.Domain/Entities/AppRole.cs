@@ -6,6 +6,6 @@ namespace LMS.Domain.Entities
     public class AppRole : IdentityRole
     {
         // navigation to WorkflowSequence
-        public ICollection<WorkflowSequence> WorkflowSequences { get; set; } = [];
+        public virtual ICollection<WorkflowSequence> WorkflowSequences { get; set; } = [];
     }
 }

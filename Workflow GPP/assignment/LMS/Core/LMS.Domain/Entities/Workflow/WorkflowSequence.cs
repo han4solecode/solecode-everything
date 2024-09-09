@@ -10,7 +10,7 @@ namespace LMS.Domain.Entities.Workflow
 
         // reference to Workflow
         public int WorkflowId { get; set; }
-        public Workflow Workflow { get; set; } = null!;
+        public virtual Workflow Workflow { get; set; } = null!;
 
         public int? StepOrder { get; set; }
 
@@ -19,7 +19,7 @@ namespace LMS.Domain.Entities.Workflow
         // reference to AppRole
         public string? RequiredRoleId { get; set; } = null!;
         [ForeignKey("RequiredRoleId")]
-        public AppRole RequiredRoleIdNavigation { get; set; } = null!;
+        public virtual AppRole RequiredRoleIdNavigation { get; set; } = null!;
 
         // reference to WorkflowSequence as a NextStepId
         // public int? NextStepId { get; set; }
@@ -30,17 +30,17 @@ namespace LMS.Domain.Entities.Workflow
         // public ICollection<Request> Requests { get; set; } = [];
 
         // navigation to Process
-        public ICollection<Process> Processes { get; set; } = [];
+        public virtual ICollection<Process> Processes { get; set; } = [];
 
         // navigation to WorkflowAction
-        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
+        public virtual ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
 
         // navigation to NextStepRule CurrentStepId
         [InverseProperty("CurrentStepIdNavigation")]
-        public ICollection<NextStepRule> CurrentStepIds { get; set; } = [];
+        public virtual ICollection<NextStepRule> CurrentStepIds { get; set; } = [];
 
         // navigation to NextStepRule NextStepId
         [InverseProperty("NextStepIdNavigation")]
-        public ICollection<NextStepRule> NextStepIds { get; set; } = [];
+        public virtual ICollection<NextStepRule> NextStepIds { get; set; } = [];
     }
 }

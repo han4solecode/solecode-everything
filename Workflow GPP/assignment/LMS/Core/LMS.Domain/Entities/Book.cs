@@ -26,7 +26,7 @@ namespace LMS.Domain.Entities
 
         public decimal Price { get; set; }
 
-        public ICollection<Lending> Lendings { get; set; } = new List<Lending>();
+        public virtual ICollection<Lending> Lendings { get; set; } = new List<Lending>();
 
         // delete stamp
         // antara begini aja atau dipakein base intity buat nyimpen is deleted ini

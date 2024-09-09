@@ -16,6 +16,7 @@ namespace LMS.Persistance
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseLazyLoadingProxies();
             optionsBuilder.UseNpgsql("Host=localhost; Database=LMS2; username=solecode; Password=12344321");
         }
 

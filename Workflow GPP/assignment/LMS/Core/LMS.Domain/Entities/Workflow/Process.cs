@@ -40,12 +40,12 @@ namespace LMS.Domain.Entities.Workflow
 
         // reference to Workflow
         public int WorkflowId { get; set; }
-        public Workflow WorkflowIdNavigation { get; set; } = null!;
+        public virtual Workflow WorkflowIdNavigation { get; set; } = null!;
 
         // reference to AppUser
         public string RequesterId { get; set; } = null!;
         [ForeignKey("RequesterId")]
-        public AppUser RequesterIdNavigation { get; set; } = null!;
+        public virtual AppUser RequesterIdNavigation { get; set; } = null!;
 
         public string? RequestType { get; set; }
 
@@ -54,14 +54,14 @@ namespace LMS.Domain.Entities.Workflow
         // reference to WorkflowSequence
         public int CurrentStepId { get; set; }
         [ForeignKey("CurrentStepId")]
-        public WorkflowSequence CurrentStepIdNavigation { get; set; } = null!;
+        public virtual WorkflowSequence CurrentStepIdNavigation { get; set; } = null!;
 
         public DateTime RequestDate { get; set; }
 
         // navigation to BookRequest (one to one relationship)
-        public BookRequest? BookRequestNavigation { get; set; }
+        public virtual BookRequest? BookRequestNavigation { get; set; }
 
         // navigation to WorkflowAction
-        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
+        public virtual ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
     }
 }

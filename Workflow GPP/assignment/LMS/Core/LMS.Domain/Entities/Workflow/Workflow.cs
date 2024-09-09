@@ -12,12 +12,12 @@ namespace LMS.Domain.Entities.Workflow
         public string? Description { get; set; }
 
         // navigation to WorkflowSequence
-        public ICollection<WorkflowSequence> WorkflowSequences { get; set; } = [];
+        public virtual ICollection<WorkflowSequence> WorkflowSequences { get; set; } = [];
 
         // navigation to Request
         // public ICollection<Request> Requests { get; set; } = [];
 
         // navigation to Process
-        public ICollection<Process> Processes { get; set; } = [];
+        public virtual ICollection<Process> Processes { get; set; } = [];
     }
 }

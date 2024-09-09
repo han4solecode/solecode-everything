@@ -20,16 +20,16 @@ namespace LMS.Domain.Entities.Workflow
 
         // reference to Process
         public int ProcessId { get; set; }
-        public Process ProcessIdNavigation { get; set; } = null!;
+        public virtual Process ProcessIdNavigation { get; set; } = null!;
 
         // reference to WorkflowSequence
         public int StepId { get; set; }
         [ForeignKey("StepId")]
-        public WorkflowSequence StepIdNavigation { get; set; } = null!;
+        public virtual WorkflowSequence StepIdNavigation { get; set; } = null!;
 
         // reference to AppUser
         public string ActorId { get; set; } = null!;
         [ForeignKey("ActorId")]
-        public AppUser ActorIdNavigation { get; set; } = null!;
+        public virtual AppUser ActorIdNavigation { get; set; } = null!;
     }
 }

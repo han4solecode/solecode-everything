@@ -25,7 +25,7 @@ namespace LMS.Domain.Entities.Workflow
 
         // reference to Process
         public int ProcessId { get; set; }
-        public Process ProcessIdNavigation { get; set; } = null!;
+        public virtual Process ProcessIdNavigation { get; set; } = null!;
 
 
         // navigation to Request (one to one relationship)

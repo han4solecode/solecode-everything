@@ -12,10 +12,10 @@ namespace LMS.Domain.Entities
         public string? LastName { get; set; }
 
         [PersonalData]
-        public LibraryCard? LibraryCard { get; set; }
+        public virtual LibraryCard? LibraryCard { get; set; }
 
         [PersonalData]
-        public ICollection<Lending> Lendings { get; set; } = new List<Lending>();
+        public virtual ICollection<Lending> Lendings { get; set; } = new List<Lending>();
 
         [PersonalData]
         public decimal? Penalty { get; set; }
@@ -28,9 +28,9 @@ namespace LMS.Domain.Entities
         // public ICollection<Request> Requests { get; set; } = [];
 
         // navigation to Process
-        public ICollection<Process> Processes { get; set; } = [];
+        public virtual ICollection<Process> Processes { get; set; } = [];
 
         // navigation to WorkflowAction
-        public ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
+        public virtual ICollection<WorkflowAction> WorkflowActions { get; set; } = [];
     }
 }

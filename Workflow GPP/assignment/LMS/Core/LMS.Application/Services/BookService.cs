@@ -156,7 +156,7 @@ namespace LMS.Application.Services
                     RequesterId = user!.Id,
                     RequestType = "Book Request",
                     Status = "Pending",
-                    RequestDate = DateTime.Now,
+                    RequestDate = DateTime.UtcNow,
                     CurrentStepId = nextStepId
                 };
 
@@ -173,7 +173,7 @@ namespace LMS.Application.Services
                     StepId = stepId,
                     ActorId = user.Id,
                     Action = "Book request submited",
-                    ActionDate = DateTime.Now,
+                    ActionDate = DateTime.UtcNow,
                     Comment = $"Requesting book titled {bookRequest.Title}"
                 };
 
@@ -203,7 +203,7 @@ namespace LMS.Application.Services
                 var userEmails = nextUsers.Select(u => u.Email).ToList();
 
                 // send email to librarian and library user
-                var emailTemplate = File.ReadAllText(@"./EmailTemplate/BookRequest.html");
+                var emailTemplate = File.ReadAllText(@"./EmailTemplates/BookRequest.html");
 
                 var emailBody = string.Format(emailTemplate,
                     $"{user.FirstName} {user.LastName}",
@@ -448,10 +448,10 @@ namespace LMS.Application.Services
 
             await _workflowRepository.UpdateWorkflowAction(newWorkflowAction);
 
-            var nsrNextStepId = process.CurrentStepIdNavigation.NextStepIds.Where(nsr => nsr.CurrentStepId == process.CurrentStepId && nsr.ConditionValue == reviewRequest.Action).Select(nsr => nsr.NextStepId).Single();
+            var nsrNextStepId = process.CurrentStepIdNavigation.CurrentStepIds.Where(nsr => nsr.CurrentStepId == process.CurrentStepId && nsr.ConditionValue == reviewRequest.Action).Select(nsr => nsr.NextStepId).SingleOrDefault();
 
             // update process
-            process.Status = "Reviewed";
+            process.Status = $"{reviewRequest.Action} by {requiredRole.Name}";
             process.CurrentStepId = nsrNextStepId;
             await _workflowRepository.UpdateProcess(process);
 
@@ -475,7 +475,7 @@ namespace LMS.Application.Services
             }
 
             // send email notification
-            var emailTemplate = File.ReadAllText(@"./EmailTemplate/BookRequest.html");
+            var emailTemplate = File.ReadAllText(@"./EmailTemplates/BookRequest.html");
 
             var emailBody = string.Format(emailTemplate,
                 $"{process.RequesterIdNavigation.FirstName} {process.RequesterIdNavigation.LastName}",

@@ -13,6 +13,6 @@ namespace LMS.Domain.Entities
         // public int? UserId { get; set; }
         // public User? User { get; set; }
         public string? AppUserId { get; set; }
-        public AppUser? AppUser { get; set; }
+        public virtual AppUser? AppUser { get; set; }
     }
 }
