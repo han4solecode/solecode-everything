@@ -790,7 +790,7 @@ namespace HRIS.Application.Services
 
         public async Task<IEnumerable<object>> GetTop5BestEmployee()
         {
-            var top5BestEmployees = await _userManager.Users.OrderByDescending(e => e.Worksons.Sum(w => w.Hoursworked)).Take(5).Select(x => new {
+            var top5BestEmployees = await _userManager.Users.OrderByDescending(e => e.Worksons.Sum(w => w.Hoursworked)).Where(e => e.Worksons.Sum(w => w.Hoursworked) != 0).Take(5).Select(x => new {
                 Name = $"{x.Fname} {x.Lname}",
                 WorkingHour = x.Worksons.Sum(w => w.Hoursworked)
             }).ToListAsync();
