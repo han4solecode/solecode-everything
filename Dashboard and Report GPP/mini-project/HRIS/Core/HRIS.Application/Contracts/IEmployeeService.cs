@@ -38,5 +38,7 @@ namespace HRIS.Application.Contracts
         Task<BaseResponseDto> ApproveLeaveRequest(string empNo);
         Task<BaseResponseDto> RejectLeaveRequest(string empNo);
 
+        Task<IEnumerable<object>> GetEmployeeDistributionPerDepartment();
+
     }
 }
