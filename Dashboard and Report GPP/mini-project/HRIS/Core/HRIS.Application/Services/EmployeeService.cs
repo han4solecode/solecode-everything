@@ -798,6 +798,18 @@ namespace HRIS.Application.Services
             return top5BestEmployees;
         }
 
+        public async Task<IEnumerable<object>> GetAverageSalaryPerDepartment()
+        {
+            var employees = await _userManager.Users.ToListAsync();
+            
+            var averageSalaryPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new {
+                Department = g.Key,
+                AverageSalary = g.Average(x => x.Salary)
+            });
+
+            return averageSalaryPerDepartment;
+        }
+
         // private async Task<BaseResponseDto> HandleLeaveRequest(LeaveRequestDto leaveRequest)
         // {
         //     // get emp username from HttpContextAccessor
