@@ -175,5 +175,15 @@ namespace LMS.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Librarian, Library Manager")]
+        [HttpGet("report")]
+        public async Task<IActionResult> Report()
+        {
+            var fileName = "BookReport.pdf";
+            var file = await _bookService.GenerateAllBooksReport();
+
+            return File(file, "application/pdf", fileName);
+        }
+
     }
 }

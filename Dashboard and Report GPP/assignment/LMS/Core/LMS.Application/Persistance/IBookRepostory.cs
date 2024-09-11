@@ -10,5 +10,11 @@ namespace LMS.Application.Persistance
         Task<IEnumerable<Book>> SearchBook(QueryObject query, int recordsPerPage, int currentPage);
 
         Task BookSoftDelete(Book book, string? reason);
+
+        Task<IEnumerable<Book>> GetAllNoPaging();
+
+        Task<int> GetBookCount();
+
+        // Task<IEnumerable<Book>> GetOverdueBooks();
     }
 }

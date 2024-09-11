@@ -16,6 +16,10 @@ namespace LMS.Domain.Entities
 
         public DateOnly DueReturnDate { get; set; }
 
+        public DateOnly? DateReturned { get; set; }
+
+        public decimal? Penalty { get; set; }
+
         // public string Status { get; set; } = null!;
     }
 }

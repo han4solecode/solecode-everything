@@ -13,5 +13,13 @@ namespace LMS.Application.Contracts
         Task<bool> UpdatedExistingLending(int id, Lending inputLending);
 
         Task<bool> DeleteExistingLending(int id);
+
+        Task<IEnumerable<Lending>> GetAllLendingsNoPaging();
+
+        Task<IEnumerable<object>> GetUsersOverdueBooksAndPenalty();
+
+        Task<byte[]> GenerateUserOverdueBooksAndPenaltyReport();
+
+        Task<IEnumerable<Lending>> GetOverdueBooks();
     }
 }

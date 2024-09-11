@@ -26,6 +26,10 @@ namespace LMS.Application.Contracts
 
         Task<bool> ReviewRequest(ReviewRequestModel reviewRequest);
 
-        // Task<bool> A(ReviewRequestModel reviewRequest);
+        Task<byte[]> GenerateAllBooksReport();
+
+        Task<int> GetTotalNumberOfBooks();
+
+        Task<object> GetNumberOfBooksPerCategory();
     }
 }

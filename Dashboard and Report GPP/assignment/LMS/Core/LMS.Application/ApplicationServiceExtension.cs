@@ -12,6 +12,7 @@ namespace LMS.Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ILendingService, LendingService>();
+            services.AddScoped<IWorkflowService, WorkflowService>();
             services.AddTransient<IEmailService, EmailService>();
         }
     }

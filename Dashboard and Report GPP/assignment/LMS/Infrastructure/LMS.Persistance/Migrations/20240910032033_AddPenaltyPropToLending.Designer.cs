@@ -3,6 +3,7 @@ using System;
 using LMS.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LMS.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240910032033_AddPenaltyPropToLending")]
+    partial class AddPenaltyPropToLending
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,9 +217,6 @@ namespace LMS.Persistance.Migrations
                     b.Property<DateOnly?>("DateDeleted")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("DateReturned")
-                        .HasColumnType("date");
-
                     b.Property<string>("DeleteReason")
                         .HasColumnType("text");
 
@@ -226,7 +226,7 @@ namespace LMS.Persistance.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal?>("Penalty")
+                    b.Property<decimal>("Penalty")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");

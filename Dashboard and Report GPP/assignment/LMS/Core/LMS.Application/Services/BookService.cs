@@ -8,6 +8,10 @@ using LMS.Domain.Entities;
 using LMS.Domain.Entities.Workflow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace LMS.Application.Services
 {
@@ -500,6 +504,68 @@ namespace LMS.Application.Services
 
             return true;
 
+        }
+
+        public async Task<byte[]> GenerateAllBooksReport()
+        {
+            var books = await _bookRepostory.GetAllNoPaging();
+
+            // initialize html content
+            var htmlContent = string.Empty;
+
+            // add content to html
+            htmlContent += "<h1> Book Report </h1>";
+            htmlContent += "<table>";
+            htmlContent += "<tr><th>Id</th><th>Title</th><th>Author</th></tr>";
+
+            books.ToList().ForEach(book =>
+            {
+                htmlContent += "<tr>";
+                htmlContent += "<td>" + book.Id + "</td>";
+                htmlContent += "<td>" + book.Title + "</td>";
+                htmlContent += "<td>" + book.Author + "</td>";
+                htmlContent += "</tr>";
+            });
+            htmlContent += "</table>";
+
+            // init pdf generator
+            var document = new PdfDocument();
+            var pdfConfig = new PdfGenerateConfig
+            {
+                PageOrientation = PageOrientation.Landscape,
+                PageSize = PageSize.A4
+            };
+
+            // get css file
+            var cssFile = File.ReadAllText(@"./ReportTemplates/style.css");
+            CssData css = PdfGenerator.ParseStyleSheet(cssFile);
+
+            PdfGenerator.AddPdfPages(document, htmlContent, pdfConfig, css);
+
+            var ms = new MemoryStream();
+            document.Save(ms, false);
+            var bytes = ms.ToArray();
+
+            return bytes;
+        }
+
+        public async Task<int> GetTotalNumberOfBooks()
+        {
+            var count = await _bookRepostory.GetBookCount();
+
+            return count;
+        }
+
+        public async Task<object> GetNumberOfBooksPerCategory()
+        {
+            var books = await _bookRepostory.GetAllNoPaging();
+
+            var booksPerCategoryCount = books.GroupBy(b => b.Category).Select(g => new {
+                Category = g.Key,
+                Count = g.Count()
+            });
+
+            return booksPerCategoryCount;
         }
     }
 }

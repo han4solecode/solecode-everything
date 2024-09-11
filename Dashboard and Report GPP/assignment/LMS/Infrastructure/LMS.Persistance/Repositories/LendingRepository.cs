@@ -64,5 +64,12 @@ namespace LMS.Persistance.Repositories
 
             return lendings;
         }
+
+        public async Task<IEnumerable<Lending>> GetUsersOverdueLendings()
+        {
+            var userOverdueLendings = await _context.Lendings.Where(l => l.DueReturnDate < DateOnly.FromDateTime(DateTime.Now) && l.IsDeleted == false && l.DateReturned == null).ToListAsync();
+
+            return userOverdueLendings;
+        }
     }
 }

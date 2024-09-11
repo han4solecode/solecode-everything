@@ -33,6 +33,13 @@ namespace LMS.Persistance.Repositories
             return books;
         }
 
+        public async Task<IEnumerable<Book>> GetAllNoPaging()
+        {
+            var books = await _context.Books.ToListAsync();
+
+            return books;
+        }
+
         public async Task<Book?> GetById(int id)
         {
             var book = await _context.Books.Where(b => b.IsDeleted == false).SingleOrDefaultAsync(b => b.Id == id);
@@ -74,5 +81,19 @@ namespace LMS.Persistance.Repositories
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetBookCount()
+        {
+            var bookCount = await _context.Books.CountAsync();
+
+            return bookCount;
+        }
+
+        // public async Task<IEnumerable<Book>> GetOverdueBooks()
+        // {
+        //     // var overdueBooks = await _context.Books.Select(b => b.Lendings.Where(l => l.DueReturnDate < DateOnly.FromDateTime(DateTime.Now) && l.DateReturned == null)).ToListAsync();
+
+        //     // return overdueBooks;
+        // }
     }
 }

@@ -16,10 +16,18 @@
 //     }
 // }
 
+using LMS.Domain.Entities;
+
 namespace LMS.Application.Contracts
 {
     public interface IUserService
     {
         Task<object> GetLibraryUserInfo(string id);
+
+        Task<object> GetPatronInfoById(string id);
+
+        Task<byte[]> GeneratePatronInfoByIdReport(string id);
+
+        Task<IEnumerable<AppUser>> Get10MostActiveMembers();
     }
 }

@@ -106,3 +106,58 @@
 //         }
 //     }
 // }
+
+using Castle.Components.DictionaryAdapter.Xml;
+using LMS.Application.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LMS.WebAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+        [Authorize(Roles = "Librarian, Library Manager")]
+        [HttpGet("patron-info")]
+        public async Task<IActionResult> GetPatronInfoById([FromBody] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var res = await _userService.GetPatronInfoById(id);
+
+            return Ok(res);
+        }
+
+        [Authorize(Roles = "Librarian, Library Manager")]
+        [HttpGet("patron-info-report")]
+        public async Task<IActionResult> A([FromBody] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var fileName = "PatronInfo.pdf";
+            var file = await _userService.GeneratePatronInfoByIdReport(id);
+
+            if (file == null)
+            {
+                return BadRequest("Can't generate report");
+            }
+
+            return File(file, "application/pdf", fileName);
+        }
+
+    }
+}
