@@ -772,6 +772,22 @@ namespace HRIS.Application.Services
             }
         }
 
+        public async Task<IEnumerable<object>> GetEmployeeDistributionPerDepartment()
+        {
+            var employees = await _userManager.Users.ToListAsync();
+            var totalEmployeeCount = employees.Count;
+
+            var employeeDistributionPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new {
+                Department = g.Key,
+                Percentage = (int)Math.Round((double)(g.Count() * 100 / totalEmployeeCount))
+                // Percentage = g.Count() / totalEmployeeCount * 100
+                // Percentage = (g.Count() / totalEmployeeCount).ToString("0.00")
+                // Percentage = (int)(0.5f + ((100f * g.Count()) / totalEmployeeCount))
+            });
+
+            return employeeDistributionPerDepartment;
+        }
+
         // private async Task<BaseResponseDto> HandleLeaveRequest(LeaveRequestDto leaveRequest)
         // {
         //     // get emp username from HttpContextAccessor
