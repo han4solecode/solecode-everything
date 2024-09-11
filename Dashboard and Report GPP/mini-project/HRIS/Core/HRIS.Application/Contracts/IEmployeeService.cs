@@ -40,5 +40,6 @@ namespace HRIS.Application.Contracts
 
         Task<IEnumerable<object>> GetEmployeeDistributionPerDepartment();
 
+        Task<IEnumerable<object>> GetTop5BestEmployee();
     }
 }

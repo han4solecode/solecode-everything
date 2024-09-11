@@ -788,6 +788,16 @@ namespace HRIS.Application.Services
             return employeeDistributionPerDepartment;
         }
 
+        public async Task<IEnumerable<object>> GetTop5BestEmployee()
+        {
+            var top5BestEmployees = await _userManager.Users.OrderByDescending(e => e.Worksons.Sum(w => w.Hoursworked)).Take(5).Select(x => new {
+                Name = $"{x.Fname} {x.Lname}",
+                WorkingHour = x.Worksons.Sum(w => w.Hoursworked)
+            }).ToListAsync();
+
+            return top5BestEmployees;
+        }
+
         // private async Task<BaseResponseDto> HandleLeaveRequest(LeaveRequestDto leaveRequest)
         // {
         //     // get emp username from HttpContextAccessor
