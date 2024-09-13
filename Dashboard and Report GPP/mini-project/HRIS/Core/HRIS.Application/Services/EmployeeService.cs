@@ -1,13 +1,19 @@
 using HRIS.Application.Contracts;
 using HRIS.Application.DTOs;
 using HRIS.Application.DTOs.Email;
+using HRIS.Application.DTOs.Emp;
 using HRIS.Application.DTOs.LeaveRequest;
+using HRIS.Application.DTOs.Request;
 using HRIS.Application.Persistance;
 using HRIS.Domain.Entity;
 using HRIS.Domain.Entity.Workflow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace HRIS.Application.Services
 {
@@ -401,388 +407,14 @@ namespace HRIS.Application.Services
             }
         }
 
-        public async Task<BaseResponseDto> ApproveLeaveRequest(string empNo)
-        {
-            // get emp username from HttpContextAccessor
-            var userName = _httpContextAccessor.HttpContext!.User.Identity!.Name;
-            // get empployee object
-            var employee = await _userManager.FindByNameAsync(userName!);
-            // get employee roles
-            var empRoles = await _userManager.GetRolesAsync(employee!);
-
-            if (empRoles.Any(r => r == "Employee Supervisor"))
-            {
-                // get employee supervisor AppRole object
-                var supervisorRole = await _roleManager.FindByNameAsync("Employee Supervisor");
-
-                if (supervisorRole == null)
-                {
-                    return new BaseResponseDto()
-                    {
-                        Status = "Error",
-                        Message = "Role not found"
-                    };
-                }
-
-                // get the latest leave request process that has to be reviewed by supervisor
-                var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole.Id && p.RequesterId == empNo).TakeLast(1).SingleOrDefault();
-    
-                if (latestProcess == null)
-                {
-                    return new BaseResponseDto()
-                    {
-                        Status = "Error",
-                        Message = $"No leave request to review from employee with ID: {empNo}"
-                    };
-                }
-
-                // create new Workflow Action
-                var newWorkflowAction = new WorkflowAction()
-                {
-                    ProcessId = latestProcess.ProcessId,
-                    StepId = latestProcess.CurrentStepId,
-                    ActorId = employee!.Id,
-                    Action = "Leave request approved by Supervisor",
-                    ActionDate = DateTime.UtcNow,
-                    Comment = $"Request for a {latestProcess.LeaveRequestNavigation!.LeaveType} has been approved"
-                };
-
-                // save new workflow action
-                await _workflowRepository.CreateWorkflowAction(newWorkflowAction);
-
-                // get NextStepRule's NextStepId where currentStepId == latestProcess.CurrentStepId and ConditionValue == "Approved" from WorkflowSequence
-                // get leave request workflowid
-                var workflows = await _workflowRepository.GetAllWorkflows();
-                var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
-                // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
-                var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
-                // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).SingleOrDefault();
-
-                // update process
-                latestProcess.Status = "Pending HR Manager Review";
-                latestProcess.CurrentStepId = nsrNextStepId;
-                await _workflowRepository.UpdateProcess(latestProcess);
-
-                // send email notification to employee and HR manager
-                var emailTemplate = File.ReadAllText(@"./EmailTemplates/LeaveRequest.html");
-
-                var emailBody = string.Format(emailTemplate, 
-                    $"{latestProcess.RequesterIdNavigation.Fname} {latestProcess.RequesterIdNavigation.Lname}",
-                    latestProcess.RequesterIdNavigation.Id,
-                    latestProcess.RequesterIdNavigation.Email,
-                    latestProcess.RequesterIdNavigation.DeptnoNavigation!.Deptname,
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.StartDate),
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.EndDate),
-                    latestProcess.LeaveRequestNavigation.LeaveType,
-                    latestProcess.LeaveRequestNavigation.Reason,
-                    $"{latestProcess.Status}"
-                );
-
-                // get HR Manager email
-                var hrManagerRoleName = latestProcess.CurrentStepIdNavigation.RequiredRoleIdNavigation.Name;
-                var hrManager = await _userManager.GetUsersInRoleAsync(hrManagerRoleName!);
-
-                var mail = new EmailModel()
-                {
-                    EmailToIds = [latestProcess.RequesterIdNavigation.Email],
-                    EmailCCIds = hrManager.Select(hm => hm.Email).ToList()!,
-                    EmailSubject = "Leave Request Approved by Supervisor",
-                    EmailBody = emailBody
-                };
-
-                await _emailService.SendEmail(mail);
-
-                return new BaseResponseDto()
-                {
-                    Status = "Success",
-                    Message = $"Leave request approved successfully. Request will be reviewed by HR Manager"
-                };
-            }
-            // else if (empRoles.Any(r => r == "HR Manager"))
-            else
-            {
-                // get HR Manager AppRole object
-                var hrManagerRole = await _roleManager.FindByNameAsync("HR Manager");
-
-                // get the latest leave request process that has to be reviewed by HR Manager
-                var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending HR Manager Review" && p.CurrentStepIdNavigation.RequiredRoleId == hrManagerRole!.Id && p.RequesterId == empNo).TakeLast(1).Single();
-
-                if (latestProcess == null)
-                {
-                    return new BaseResponseDto()
-                    {
-                        Status = "Error",
-                        Message = $"No leave request to review from employee with ID: {empNo}"
-                    };
-                }
-
-                // create new Workflow Action
-                var newWorkflowAction = new WorkflowAction()
-                {
-                    ProcessId = latestProcess.ProcessId,
-                    StepId = latestProcess.CurrentStepId,
-                    ActorId = employee!.Id,
-                    Action = "Leave request approved by HR Manager",
-                    ActionDate = DateTime.UtcNow,
-                    Comment = $"Request for a {latestProcess.LeaveRequestNavigation!.LeaveType} has been approved"
-                };
-
-                // save new workflow action
-                await _workflowRepository.CreateWorkflowAction(newWorkflowAction);
-
-                // get NextStepRule's NextStepId where currentStepId == latestProcess.CurrentStepId and ConditionValue == "Approved" from WorkflowSequence
-                // get leave request workflowid
-                var workflows = await _workflowRepository.GetAllWorkflows();
-                var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
-                // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
-                var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
-                // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Approved").Select(nsr => nsr.NextStepId).Single();
-
-                // update process
-                latestProcess.Status = "Leave Request Approved by HR Manager";
-                latestProcess.CurrentStepId = nsrNextStepId;
-                await _workflowRepository.UpdateProcess(latestProcess);
-
-                // send email notification
-                // send email notification to employee and other actor
-                var emailTemplate = File.ReadAllText(@"./EmailTemplates/LeaveRequest.html");
-
-                var emailBody = string.Format(emailTemplate, 
-                    $"{latestProcess.RequesterIdNavigation.Fname} {latestProcess.RequesterIdNavigation.Lname}",
-                    latestProcess.RequesterIdNavigation.Id,
-                    latestProcess.RequesterIdNavigation.Email,
-                    latestProcess.RequesterIdNavigation.DeptnoNavigation!.Deptname,
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.StartDate),
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.EndDate),
-                    latestProcess.LeaveRequestNavigation.LeaveType,
-                    latestProcess.LeaveRequestNavigation.Reason,
-                    $"{latestProcess.Status}"
-                );
-
-                // get other actor emails
-                var wa = await _workflowRepository.GetAllWorkflowActions();
-                var actorEmails = wa.Where(x => x.ProcessId == latestProcess.ProcessId).Select(x => x.ActorIdNavigation.Email).ToList();
-
-                // remove requesterEmail from actorEmails
-                var requesterEmail = latestProcess.RequesterIdNavigation.Email;
-                actorEmails.Remove(requesterEmail);
-
-                var mail = new EmailModel()
-                {
-                    EmailToIds = [requesterEmail],
-                    EmailCCIds = actorEmails!,
-                    EmailSubject = "Leave Request Approved by HR Manager",
-                    EmailBody = emailBody
-                };
-
-                await _emailService.SendEmail(mail);
-
-                return new BaseResponseDto()
-                {
-                    Status = "Success",
-                    Message = $"Leave request approved successfully"
-                };
-            }
-        }
-
-        public async Task<BaseResponseDto> RejectLeaveRequest(string empNo)
-        {
-            // get emp username from HttpContextAccessor
-            var userName = _httpContextAccessor.HttpContext!.User.Identity!.Name;
-            // get empployee object
-            var employee = await _userManager.FindByNameAsync(userName!);
-            // get employee roles
-            var empRoles = await _userManager.GetRolesAsync(employee!);
-
-            if (empRoles.Any(r => r == "Employee Supervisor"))
-            {
-                // get employee supervisor AppRole object
-                var supervisorRole = await _roleManager.FindByNameAsync("Employee Supervisor");
-
-                // get the latest leave request process that has to be reviewed by supervisor
-                var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending" && p.CurrentStepIdNavigation.RequiredRoleId == supervisorRole!.Id && p.RequesterId == empNo).TakeLast(1).SingleOrDefault();
-
-                if (latestProcess == null)
-                {
-                    return new BaseResponseDto()
-                    {
-                        Status = "Error",
-                        Message = $"No leave request to review from employee with ID: {empNo}"
-                    };
-                }
-                
-                // create new Workflow Action
-                var newWorkflowAction = new WorkflowAction()
-                {
-                    ProcessId = latestProcess.ProcessId,
-                    StepId = latestProcess.CurrentStepId,
-                    ActorId = employee!.Id,
-                    Action = "Leave request rejected by Supervisor",
-                    ActionDate = DateTime.UtcNow,
-                    Comment = $"Request for a {latestProcess.LeaveRequestNavigation!.LeaveType} has been rejected"
-                };
-
-                // save new workflow action
-                await _workflowRepository.CreateWorkflowAction(newWorkflowAction);
-
-                // get NextStepRule's NextStepId where currentStepId == latestProcess.CurrentStepId and ConditionValue == "Rejected" from WorkflowSequence
-                // get leave request workflowid
-                var workflows = await _workflowRepository.GetAllWorkflows();
-                var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
-                // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
-                var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
-                // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
-
-                // update process
-                latestProcess.Status = "Leave Request Rejected by Supervisor";
-                latestProcess.CurrentStepId = nsrNextStepId;
-                await _workflowRepository.UpdateProcess(latestProcess);
-
-                // send email notification
-                // to requester employee and other actor
-                var emailTemplate = File.ReadAllText(@"./EmailTemplates/LeaveRequest.html");
-
-                var emailBody = string.Format(emailTemplate, 
-                    $"{latestProcess.RequesterIdNavigation.Fname} {latestProcess.RequesterIdNavigation.Lname}",
-                    latestProcess.RequesterIdNavigation.Id,
-                    latestProcess.RequesterIdNavigation.Email,
-                    latestProcess.RequesterIdNavigation.DeptnoNavigation!.Deptname,
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.StartDate),
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.EndDate),
-                    latestProcess.LeaveRequestNavigation.LeaveType,
-                    latestProcess.LeaveRequestNavigation.Reason,
-                    $"{latestProcess.Status}"
-                );
-
-                // get other actor emails
-                var wa = await _workflowRepository.GetAllWorkflowActions();
-                var actorEmails = wa.Where(x => x.ProcessId == latestProcess.ProcessId).Select(x => x.ActorIdNavigation.Email).ToList();
-
-                // remove requesterEmail from actorEmails
-                var requesterEmail = latestProcess.RequesterIdNavigation.Email;
-                actorEmails.Remove(requesterEmail);
-
-                var mail = new EmailModel()
-                {
-                    EmailToIds = [requesterEmail],
-                    EmailCCIds = actorEmails!,
-                    EmailSubject = "Leave Request Rejected by Supervisor",
-                    EmailBody = emailBody
-                };
-
-                return new BaseResponseDto()
-                {
-                    Status = "Success",
-                    Message = $"Leave request rejected successfully"
-                };
-            }
-            else
-            {
-                // get HR Manager AppRole object
-                var hrManagerRole = await _roleManager.FindByNameAsync("HR Manager");
-
-                // get the latest leave request process that has to be reviewed by HR Manager
-                var p = await _workflowRepository.GetAllProcesses();
-                var latestProcess = p.Where(p => p.Status == "Pending HR Manager Review" && p.CurrentStepIdNavigation.RequiredRoleId == hrManagerRole!.Id && p.RequesterId == empNo).TakeLast(1).Single();
-
-                if (latestProcess == null)
-                {
-                    return new BaseResponseDto()
-                    {
-                        Status = "Error",
-                        Message = $"No leave request to review from employee with ID: {empNo}"
-                    };
-                }
-
-                // create new Workflow Action
-                var newWorkflowAction = new WorkflowAction()
-                {
-                    ProcessId = latestProcess.ProcessId,
-                    StepId = latestProcess.CurrentStepId,
-                    ActorId = employee!.Id,
-                    Action = "Leave request rejected by HR Manager",
-                    ActionDate = DateTime.UtcNow,
-                    Comment = $"Request for a {latestProcess.LeaveRequestNavigation!.LeaveType} has been rejected"
-                };
-
-                // save new workflow action
-                await _workflowRepository.CreateWorkflowAction(newWorkflowAction);
-
-                // get NextStepRule's NextStepId where currentStepId == latestProcess.CurrentStepId and ConditionValue == "Rejected" from WorkflowSequence
-                // get leave request workflowid
-                var workflows = await _workflowRepository.GetAllWorkflows();
-                var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
-                // get workflow sequence where workflowid == leaveRequestWorkflowId and step order == latestProcess.CurrentStepId
-                var ws = await _workflowRepository.GetAllWorkflowSequences();
-                var wsLeaveRequest = ws.Where(ws => ws.WorkflowId == leaveRequestWorkflowId && ws.StepId == latestProcess.CurrentStepId).Single();
-                // get nsr nextStepId
-                var nsrNextStepId = wsLeaveRequest.CurrentStepIds.Where(nsr => nsr.CurrentStepId == latestProcess.CurrentStepId && nsr.ConditionValue == "Rejected").Select(nsr => nsr.NextStepId).Single();
-
-                // update process
-                latestProcess.Status = "Leave Request Rejected by HR Manager";
-                latestProcess.CurrentStepId = nsrNextStepId;
-                await _workflowRepository.UpdateProcess(latestProcess);
-
-                // send email notification
-                // to employee requester and other actor
-                var emailTemplate = File.ReadAllText(@"./EmailTemplates/LeaveRequest.html");
-
-                var emailBody = string.Format(emailTemplate, 
-                    $"{latestProcess.RequesterIdNavigation.Fname} {latestProcess.RequesterIdNavigation.Lname}",
-                    latestProcess.RequesterIdNavigation.Id,
-                    latestProcess.RequesterIdNavigation.Email,
-                    latestProcess.RequesterIdNavigation.DeptnoNavigation!.Deptname,
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.StartDate),
-                    string.Format("{0:dddd, d MMMM yyyy}", latestProcess.LeaveRequestNavigation.EndDate),
-                    latestProcess.LeaveRequestNavigation.LeaveType,
-                    latestProcess.LeaveRequestNavigation.Reason,
-                    $"{latestProcess.Status}"
-                );
-
-                // get other actor emails
-                var wa = await _workflowRepository.GetAllWorkflowActions();
-                var actorEmails = wa.Where(x => x.ProcessId == latestProcess.ProcessId).Select(x => x.ActorIdNavigation.Email).ToList();
-
-                // remove requesterEmail from actorEmails
-                var requesterEmail = latestProcess.RequesterIdNavigation.Email;
-                actorEmails.Remove(requesterEmail);
-
-                var mail = new EmailModel()
-                {
-                    EmailToIds = [requesterEmail],
-                    EmailCCIds = actorEmails!,
-                    EmailSubject = "Leave Request Rejected by HR Manager",
-                    EmailBody = emailBody
-                };
-
-                return new BaseResponseDto()
-                {
-                    Status = "Success",
-                    Message = $"Leave request rejected successfully"
-                };
-            }
-        }
-
         public async Task<IEnumerable<object>> GetEmployeeDistributionPerDepartment()
         {
             var employees = await _userManager.Users.ToListAsync();
-            var totalEmployeeCount = employees.Count;
 
-            var employeeDistributionPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new {
+            var employeeDistributionPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new
+            {
                 Department = g.Key,
-                Percentage = (int)Math.Round((double)(g.Count() * 100 / totalEmployeeCount))
-                // Percentage = g.Count() / totalEmployeeCount * 100
-                // Percentage = (g.Count() / totalEmployeeCount).ToString("0.00")
-                // Percentage = (int)(0.5f + ((100f * g.Count()) / totalEmployeeCount))
+                Count = g.Count()
             });
 
             return employeeDistributionPerDepartment;
@@ -790,7 +422,8 @@ namespace HRIS.Application.Services
 
         public async Task<IEnumerable<object>> GetTop5BestEmployee()
         {
-            var top5BestEmployees = await _userManager.Users.OrderByDescending(e => e.Worksons.Sum(w => w.Hoursworked)).Where(e => e.Worksons.Sum(w => w.Hoursworked) != 0).Take(5).Select(x => new {
+            var top5BestEmployees = await _userManager.Users.OrderByDescending(e => e.Worksons.Sum(w => w.Hoursworked)).Where(e => e.Worksons.Sum(w => w.Hoursworked) != 0).Take(5).Select(x => new
+            {
                 Name = $"{x.Fname} {x.Lname}",
                 WorkingHour = x.Worksons.Sum(w => w.Hoursworked)
             }).ToListAsync();
@@ -801,8 +434,9 @@ namespace HRIS.Application.Services
         public async Task<IEnumerable<object>> GetAverageSalaryPerDepartment()
         {
             var employees = await _userManager.Users.ToListAsync();
-            
-            var averageSalaryPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new {
+
+            var averageSalaryPerDepartment = employees.GroupBy(e => e.DeptnoNavigation!.Deptname).Select(g => new
+            {
                 Department = g.Key,
                 AverageSalary = g.Average(x => x.Salary)
             });
@@ -810,29 +444,174 @@ namespace HRIS.Application.Services
             return averageSalaryPerDepartment;
         }
 
-        // private async Task<BaseResponseDto> HandleLeaveRequest(LeaveRequestDto leaveRequest)
-        // {
-        //     // get emp username from HttpContextAccessor
-        //     var userName = _httpContextAccessor.HttpContext!.User.Identity!.Name;
-        //     // get empployee object
-        //     var employee = await _userManager.FindByNameAsync(userName!);
+        public async Task<IEnumerable<EmployeeByDepartmentResponseDto>> GetEmployeeFilterByDepartment(int currentPage, string department)
+        {
+            var employees = await _userManager.Users.Skip((currentPage - 1) * 20).Take(20).Where(e => e.DeptnoNavigation!.Deptname == department).Select(e => new EmployeeByDepartmentResponseDto
+            {
+                Name = $"{e.Fname} {e.Lname}",
+                Address = e.Address,
+                PhoneNumber = e.PhoneNumber,
+                Email = e.Email,
+                Dob = e.Dob,
+                EmploymentType = e.Employmenttype
+            }).ToListAsync();
 
-        //     // get leave request workflow id
-        //     var workflows = await _workflowRepository.GetAllWorkflows();
-        //     var leaveRequestWorkflowId = workflows.Where(w => w.WorkflowName == "Leave Request").Single().WorkflowId;
+            return employees;
+        }
 
-        //     try
-        //     {
+        public async Task<byte[]> GenerateEmployeeFilterByDepartmentReport(string department)
+        {
+            var i = 1;
+            var page = 1;
+            
+            var employees = await _userManager.Users.Where(e => e.DeptnoNavigation!.Deptname == department).ToListAsync();
+            var a = employees.Select((item, index) => new { index, item });
+            var b = a.GroupBy(x => x.index / 20, x => x.item, (key, items) => items);
 
-        //     }
-        //     catch (System.Exception)
-        //     {
-        //         return new BaseResponseDto()
-        //         {
-        //             Status = "Error",
-        //             Message = "Leave request submission unsuccessful"
-        //         };
-        //     }
-        // }
+            var document = new PdfDocument();
+            var pdfConfig = new PdfGenerateConfig
+            {
+                PageOrientation = PageOrientation.Landscape,
+                PageSize = PageSize.A4
+            };
+            pdfConfig.SetMargins(10);
+
+            foreach (var items in b)
+            {
+                var htmlContent = string.Empty;
+
+                htmlContent += $"<h1> Employee Report - {department} Department </h1>";
+
+                if (b.Count() > 1)
+                {
+                    htmlContent += $"Page {page++} of {b.Count()} pages";
+                }
+
+                htmlContent += "<table>";
+                htmlContent += "<tr><th>No</th><th>Name</th><th>Address</th><th>Phone Number</th><th>Email</th><th>DOB</th><th>Employment Type</th></tr>";
+
+                items.ToList().ForEach(item =>
+                {
+                    htmlContent += "<tr>";
+                    htmlContent += $"<td> {i++} </td>";
+                    htmlContent += $"<td> {item.Fname} {item.Lname} </td>";
+                    htmlContent += $"<td> {item.Address} </td>";
+                    htmlContent += $"<td> {item.PhoneNumber} </td>";
+                    htmlContent += $"<td> {item.Email} </td>";
+                    htmlContent += $"<td> {string.Format("{0:dddd, d MMMM yyyy}", item.Dob)} </td>";
+                    htmlContent += $"<td> {item.Employmenttype} </td>";
+                    htmlContent += "</tr>";
+                });
+                htmlContent += "</table>";
+
+                var cssFile = File.ReadAllText(@"./ReportTemplates/style.css");
+                CssData css = PdfGenerator.ParseStyleSheet(cssFile);
+
+                PdfGenerator.AddPdfPages(document, htmlContent, pdfConfig, css);
+            }
+
+            var ms = new MemoryStream();
+            document.Save(ms, false);
+            var bytes = ms.ToArray();
+
+            return bytes;
+        }
+
+        public async Task<BaseResponseDto> ReviewRequest(ReviewRequestDto reviewRequest)
+        {
+            // get username from httpcontextaccessor
+            var userName = _httpContextAccessor.HttpContext!.User.Identity!.Name;
+            var user = await _userManager.FindByNameAsync(userName!);
+            var userRoles = await _userManager.GetRolesAsync(user!);
+
+            // get process next step required role
+            var process = await _workflowRepository.GetProcessById(reviewRequest.ProcessId);
+
+            if (process == null)
+            {
+                return new BaseResponseDto
+                {
+                    Status = "Error",
+                    Message = "No process available"
+                };
+            }
+
+            var requiredRoleId = process.CurrentStepIdNavigation.RequiredRoleId;
+
+            if (requiredRoleId == null)
+            {
+                return new BaseResponseDto
+                {
+                    Status = "Error",
+                    Message = "Process is finished"
+                };
+            }
+
+            // check for supervisor
+            if (userRoles.Contains("Employee Supervisor") && process.RequesterIdNavigation.Supervisorempno != user!.Id)
+            {
+                return new BaseResponseDto
+                {
+                    Status = "Error",
+                    Message = "Not authorized to review this process"
+                };
+            }
+
+            var requiredRole = await _roleManager.FindByIdAsync(requiredRoleId);
+
+            if (!userRoles.Contains(requiredRole!.Name!))
+            {
+                return new BaseResponseDto
+                {
+                    Status = "Error",
+                    Message = "Not authorized to review this process"
+                };
+            }
+
+            // create new workflow action
+            var newWorkflowAction = new WorkflowAction()
+            {
+                ProcessId = process.ProcessId,
+                StepId = process.CurrentStepId,
+                ActorId = user!.Id,
+                Action = reviewRequest.Action,
+                ActionDate = DateTime.UtcNow,
+                Comment = reviewRequest.Comment,
+            };
+
+            await _workflowRepository.UpdateWorkflowAction(newWorkflowAction);
+
+            var nsrNextStepId = process.CurrentStepIdNavigation.CurrentStepIds.Where(nsr => nsr.CurrentStepId == process.CurrentStepId && nsr.ConditionValue == reviewRequest.Action).Select(nsr => nsr.NextStepId).SingleOrDefault();
+
+            // update process
+            process.Status = $"{reviewRequest.Action} by {requiredRole.Name}";
+            process.CurrentStepId = nsrNextStepId;
+            await _workflowRepository.UpdateProcess(process);
+
+            // get other actor emails
+            var actions = await _workflowRepository.GetAllWorkflowActions();
+            var actorEmails = actions.Where(e => e.ProcessId == process.ProcessId).Select(x => x.ActorIdNavigation.Email).ToList();
+            // get requester email
+            var requesterEmail = process.RequesterIdNavigation.Email;
+            // remove requesterEmail from actorEmails so requester only receive the email once
+            actorEmails.Remove(requesterEmail);
+
+            // check if there is any next actor available
+            // if exist, add actor email to actorEmails
+            if (process.CurrentStepIdNavigation.RequiredRoleId != null)
+            {
+                var nextActorRoleName = process.CurrentStepIdNavigation.RequiredRoleIdNavigation.Name;
+                var actors = await _userManager.GetUsersInRoleAsync(nextActorRoleName!);
+                var nextActorEmails = actors.Select(a => a.Email).ToList();
+                // append nextActorEmails to actorEmails
+                actorEmails.AddRange(nextActorEmails);
+            }
+
+            return new BaseResponseDto
+            {
+                Status = "Success",
+                Message = "Request has been reviewed successfuly"
+            };
+        }
     }
 }

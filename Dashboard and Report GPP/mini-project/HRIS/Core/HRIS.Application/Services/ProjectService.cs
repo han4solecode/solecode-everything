@@ -1,8 +1,13 @@
 using HRIS.Application.Contracts;
 using HRIS.Application.DTOs;
+using HRIS.Application.DTOs.Project;
 using HRIS.Application.Persistance;
 using HRIS.Domain.Entity;
 using Microsoft.AspNetCore.Identity;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace HRIS.Application.Services
 {
@@ -170,6 +175,61 @@ namespace HRIS.Application.Services
                 Status = "Success",
                 Message = "Project deleted successfully"
             };
+        }
+
+        public async Task<IEnumerable<ProjectReportResponseDto>> GetProjectReport()
+        {
+            var projects = await _projectRepository.GetAllNoPaging();
+
+            var data = projects.Select(x => new ProjectReportResponseDto {
+                ProjectNo = x.Projno,
+                ProjectName = x.Projname,
+                TotalHoursLogged = x.Worksons.Sum(w => w.Hoursworked),
+                TotalEmployees = x.Worksons.Count,
+                AverageHoursPerEmployee = x.Worksons.Average(w => w.Hoursworked)
+            }).ToList();
+
+            return data;
+        }
+
+        public async Task<byte[]> GenerateProjectReport()
+        {
+            var data = await GetProjectReport();
+
+            var htmlContent = string.Empty;
+            htmlContent += "<h1> Project Report </h1>";
+            htmlContent += "<table>";
+            htmlContent += "<tr><th>Project Id</th><th>Project Name</th><th>Total Hours Logged</th><th>Total Employees</th><th>Average Hours Worked Per Employee</th></tr>";
+
+            data.ToList().ForEach(item => {
+                htmlContent += "<tr>";
+                htmlContent += $"<td> {item.ProjectNo} </td>";
+                htmlContent += $"<td> {item.ProjectName} </td>";
+                htmlContent += $"<td> {item.TotalHoursLogged} </td>";
+                htmlContent += $"<td> {item.TotalEmployees} </td>";
+                htmlContent += $"<td> {item.AverageHoursPerEmployee} </td>";
+                htmlContent += "</tr>";
+            });
+            htmlContent += "<table>";
+
+            var document = new PdfDocument();
+            var pdfConfig = new PdfGenerateConfig
+            {
+                PageOrientation = PageOrientation.Portrait,
+                PageSize = PageSize.A4,
+            };
+            pdfConfig.SetMargins(10);
+
+            var cssFile = File.ReadAllText(@"./ReportTemplates/style.css");
+            CssData css = PdfGenerator.ParseStyleSheet(cssFile);
+
+            PdfGenerator.AddPdfPages(document, htmlContent, pdfConfig, css);
+
+            var ms = new MemoryStream();
+            document.Save(ms, false);
+            var bytes = ms.ToArray();
+
+            return bytes;
         }
     }
 }

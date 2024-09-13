@@ -1,4 +1,5 @@
 using HRIS.Application.DTOs;
+using HRIS.Application.DTOs.Project;
 using HRIS.Domain.Entity;
 
 namespace HRIS.Application.Contracts
@@ -21,5 +22,9 @@ namespace HRIS.Application.Contracts
         Task<BaseResponseDto> AddNewProjectByManager(string userId, Project project);
         Task<BaseResponseDto> UpdateExistingProjectByManager(string userId, int projNo, Project inputProject);
         Task<BaseResponseDto> DeleteProjectByManager(string userId, int projNo);
+
+        Task<IEnumerable<ProjectReportResponseDto>> GetProjectReport();
+
+        Task<byte[]> GenerateProjectReport();
     }
 }

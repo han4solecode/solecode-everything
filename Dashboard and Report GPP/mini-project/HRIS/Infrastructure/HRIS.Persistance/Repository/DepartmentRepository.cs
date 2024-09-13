@@ -32,6 +32,13 @@ namespace HRIS.Persistance.Repository
             return departments;
         }
 
+        public async Task<IEnumerable<Department>> GetAllNoPaging()
+        {
+            var departments = await _context.Departments.ToListAsync();
+            
+            return departments;
+        }
+
         public async Task<Department?> GetById(int id)
         {
             var department = await _context.Departments.FindAsync(id);

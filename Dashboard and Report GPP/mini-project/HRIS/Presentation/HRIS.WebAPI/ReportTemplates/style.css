@@ -1,0 +1,23 @@
+h1 {
+    color: white;
+    background-color: #04AA6D;
+}
+
+table {
+    border-collapse: collapse;
+    /* width: 70%; */
+    border: 1px solid black;
+    width: 100%;
+}
+
+th {
+    background-color: #04AA6D;
+    color: white;
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 7px;
+    border: 1px solid black;
+}

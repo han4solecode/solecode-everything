@@ -2,6 +2,7 @@ using System.Security.Claims;
 using HRIS.Application.Contracts;
 using HRIS.Application.DTOs.LeaveRequest;
 using HRIS.Application.DTOs.Register;
+using HRIS.Application.DTOs.Request;
 using HRIS.Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -142,34 +143,15 @@ namespace HRIS.WebAPI.Controllers
         }
 
         [Authorize(Roles = "Employee Supervisor, HR Manager")]
-        [HttpPost("request/leave/approve")]
-        public async Task<IActionResult> ApproveLeaveRequest([FromBody] string empNo)
+        [HttpPost("request/review")]
+        public async Task<IActionResult> ReviewRequest([FromBody] ReviewRequestDto reviewRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var res = await _employeeService.ApproveLeaveRequest(empNo);
-
-            if (res.Status == "Error")
-            {
-                return BadRequest(res.Message);
-            }
-
-            return Ok(res);
-        }
-
-        [Authorize(Roles = "Employee Supervisor, HR Manager")]
-        [HttpPost("request/leave/reject")]
-        public async Task<IActionResult> RejectLeaveRequest([FromBody] string empNo)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var res = await _employeeService.RejectLeaveRequest(empNo);
+            var res = await _employeeService.ReviewRequest(reviewRequest);
 
             if (res.Status == "Error")
             {

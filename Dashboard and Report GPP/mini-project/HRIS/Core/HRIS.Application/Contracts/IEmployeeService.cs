@@ -1,5 +1,7 @@
 using HRIS.Application.DTOs;
+using HRIS.Application.DTOs.Emp;
 using HRIS.Application.DTOs.LeaveRequest;
+using HRIS.Application.DTOs.Request;
 using HRIS.Domain.Entity;
 
 namespace HRIS.Application.Contracts
@@ -35,13 +37,16 @@ namespace HRIS.Application.Contracts
         Task<BaseResponseDto> EmployeeLeaveRequest(LeaveRequestDto leaveRequest);
 
         // employee supervisor and HR manager
-        Task<BaseResponseDto> ApproveLeaveRequest(string empNo);
-        Task<BaseResponseDto> RejectLeaveRequest(string empNo);
+        Task<BaseResponseDto> ReviewRequest(ReviewRequestDto reviewRequest);
 
         Task<IEnumerable<object>> GetEmployeeDistributionPerDepartment();
 
         Task<IEnumerable<object>> GetTop5BestEmployee();
 
         Task<IEnumerable<object>> GetAverageSalaryPerDepartment();
+
+        Task<IEnumerable<EmployeeByDepartmentResponseDto>> GetEmployeeFilterByDepartment(int currentPage, string department);
+
+        Task<byte[]> GenerateEmployeeFilterByDepartmentReport(string department);
     }
 }
